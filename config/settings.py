@@ -65,7 +65,7 @@ if config('DEBUG', default=False, cast=bool):
     }
 else:
     DATABASES = {
-        'default': dj_database_url.config(default=config('PRODUCTION_DATABASE_URL'))
+        'default': dj_database_url.config(default=config('DATABASE_URL'))
     }
 
 # Password validation
