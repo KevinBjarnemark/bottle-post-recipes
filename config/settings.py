@@ -12,6 +12,9 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 
+# SECURITY WARNING: do not deploy the development db!
+DEVELOMENT_DATABASE = config('DEVELOMENT_DATABASE', default=False, cast=bool)
+
 ALLOWED_HOSTS = ['bottle-post-recipes-eb1abd9c13ee.herokuapp.com', 'localhost', '127.0.0.1']
 
 
@@ -59,7 +62,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
-if config('DEBUG', default=False, cast=bool):
+if DEVELOMENT_DATABASE:
     DATABASES = {
         'default': dj_database_url.config(default=config('DEVELOPMENT_DATABASE_URL'))
     }
