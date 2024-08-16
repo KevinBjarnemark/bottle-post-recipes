@@ -1,4 +1,6 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render
+from .models import Test
 
 def home(request):
-    return HttpResponse("............")
+    test_data = Test.objects.all()
+    return render(request, 'pages/home/home.html', {'test_data': test_data})
