@@ -13,7 +13,7 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 
 # SECURITY WARNING: do not deploy the development db!
-DEVELOMENT_DATABASE = config('DEVELOMENT_DATABASE', default=False, cast=bool)
+DEVELOPMENT_DATABASE = config('DEVELOPMENT_DATABASE', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['bottle-post-recipes-eb1abd9c13ee.herokuapp.com', 'localhost', '127.0.0.1']
 
@@ -66,12 +66,12 @@ Databases
 SECURITY WARNING: Do not deploy the development database!
 If you need to access the production database in development (NOT RECOMMENDED),
 DO NOT CHANGE THE IF STATEMENT BELOW. Instead,
-modify the DEVELOMENT_DATABASE environment variable.
+modify the DEVELOPMENT_DATABASE environment variable.
 
-The DEVELOMENT_DATABASE variable is configured as False in production by default,
+The DEVELOPMENT_DATABASE variable is configured as False in production by default,
 so you won't accidentally deploy using the development database.
 """
-if DEVELOMENT_DATABASE:
+if DEVELOPMENT_DATABASE:
     DATABASES = {
         'default': dj_database_url.config(default=config('DEVELOPMENT_DATABASE_URL'))
     }
