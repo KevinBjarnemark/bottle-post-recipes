@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+
+/*---------- Variables ----------*/
+:root {
+    --red: #dc6464;
+    --white: #dbe3e8;
+    --gray: #98a1a8;
+    --cyan: #63a7e3;
+    --orange: #fdbe77;
+    --blue: #7fa8cc;
+    --green: #78ce76;
+
+    --font-fat: 'Luckiest Guy', cursive;
+    --font-regular: 'Tilt Neon', sans-serif;
+}
+
+* {
+    font-family: var(--font-regular);
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 100;
+    font-style: normal;
+}
+
+h1 {
+    color: var(--white);
+}
+
+h3, h4 {
+    color: var(--white);
+    text-decoration: solid underline #8f969b 1.5px;
+}
+
+p {
+    color: var(--gray);
+}
+
+span, em {
+    color: var(--white);
+}
+
+em {
+    font-style: normal;
+    font-weight: 100;
+}
+
+.em {
+    color: #cad2d7;
+    font-weight: 100;
+    font-family: var(--font-fat);
+}
+
+details {
+    font-size: 16px;
+    color: var(--gray);
+}
+
+summary {
+    color: var(--orange);
+    cursor: pointer;
+}
