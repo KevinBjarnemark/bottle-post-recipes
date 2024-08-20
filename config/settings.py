@@ -61,7 +61,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-# Database
+"""
+Databases
+SECURITY WARNING: Do not deploy the development database!
+If you need to access the production database in development (NOT RECOMMENDED),
+DO NOT CHANGE THE IF STATEMENT BELOW. Instead,
+modify the DEVELOMENT_DATABASE environment variable.
+
+The DEVELOMENT_DATABASE variable is configured as False in production by default,
+so you won't accidentally deploy using the development database.
+"""
 if DEVELOMENT_DATABASE:
     DATABASES = {
         'default': dj_database_url.config(default=config('DEVELOPMENT_DATABASE_URL'))
@@ -70,6 +79,7 @@ else:
     DATABASES = {
         'default': dj_database_url.config(default=config('DATABASE_URL'))
     }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
