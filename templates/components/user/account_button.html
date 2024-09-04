@@ -1,0 +1,14 @@
+
+{% if user.is_authenticated %}
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button class="btn btn-outline-secondary" type="submit">
+            <i class="fas fa-user"></i>
+            Log out
+        </button>
+    </form>
+{% else %}
+    <a href="{% url 'login' %}" class="btn btn-outline-secondary">
+        <i class="fas fa-user"></i> Log in/sign up
+    </a>
+{% endif %}

@@ -17,6 +17,9 @@ DEVELOPMENT_DATABASE = config('DEVELOPMENT_DATABASE', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['bottle-post-recipes-eb1abd9c13ee.herokuapp.com', 'localhost', '127.0.0.1']
 
+# Authentication
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Application definition
 
