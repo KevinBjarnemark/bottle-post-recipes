@@ -1,0 +1,80 @@
+
+
+body {
+    background-color: #494C4E;
+}
+
+.nav {
+    position: relative;
+    z-index: 10;
+    height: 175px;
+    background-color: #ffffff;
+}
+
+.nav-below {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 1;
+    height: 75px;
+    background-color: #404546;
+}
+
+/* Links */
+.no-decoration {
+    text-decoration: none;
+}
+
+/* Custom Bootstrap friendly classes */
+.right-fib-1 {
+    right: 6.1%;
+}
+
+.flex-column {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+}
+
+.feed-container {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    padding-left: 70px; /* Prevent sidebar overlapping */
+    margin: 50px 0px;
+    min-height: 80vh;
+    color: #cbd8dc;
+}
+
+.feed {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Sidebar as id, since it might be targeted with js later */
+#feed-sidebar {
+    display: flex;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 70px;
+    height: 100vh;
+    background-color: #575c5e; 
+}
+
+#feed-sidebar-buttons-container {
+    margin-top: 190px; /* Prevent header overlapping */
+}
+
+/* Search input */
+#search {
+    top: 210px; 
+    left: 75px;
+    height: 34px; 
+    width: 180px;
+}

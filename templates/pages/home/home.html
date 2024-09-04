@@ -1,7 +1,15 @@
 {% extends "base.html" %} {% block content %} {% load static %}
-<div>
-    {% for item in test_data %}
-    <h1>{{ item.test }}</h1>
-    {% endfor %}
+
+
+{% include 'components/page/sidebar.html' %}
+
+<div class="feed-container">
+    <div class="feed"> 
+        <!-- Page sidebar -->
+        {% for item in test_data %}
+        <h1>{{ item.test }}</h1>
+        {% endfor %}
+    </div>
 </div>
+
 {% endblock %}

@@ -13,12 +13,54 @@
     <!-- Stylesheet -->
     {% load static %}
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   </head>
   <body>
     <!-- Header -->
-    <header></header>
+    <nav class="nav">
+      <div class="d-flex w-100 h-100 justify-content-center">
+
+        <div class="d-flex w-auto h-100 flex-column justify-content-end align-items-center">
+          <a class="navbar-brand" href="{% url 'home' %}">
+            <img
+              class="mb-2"
+              src="{% static 'images/global/logo.png' %}"
+              alt="Logo"
+              style="width: 60px; height: auto"
+            />
+          </a>
+          <p>Bottle Post Recipes</p>
+        </div>
+        <div class="position-absolute top-0 mt-3 right-fib-1">
+          <!-- TODO add href -->
+          <a href="#" class="btn btn-outline-secondary">
+            <i class="fas fa-user"></i> Log in/sign up
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Header below -->
+    <nav class="nav-below w-100">
+      <div class="d-flex w-75 mb-1 justify-content-end">
+        <!-- TODO add href -->
+        <a class="no-decoration text-white" href="#">
+          About
+        </a>
+      </div>
+    </nav>
+
     <!-- Page content -->
-    {% block content %}{% endblock %}
+     <div class="z-index-1 position-relative">
+      {% block content %}{% endblock %}
+     </div>
+
+    <!-- Font Awesome script -->
+    <script
+      src="https://kit.fontawesome.com/bd00d9a4cc.js"
+      crossorigin="anonymous">
+    </script>
+    <!-- Bootstrap -->
     <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
   </body>
 </html>
