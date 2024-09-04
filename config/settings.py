@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_browser_reload', # Hot-reloading
-    'pages.home',
+    'apps.pages.home',
+    'apps.users',
 ]
 
 MIDDLEWARE = [

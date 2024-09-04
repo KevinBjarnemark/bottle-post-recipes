@@ -1,6 +1,6 @@
 import pytest
 from django.urls import reverse
-from pages.home.models import Test
+from apps.pages.home.models import Test
 
 # Check if the homepage loads
 @pytest.mark.django_db
