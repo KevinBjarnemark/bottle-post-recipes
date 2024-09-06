@@ -1,11 +1,53 @@
+{% extends "base.html" %} {% block content %} {% load static %}
 
-
-  <section>
-    <h2>Register</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register</button>
-    </form>
-  </section>
-
+<div class="page-container">
+    <div class="page"> 
+        <!-- Title -->
+        <h2>Sign up</h2>
+        <!-- Sign up form -->
+        <form method="post">
+            {% csrf_token %}
+            <!-- Username -->
+            <div class="mb-2">
+                <label for="id_username">Username</label>
+                <input 
+                    class="form-control" 
+                    type="text" 
+                    placeholder="Username" 
+                    name="username" 
+                    id="id_username" 
+                    value="{{ form.username.value|default:'' }}"
+                />
+            </div>
+            <!-- Password -->
+            <div class="mb-2">
+                <label for="id_password1">Password</label>
+                <input 
+                    class="form-control" 
+                    type="password" 
+                    placeholder="Password" 
+                    name="password1" 
+                    id="id_password1" 
+                    value="{{ form.password1.value|default:'' }}"
+                />
+            </div>
+            <!-- Confirm password -->
+            <div class="mb-4">
+                <label for="id_password1">Confirm password</label>
+                <input 
+                    class="form-control" 
+                    type="password" 
+                    placeholder="Confirm password" 
+                    name="password2" 
+                    id="id_password2" 
+                    value="{{ form.password2.value|default:'' }}"
+                />
+            </div>
+            <!-- Submit -->
+            <button class="btn btn-outline-secondary text-white" type="submit">
+                Register
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
