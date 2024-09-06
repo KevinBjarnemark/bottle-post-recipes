@@ -2,6 +2,8 @@
 from django.urls import path
 from .views import register
 from django.contrib.auth import views as auth_views # Djongo's built-in auth views
+from django.conf import settings # Get the settings.py
+from django.conf.urls.static import static # Static files
 
 urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),

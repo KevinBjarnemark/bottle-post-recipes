@@ -2,6 +2,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+import datetime
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -11,7 +12,7 @@ class Profile(models.Model):
     # Method for tracking/limiting reviews
     def can_review(self):
         if self.last_reviewed_at:
-            return timezone.now() >= self.last_reviewed_at + datetime.timedelta(hours=24)
+            return datetime.timezone.now() >= self.last_reviewed_at + datetime.timedelta(hours=24)
         return True
 
 @receiver(post_save, sender=User)
