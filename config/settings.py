@@ -1,7 +1,9 @@
 from decouple import config
 import dj_database_url
 from pathlib import Path
-import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -15,13 +17,14 @@ DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 # SECURITY WARNING: do not deploy the development db!
 DEVELOPMENT_DATABASE = config('DEVELOPMENT_DATABASE', default=False, cast=bool)
 
+# Cloudinary 
+CLOUDINARY_URL = config('CLOUDINARY_URL')
+
 ALLOWED_HOSTS = ['bottle-post-recipes-eb1abd9c13ee.herokuapp.com', 'localhost', '127.0.0.1']
 
 # Authentication
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -31,6 +34,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_browser_reload', # Hot-reloading
+    # Free static media solution
+    'cloudinary_storage', 
+    'cloudinary',
+    # Custo apps
     'apps.pages.home',
     'apps.users',
 ]
@@ -71,7 +78,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 """
 Databases
 SECURITY WARNING: Do not deploy the development database!
-If you need to access the production database in development (NOT RECOMMENDED),
+If you need to access the production database in 
+development (NOT RECOMMENDED OR USE WITH CAUTION),
 DO NOT CHANGE THE IF STATEMENT BELOW. Instead,
 modify the DEVELOPMENT_DATABASE environment variable.
 
@@ -86,7 +94,6 @@ else:
     DATABASES = {
         'default': dj_database_url.config(default=config('DATABASE_URL'))
     }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -106,10 +113,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -118,18 +121,20 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Static files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Static media for development
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+# Static media for production (Cloudinary)
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
