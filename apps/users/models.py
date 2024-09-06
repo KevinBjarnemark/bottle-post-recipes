@@ -3,11 +3,12 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 import datetime
+from cloudinary.models import CloudinaryField
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     vegan_mode = models.BooleanField(default=True)
-    image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    image = CloudinaryField('image', blank=True, null=True)
     last_reviewed_at = models.DateTimeField(null=True, blank=True)
     # Method for tracking/limiting reviews
     def can_review(self):
