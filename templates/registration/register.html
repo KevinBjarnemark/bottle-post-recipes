@@ -5,7 +5,7 @@
         <!-- Title -->
         <h2>Sign up</h2>
         <!-- Sign up form -->
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <!-- Username -->
             <div class="mb-2">
@@ -42,6 +42,17 @@
                     id="id_password2" 
                     value="{{ form.password2.value|default:'' }}"
                 />
+            </div>
+            <!-- Profile picture upload -->
+            <div class="mb-4">
+                <label for="id_image">Profile Picture (optional)</label>
+                <input 
+                    class="form-control" 
+                    type="file" 
+                    name="image" 
+                    id="id_image"
+                />
+
             </div>
             <!-- Submit -->
             <button class="btn btn-outline-secondary text-white" type="submit">

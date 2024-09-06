@@ -36,7 +36,6 @@ body {
     flex-direction: column;
 }
 
-
 .page-container {
     display: flex;
     position: relative;
@@ -55,6 +54,28 @@ body {
     justify-content: center;
     align-items: center;
     width: 100%;
+}
+
+.account-button {
+    border-radius: 5px;
+    border: none;
+    background-color: #cbd1d3b6;
+    padding: 5px 10px;
+    box-shadow: 0 0 4px 2px #d8dadc;
+}
+
+.account-button:hover {
+    background-color: #a9b0b3b6;
+}
+
+.profile-image {
+    object-fit: cover; /* Prevent stretching */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: scroll; box-shadow: none;
+    overflow: hidden;
+    border-radius: 50%;
+    box-shadow: 0 0 8px 2px #ffffff;
 }
 
 .feed-container {
