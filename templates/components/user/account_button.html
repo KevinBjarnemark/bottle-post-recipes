@@ -29,6 +29,13 @@
                 {{ user.username }}
             </p>
         </li>
+        {% if user.is_superuser %}
+        <li>
+            <a class="dropdown-item" href="/admin">
+                <i class="fa-solid fa-user-tie"></i> Admin
+            </a>
+        </li>
+        {% endif %}
         <li>
             <!-- TODO add href -->
             <a class="dropdown-item" href="#">

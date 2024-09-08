@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.dispatch import receiver
 from django.contrib.auth.models import User
@@ -8,7 +9,10 @@ from cloudinary.models import CloudinaryField
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     vegan_mode = models.BooleanField(default=True)
-    image = CloudinaryField('image', blank=True, null=True)
+    if settings.DEBUG:
+        image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    else:
+        image = CloudinaryField('image', blank=True, null=True)
     last_reviewed_at = models.DateTimeField(null=True, blank=True)
     # Method for tracking/limiting reviews
     def can_review(self):
