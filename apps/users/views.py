@@ -5,8 +5,10 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.signals import user_logged_in
 # Import all profile model
 from .models import Profile
-from django.dispatch import receiver
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.http import JsonResponse
 
 def register(request):
     if request.method == 'POST':
@@ -33,3 +35,15 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
+
+@csrf_exempt
+def toggle_vegan_mode(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        vegan_mode = data.get('vegan_mode', True)
+        profile = Profile.objects.get(user=request.user)
+        profile.vegan_mode = vegan_mode
+        profile.save()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'failed'}, status=400)
+

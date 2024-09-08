@@ -1,15 +1,23 @@
 {% extends "base.html" %} {% block content %} {% load static %}
 
-
 {% include 'components/page/sidebar.html' %}
+{% include 'components/page/hint_window.html' %}
 
 <div class="feed-container">
     <div class="feed"> 
         <!-- Page sidebar -->
         {% for item in test_data %}
-        <h1>{{ item.test }}</h1>
+            <h1>{{ item.test }}</h1>
         {% endfor %}
     </div>
 </div>
 
+<!-- Pass data into js -->
+<div id="user-data" data-profile="{{ user_profile|safe }}"></div>
+<script type="application/json" id="user-profile-data">
+    {{ user_profile|safe }}
+</script>
+
+<!-- Feed logic -->
+<script type="module" src="{% static 'js/feed.js' %}"></script>
 {% endblock %}
