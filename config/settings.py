@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'cloudinary',
     # Custo apps
     'apps.pages.home',
+    'apps.pages.create_recipe',
     'apps.users',
 ]
 

@@ -36,6 +36,8 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
 
+
+
 @csrf_exempt
 def toggle_vegan_mode(request):
     if request.method == 'POST':
