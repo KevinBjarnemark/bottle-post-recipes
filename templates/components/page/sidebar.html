@@ -1,24 +1,26 @@
 
 <div id="feed-sidebar">
     <div id="feed-sidebar-buttons-container">
-        <!-- Search box -->
-        <div class="mb-3">
-            <input 
-                id="search" 
-                class="form-control position-absolute" 
-                type="text" 
-                placeholder="eg. baba ganoush" />
+        {% if user.is_authenticated %}
+            <!-- Search box -->
+            <div class="mb-3">
+                <input 
+                    id="search" 
+                    class="form-control position-absolute" 
+                    type="text" 
+                    placeholder="eg. baba ganoush" />
+                <button class="btn mt-2 w-100 fs-2 text-white">
+                    <i class="fas fa-magnifying-glass"></i>
+                </button>
+            </div>
+            <!-- Filter button -->
             <button class="btn mt-2 w-100 fs-2 text-white">
-                <i class="fas fa-magnifying-glass"></i>
+                <i class="fa-solid fa-filter"></i>
             </button>
-        </div>
-        <!-- Filter button -->
-        <button class="btn mt-2 w-100 fs-2 text-white">
-            <i class="fa-solid fa-filter"></i>
-        </button>
-        <!-- Vegan mode button -->
-        <button class="btn mt-2 w-100 fs-2 text-white" id="vegan-mode-button">
-            <i class="fa-solid fa-carrot" id="vegan-mode-icon"></i>
-         </button>
+            <!-- Vegan mode button -->
+            <button class="btn mt-2 w-100 fs-2 text-white" id="vegan-mode-button">
+                <i class="fas fa-carrot" id="vegan-mode-icon"></i>
+            </button>
+        {% endif %}
     </div>
 </div>

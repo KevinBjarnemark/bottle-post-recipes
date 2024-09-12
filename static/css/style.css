@@ -121,8 +121,6 @@ body {
     width: 180px;
 }
 
-#vegan-mode-icon {color: #ffa560}
-
 /* Hint window */
 #hint-window {
     z-index: 1;

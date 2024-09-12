@@ -5,10 +5,29 @@
 
 <div class="feed-container">
     <div class="feed"> 
-        <!-- Page sidebar -->
-        {% for item in test_data %}
-            <h1>{{ item.test }}</h1>
-        {% endfor %}
+        <!-- TODO Add recipes here -->
+        {% if user.is_authenticated %}
+            {% for item in test_data %}
+                <h1>{{ item.test }}</h1>
+            {% endfor %}
+        {% else %}
+        <div class="container p-2">
+
+            <h3>
+                You must
+                <a class="btn-outline-secondary text-white" href="{% url 'login' %}">
+                    Log in
+                </a>
+                 to use this app.
+            </h3>
+            <p class="mt-3">
+                Don't have an account? 
+                <a class="btn-outline-secondary text-white" href="{% url 'register' %}">
+                    Sign up!
+                </a>
+            </p>
+        </div>
+        {% endif %}
     </div>
 </div>
 
@@ -19,5 +38,8 @@
 </script>
 
 <!-- Feed logic -->
-<script type="module" src="{% static 'js/feed.js' %}"></script>
+{% if user.is_authenticated %}
+    <script type="module" src="{% static 'js/feed.js' %}"></script>
+{% endif %}
+
 {% endblock %}
