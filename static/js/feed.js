@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
  * @returns {String} Returns the color of the vegan depending on its state.
  */
 const veganModeColor = (veganMode) => {
-    return veganMode ? '#ffa560' : 'rgb(255, 255, 255)';
+    return veganMode ? 'rgb(255, 165, 96)' : 'rgb(255, 255, 255)';
 };
 
 /**
@@ -117,3 +117,6 @@ const toggleVeganMode = async (globalHTML, globalVariables) => {
         console.error('Failed to toggle vegan mode');
     }
 };
+
+// Export for testing
+export { veganModeColor, setInitialStates, toggleVeganMode };
