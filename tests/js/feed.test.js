@@ -1,4 +1,4 @@
-import { veganModeColor, setInitialStates, toggleVeganMode } from './feed.js';  // Adjust import path if needed
+import { veganModeColor, setInitialStates, toggleVeganMode } from '../../static/js/feed';
 
 // Mock the global document elements
 const globalHTML = {
@@ -25,7 +25,7 @@ global.fetch = jest.fn(() =>
 );
 
 // Mock the getCookie function
-jest.mock('./helpers.js', () => ({
+jest.mock('../../static/js/helpers.js', () => ({
     getCookie: () => 'mocked-csrf-token',
 }));
 
@@ -33,7 +33,7 @@ describe('Vegan Mode Tests', () => {
 
     test('veganModeColor should return correct colors', () => {
         // Vegan mode ON
-        expect(veganModeColor(true)).toBe('#ffa560');  
+        expect(veganModeColor(true)).toBe('rgb(255, 165, 96)');  
         // Vegan mode OFF
         expect(veganModeColor(false)).toBe('rgb(255, 255, 255)'); 
     });
@@ -43,7 +43,7 @@ describe('Vegan Mode Tests', () => {
 
         setInitialStates(globalHTML, globalVariables);
         // Icon should be orange when vegan mode is ON
-        expect(globalHTML.veganIcon.style.color).toBe('#ffa560');
+        expect(globalHTML.veganIcon.style.color).toBe('rgb(255, 165, 96)');
 
         globalVariables.veganMode = false;  // Vegan mode is OFF
         setInitialStates(globalHTML, globalVariables);

@@ -97,6 +97,53 @@ body {
     align-items: flex-start;
 }
 
+.ingredient {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    background-color: #3f4445;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+
+.ingredients {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: fit-content;
+    min-width: 280px;
+    min-height: 300px;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 10px;
+    border: 2px solid #ffffff;
+    border-radius: 5px;
+}
+
+.ingredient .quantity {
+    background-color: #565b5c;
+    border-radius: 4px;
+    padding: 0 10px;
+}
+.ingredient .unit {
+    background-color: #565b5c;
+    border-radius: 4px;
+    font-weight: 600;
+    padding: 0 5px;
+    margin: 0 5px;
+}
+
+.remove-ingredient-btn {
+    border-radius: 4px;
+    padding: 0 10px;
+    margin: 0 10px;
+    background-color: #ff6464;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+
 /* Sidebar as id, since it might be targeted with js later */
 #feed-sidebar {
     display: flex;
