@@ -9,11 +9,6 @@
     font-style: normal; /* Remove default cursive styles */
 }
 
-/* Variables */
-:root {
-    --recipe-item-width: 250px;
-}
-
 button {
     background-color: transparent;
     border: 0 transparent;

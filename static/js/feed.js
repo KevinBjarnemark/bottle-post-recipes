@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Data loaded from db
     const initialData = {
         userProfileData: JSON.parse(document.getElementById('user-profile-data').textContent),
+        recipesData: JSON.parse(document.getElementById('recipesJSON-data').textContent),
     }
     // Targeted HTML elements
     const globalHTML = {
@@ -17,11 +18,14 @@ document.addEventListener("DOMContentLoaded", function() {
     // Global states
     let globalVariables = {
         veganMode: initialData.userProfileData.vegan_mode,
+        recipes: JSON.parse(initialData.recipesData),
         hintWindowTimer: null,
     };
 
     // Set initial states
     setInitialStates(globalHTML, globalVariables);
+    // This prevents non-vegan recipes showing on load
+    filterVeganRecipes(globalVariables);
 
     // Listeners
     globalHTML.veganButton.addEventListener("click", () => {
@@ -78,6 +82,28 @@ const hintWindow = (globalVariables, globalHTML, html) => {
  * message to the user. 
  * 
  */
+const filterVeganRecipes = (globalVariables) => {
+    globalVariables.recipes.forEach(i => {
+        const recipeItem = document.getElementById(`recipe-item-${i.pk}`);
+
+        if (globalVariables.veganMode){
+            if (!i.fields.vegan){
+                recipeItem.style.display = "none";
+            }else {
+                recipeItem.style.display = "flex";
+            }
+        }else {
+            recipeItem.style.display = "flex";
+        }
+    }) 
+};
+
+/**
+ * Toggles the vegan_mode state (in Profile model) and 
+ * triggers the hint window to display an informative 
+ * message to the user. 
+ * 
+ */
 const toggleVeganMode = async (globalHTML, globalVariables) => {
     const request = await fetch('/toggle_vegan_mode/', {
         method: 'POST',
@@ -112,6 +138,8 @@ const toggleVeganMode = async (globalHTML, globalVariables) => {
         </p>
         `;
         hintWindow(globalVariables, globalHTML, hintWindowHtml);
+
+        filterVeganRecipes(globalVariables);
 
     } else {
         console.error('Failed to toggle vegan mode');
