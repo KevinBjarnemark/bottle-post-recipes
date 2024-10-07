@@ -18,6 +18,7 @@ DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 DEVELOPMENT_DATABASE = config('DEVELOPMENT_DATABASE', default=False, cast=bool)
 
 # Cloudinary 
+cloudinary.config(secure=True) # Enforce secure connections
 CLOUDINARY_URL = config('CLOUDINARY_URL')
 
 ALLOWED_HOSTS = ['bottle-post-recipes-eb1abd9c13ee.herokuapp.com', 'localhost', '127.0.0.1']

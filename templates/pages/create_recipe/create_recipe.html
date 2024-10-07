@@ -3,74 +3,81 @@
 
 <div class="page-container">
     <div class="page">
-        <!-- Title -->
-        <h2>Create recipe</h2>
-        <!-- Form -->
-        <form 
-            id="recipe-form" 
-            class="d-flex w-50 flex-column" 
-            action="{% url 'create_recipe' %}"
-            method="post" 
-            enctype="multipart/form-data">
 
-            {% csrf_token %}
-            <div id="mapped-form"><!-- Generated js content --></div>
-            
-            <!-- Ingredient section -->
-            <h4 class="mb-3 mt-3">Add ingredient</h4>
-            <div class="d-flex w-75 align-items-end">
-                <div>
-                    <label for="ingredient-quantity">Quantity</label>
-                    <input 
-                        id="ingredient-quantity" 
-                        type="text" 
-                        placeholder="300" 
-                        class="form-control p-2" 
-                    />
+        {% if user.is_authenticated %}
+            <!-- Title -->
+            <h2>Create recipe</h2>
+            <!-- Form -->
+            <form 
+                id="recipe-form" 
+                class="d-flex w-50 flex-column" 
+                action="{% url 'create_recipe' %}"
+                method="post" 
+                enctype="multipart/form-data">
+
+                {% csrf_token %}
+                <div id="mapped-form"><!-- Generated js content --></div>
+                
+                <!-- Ingredient section -->
+                <h4 class="mb-3 mt-3">Add ingredient</h4>
+                <div class="d-flex w-75 align-items-end">
+                    <div>
+                        <label for="ingredient-quantity">Quantity</label>
+                        <input 
+                            id="ingredient-quantity" 
+                            type="text" 
+                            placeholder="300" 
+                            class="form-control p-2" 
+                        />
+                    </div>
+
+                    <div>
+                        <label for="ingredient-unit">Unit</label>
+                        <input 
+                            id="ingredient-unit" 
+                            type="text" 
+                            placeholder="G" 
+                            class="form-control p-2" 
+                        />
+                    </div>
+
+                    <div>
+                        <label for="ingredient-name">Name</label>
+                        <input 
+                            id="ingredient-name" 
+                            type="text" 
+                            placeholder="Carrots" 
+                            class="form-control p-2" 
+                        />
+                    </div>
+                    <button 
+                        id="add-ingredient-btn"
+                        type="button" 
+                        class="btn btn-secondary h-50">
+                        Add
+                    </button>
+                </div>
+                <!-- Added ingredients -->
+                <h4 class="mb-3 mt-3">Added ingredients</h4>
+                <div id="ingredients-list" class="ingredients">
+                    <!-- Generated js content -->
                 </div>
 
-                <div>
-                    <label for="ingredient-unit">Unit</label>
-                    <input 
-                        id="ingredient-unit" 
-                        type="text" 
-                        placeholder="G" 
-                        class="form-control p-2" 
-                    />
+                <div class="d-flex flex-column align-items-end mt-4">
+                    {{ time_form.as_p }}
+                    {{ estimated_price_form.as_p }}
                 </div>
-
-                <div>
-                    <label for="ingredient-name">Name</label>
-                    <input 
-                        id="ingredient-name" 
-                        type="text" 
-                        placeholder="Carrots" 
-                        class="form-control p-2" 
-                    />
-                </div>
-                <button 
-                    id="add-ingredient-btn"
-                    type="button" 
-                    class="btn btn-secondary h-50">
-                    Add
+                
+                <!-- Submit -->
+                <button class="btn btn-outline-secondary text-white mt-4" type="submit">
+                    Post recipe
                 </button>
-            </div>
-            <!-- Added ingredients -->
-            <h4 class="mb-3 mt-3">Added ingredients</h4>
-            <div id="ingredients-list" class="ingredients">
-                <!-- Generated js content -->
-            </div>
+            </form>
 
-            <div class="d-flex flex-column align-items-end mt-4">
-                {{ time_form.as_p }}
-                {{ estimated_price_form.as_p }}
-            </div>
-            
-            <!-- Submit -->
-            <button class="btn btn-outline-secondary text-white mt-4" type="submit">
-                Post recipe
-            </button>
-        </form>
+        {% else %}
+            <!-- Inform that a login is required -->
+            {% include 'components/user/login_required.html' %}
+        {% endif %}
     </div>
 </div>
 
