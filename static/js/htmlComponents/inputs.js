@@ -1,17 +1,16 @@
 
 export const textInput = (props) => {
-    const {key, defaultValue, label} = props;
+    const {key, defaultValue, label, placeholder} = props;
     return `
         <div class="d-flex flex-column mb-4 text-white">
             <label for="id_${key}">${label}</label>
             <input 
                 class="form-control mt-1"
                 type="text" 
-                placeholder="${label}" 
+                placeholder="${placeholder}" 
                 name="${key}" 
                 id="id_${key}" 
-                value="${defaultValue !== null ? defaultValue : ""}"
-            />
+                value="${defaultValue !== null ? defaultValue : ""}"/>
         </div>
     `
 };
@@ -34,21 +33,22 @@ export const numberInput = (props) => {
 };
 
 export const textAreaInput = (props) => {
-    const {key, defaultValue, label} = props;
+    const {key, defaultValue, label, placeholder} = props;
+    
+    /* Note! Avoid extra spaces/newlines here so the placeholder shows 
+       when defaultValue is empty or null. */
     return `
-        <div class="d-flex flex-column mt-4 text-white">
-            <label for="id_${key}">${label}</label>
-            <textarea 
-                class="form-control mt-1" 
-                style="height: 150px"
-                type="text" 
-                placeholder="${label}"
-                name="${key}" 
-                id="id_${key}"
-                value="${defaultValue !== null ? defaultValue : ""}">
-            </textarea>
-        </div>
-    `
+    <div class="d-flex flex-column mt-4 text-white">
+        <label for="id_${key}">${label}</label>
+        <textarea 
+        class="form-control mt-1" 
+        style="height: 150px"
+        type="text" 
+        placeholder="${placeholder ? placeholder : ""}"
+        name="${key}" 
+        id="id_${key}">${defaultValue !== null ? defaultValue : ""}</textarea>
+    </div>
+`
 };
 
 export const fileInput = (props) => {

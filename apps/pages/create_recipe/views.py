@@ -44,7 +44,6 @@ def create_recipe(request):
                     recipe=recipe,
                     name=ingredient_data['name'],
                     quantity=ingredient_data['quantity'],
-                    unit=ingredient_data['unit']
                 )
 
             # Handle time form
@@ -84,6 +83,7 @@ def create_recipe(request):
             for field in recipe_form
         }
         form_data.append(content)
+        print(form_data)
 
         # Ingredients formset
         IngredientFormSet = modelformset_factory(Ingredient, form=IngredientForm)

@@ -20,8 +20,8 @@ def test_create_recipe(client):
 
     # Create ingredient data
     ingredients = [
-        {'name': 'Ingredient 1', 'quantity': 1, 'unit': 'kg'},
-        {'name': 'Ingredient 2', 'quantity': 200, 'unit': 'g'},
+        {'name': 'Ingredient 1', 'quantity': 1,},
+        {'name': 'Ingredient 2', 'quantity': 200,},
     ]
     # Convert to JSON string
     ingredient_data = json.dumps(ingredients)

@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function() {
         formData: JSON.parse(document.getElementById('form_data').textContent),
     }
 
+    console.log(initialData)
+
     // Targeted HTML elements
     const globalHTML = {
         form: document.getElementById('recipe-form'),
@@ -15,7 +17,6 @@ document.addEventListener("DOMContentLoaded", function() {
         addIngredientButton: document.getElementById('add-ingredient-btn'),
         ingredientNameInput: document.getElementById('ingredient-name'),
         ingredientQuantityInput: document.getElementById('ingredient-quantity'),
-        ingredientUnitInput: document.getElementById('ingredient-unit'),
     };
 
     // Global states
@@ -29,17 +30,14 @@ document.addEventListener("DOMContentLoaded", function() {
     globalHTML.addIngredientButton.addEventListener('click', function() {
         const ingredientName = globalHTML.ingredientNameInput.value;
         const ingredientQuantity = globalHTML.ingredientQuantityInput.value;
-        const ingredientUnit = globalHTML.ingredientUnitInput.value;
 
         if (ingredientName && ingredientQuantity) {
             addIngredientToList(globalHTML, globalVariables, {
                 name: ingredientName, 
-                quantity: ingredientQuantity, 
-                unit: ingredientUnit
+                quantity: ingredientQuantity,
             });
             globalHTML.ingredientNameInput.value = '';
             globalHTML.ingredientQuantityInput.value = '';
-            globalHTML.ingredientUnitInput.value = '';
         }
     });
 
@@ -106,8 +104,13 @@ const generateForm = (globalHTML, globalVariables, variableEntry, htmlEntry) => 
         Object.entries(i).forEach(([key, value]) => {
             const newInput = document.createElement("div");
             const inputType = value.widget.type;
-            const inputData = {key, defaultValue: value.default_value, label: value.label};
-    
+            let inputData = {
+                key, 
+                defaultValue: value.default_value, 
+                label: value.label,
+                placeholder: value?.widget.attrs?.placeholder
+            };
+
             if (inputType === "TextInput"){
                 newInput.innerHTML = textInput(inputData);
             }else if (inputType === "Textarea"){
@@ -134,7 +137,7 @@ const mapForm = (globalHTML, globalVariables) => {
  * 
  * @param {Object}  globalHTML
  * @param {Object}  globalVariables
- * @param {Object}  ingredient {name, quantity, unit}
+ * @param {Object}  ingredient {name, quantity}
  */
 const addIngredientToList = (globalHTML, globalVariables, ingredient) => {
     const ingredientElement = document.createElement("div");
@@ -150,7 +153,6 @@ const addIngredientToList = (globalHTML, globalVariables, ingredient) => {
 
     ingredientElement.innerHTML = `
         <p class="quantity">${ingredient.quantity}</p>
-        <p class="unit">${ingredient.unit}</p>
         <p class="name">${ingredient.name}</p>
     `;
     ingredientElement.appendChild(removeIngredientButton);

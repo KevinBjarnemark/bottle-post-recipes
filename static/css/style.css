@@ -127,13 +127,6 @@ body {
     border-radius: 4px;
     padding: 0 10px;
 }
-.ingredient .unit {
-    background-color: #565b5c;
-    border-radius: 4px;
-    font-weight: 600;
-    padding: 0 5px;
-    margin: 0 5px;
-}
 
 .remove-ingredient-btn {
     border-radius: 4px;

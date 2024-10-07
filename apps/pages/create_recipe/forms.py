@@ -14,11 +14,18 @@ class RecipeForm(forms.ModelForm):
             'tags', 
             'instructions'
         ]
+        # Add custom widgets to the js generated form
+        widgets = {
+                'title': forms.TextInput(attrs={'placeholder': 'Summer salad'}),
+                'description': forms.Textarea(attrs={'placeholder': 'A fruity salad with some crunch, perfect for.......'}),
+                'instructions': forms.Textarea(attrs={'placeholder': '1. ........\n2. ........\n3. ........'}),
+                'tags': forms.TextInput(attrs={'placeholder': 'healthy, lunch, fresh'}),
+            }
 
 class IngredientForm(forms.ModelForm):
     class Meta:
         model = Ingredient
-        fields = ['name', 'quantity', 'unit']
+        fields = ['name', 'quantity']
 
 class TimeForm(forms.ModelForm):
     class Meta:

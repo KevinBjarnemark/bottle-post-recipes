@@ -33,7 +33,6 @@ class Ingredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='ingredients')
     quantity = models.CharField(max_length=50)
     name = models.CharField(max_length=255)
-    unit = models.CharField(max_length=20)
 
 class Time(models.Model):
     recipe = models.OneToOneField(Recipe, on_delete=models.CASCADE, related_name='time')
