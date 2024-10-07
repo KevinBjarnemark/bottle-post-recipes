@@ -2,7 +2,7 @@
 export const textInput = (props) => {
     const {key, defaultValue, label, placeholder} = props;
     return `
-        <div class="d-flex flex-column mb-4 text-white">
+        <div class="flex-column mb-4 text-white">
             <label for="id_${key}">${label}</label>
             <input 
                 class="form-control mt-1"
@@ -18,7 +18,7 @@ export const textInput = (props) => {
 export const numberInput = (props) => {
     const {key, defaultValue, label} = props;
     return `
-        <div class="d-flex flex-column mb-4 text-white">
+        <div class="flex-column mb-4 text-white">
             <label for="id_${key}">${label}</label>
             <input 
                 class="form-control mt-1"
@@ -38,7 +38,7 @@ export const textAreaInput = (props) => {
     /* Note! Avoid extra spaces/newlines here so the placeholder shows 
        when defaultValue is empty or null. */
     return `
-    <div class="d-flex flex-column mt-4 text-white">
+    <div class="flex-column mt-4 text-white">
         <label for="id_${key}">${label}</label>
         <textarea 
         class="form-control mt-1" 
@@ -54,7 +54,7 @@ export const textAreaInput = (props) => {
 export const fileInput = (props) => {
     const {key, defaultValue, label} = props;
     return `
-        <div class="d-flex align-items-start flex-column mt-4">
+        <div class="flex-column align-items-start mt-4">
             <div class="mb-4 text-white">
                 <label for="id_${key}">${label}</label>
                 <input 
@@ -71,7 +71,7 @@ export const fileInput = (props) => {
 export const checkboxInput = (props) => {
     const {key, defaultValue, label} = props;
     return `
-        <div class="d-flex align-items-start flex-row mb-4">
+        <div class="flex-row align-items-start mb-4">
             <input 
                 class="form-check-input"
                 style="margin-right: 10px;" 

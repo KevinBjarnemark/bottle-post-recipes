@@ -1,5 +1,28 @@
 
 
+/* Override default styles added by the browser */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Niramit", sans-serif;
+    font-style: normal; /* Remove default cursive styles */
+}
+
+/* Variables */
+:root {
+    --recipe-item-width: 250px;
+}
+
+button {
+    background-color: transparent;
+    border: 0 transparent;
+}
+
+.hidden-heading {
+    display: none;
+}
+
 body {
     background-color: #494C4E;
 }
@@ -25,17 +48,7 @@ body {
     text-decoration: none;
 }
 
-/* Custom Bootstrap friendly classes */
-.right-fib-1 {
-    right: 6.1%;
-}
-
-.flex-column {
-    display: flex;
-    position: relative;
-    flex-direction: column;
-}
-
+/* Base classes */
 .page-container {
     display: flex;
     position: relative;
@@ -49,11 +62,54 @@ body {
 
 .page {
     display: flex;
-    position: relative;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
+    flex-direction: column;
     width: 100%;
+}
+
+/* Custom Bootstrap friendly classes */
+.right-fib-1 {
+    right: 6.1%;
+}
+
+.top-fib-1 {
+    top: 6.1%;
+}
+
+.left-fib-1 {
+    left: 6.1%;
+}
+
+.bottom-fib-1 {
+    bottom: 6.1%;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.absolute-flex {
+    display: flex;
+    position: absolute;
+}
+
+.relative-flex {
+    display: flex;
+    position: relative;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
 }
 
 .account-button {
@@ -81,11 +137,13 @@ body {
 .feed-container {
     display: flex;
     position: relative;
+    flex-direction: row;
     justify-content: center;
     align-items: flex-start;
     width: 100%;
-    padding-left: 70px; /* Prevent sidebar overlapping */
-    margin: 50px 0px;
+    /* Prevent sidebar overlapping */
+    padding-left: 70px;
+    margin: 130px 0px;
     min-height: 80vh;
     color: #cbd8dc;
 }
@@ -93,48 +151,11 @@ body {
 .feed {
     display: flex;
     position: relative;
-    justify-content: center;
-    align-items: flex-start;
-}
-
-.ingredient {
-    display: flex;
-    flex-direction: row;
-    position: relative;
-    justify-content: center;
-    align-items: center;
-    background-color: #3f4445;
-    border-radius: 4px;
-    margin: 5px 0;
-}
-
-.ingredients {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    width: fit-content;
-    min-width: 280px;
-    min-height: 300px;
     justify-content: flex-start;
-    align-items: center;
-    padding: 10px 10px;
-    border: 2px solid #ffffff;
-    border-radius: 5px;
-}
-
-.ingredient .quantity {
-    background-color: #565b5c;
-    border-radius: 4px;
-    padding: 0 10px;
-}
-
-.remove-ingredient-btn {
-    border-radius: 4px;
-    padding: 0 10px;
-    margin: 0 10px;
-    background-color: #ff6464;
-    color: #ffffff;
-    border: 1px solid #ffffff;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    /* Take the left sidebar into account */
+    width: calc(80% - 70px);
 }
 
 /* Sidebar as id, since it might be targeted with js later */
@@ -183,4 +204,45 @@ body {
 
 #hint-window-title h6 {
     font-weight: 400;
+}
+
+/* Create recipe classes */
+.ingredient {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    background-color: #3f4445;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+
+.ingredients {
+    display: flex;
+    position: relative;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    width: fit-content;
+    min-width: 280px;
+    min-height: 300px;
+    padding: 10px 10px;
+    border: 2px solid #ffffff;
+    border-radius: 5px;
+}
+
+.ingredient .quantity {
+    background-color: #565b5c;
+    border-radius: 4px;
+    padding: 0 10px;
+}
+
+.remove-ingredient-btn {
+    border-radius: 4px;
+    padding: 0 10px;
+    margin: 0 10px;
+    background-color: #ff6464;
+    color: #ffffff;
+    border: 1px solid #ffffff;
 }

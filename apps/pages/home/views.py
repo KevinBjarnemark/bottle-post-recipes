@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Test
 from apps.users.models import Profile
+from apps.pages.create_recipe.models import Recipe
 import json
 
 def get_user_profile(request):
@@ -18,12 +19,14 @@ def get_user_profile(request):
     return user_profile
 
 def home(request):
+    recipes = Recipe.objects.all()
     test_data = Test.objects.all()
     user_profile = get_user_profile(request)
     
     return render(request, 'pages/home/home.html', 
         {
             'test_data': test_data, 
-            'user_profile': json.dumps(user_profile)
+            'user_profile': json.dumps(user_profile),
+            'recipes': recipes,
         }
     )

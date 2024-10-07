@@ -15,6 +15,7 @@
     {% load static %}
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/recipe_item.css' %}" />
 </head>
 
 <body>
@@ -22,7 +23,7 @@
     <nav class="nav">
         <div class="d-flex w-100 h-100 justify-content-center">
 
-            <div class="d-flex w-auto h-100 flex-column justify-content-end 
+            <div class="flex-column w-auto h-100 justify-content-end 
                 align-items-center">
                 <a class="navbar-brand" href="{% url 'home' %}">
                     <img 
@@ -33,7 +34,7 @@
                 </a>
                 <p>Bottle Post Recipes</p>
             </div>
-            <div class="position-absolute top-0 mt-3 right-fib-1">
+            <div class="absolute-flex top-0 mt-3 right-fib-1">
                 <!-- Account component -->
                 {% include 'components/user/account_button.html' %}
             </div>
@@ -51,7 +52,7 @@
     </nav>
 
     <!-- Page content -->
-    <div class="z-index-1 position-relative">
+    <div class="z-index-1 relative-flex">
         {% block content %}{% endblock %}
     </div>
 
