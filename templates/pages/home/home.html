@@ -1,81 +1,26 @@
 {% extends "base.html" %} {% block content %} {% load static %}
 
+<!-- Sidebar -->
 {% include 'components/page/sidebar.html' %}
+<!-- Hint window -->
 {% include 'components/page/hint_window.html' %}
 
 <div class="feed-container">
-    <div class="feed"> 
-        <!-- TODO Add recipes here -->
-        {% if user.is_authenticated %}
-            {% for recipe in recipes %}
-            <!-- Recipe item -->
-            <section 
-                id="recipe-item-{{recipe.id}}" 
-                class="recipe-item-container recipe-item">
-                <h1 class="hidden-heading">{{ recipe.title }}</h1>
-                <!-- Recipe item container -->
-                <div class="flex-column">
-                    <div class="recipe-shadow"></div>
-                    <!-- Title -->
-                    <h4>{{ recipe.title }}</h4>
-                    <!-- User image -->
-                    <button class="absolute-flex right-fib-1 top-fibb-1
-                        recipe-item-user-image-container">
-                        <img 
-                            src="{{ recipe.user.profile.image.url }}" 
-                            alt="User Profile Picture"
-                        />
-                    </button>
-                    <!-- Bottle post count -->
-                    <button class="absolute-flex recipe-item-bottle-post-count-container">
-                        <div class="absolute-flex recipe-item-bottle-post-red-count">
-                            {{recipe.bottle_posted_count}}
-                        </div>
-                        <img 
-                            src="{% static 'images/global/logo.png' %}" 
-                            alt="User Profile Picture"
-                            style="background-color: transparent;"
-                        />
-                    </button>
-                    <!-- Background shadow, image, sidebar, bottom bar -->
-                    <div class="flex-row">
-                        <div class="flex-column">
-                            {% if recipe.image.url %}
-                            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
-                            {% endif %}
-                        </div>
-                        <!-- Sidebar (right) -->
-                        <div class="d-flex align-items-start justify-content-center 
-                            recipe-item-sidebar-right pt-5">
-                            <!-- In ocean indicator -->
-                            {% if recipe.in_ocean %}
-                                <i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <!-- Bottom bar -->
-                    <div class="recipe-item-bottom-bar">
-                        <!-- Comment and like button -->
-                        {% include 'components/buttons/incremental_icon_button.html' with count=0 icon_class="fa-solid fa-comment" %}
-                        {% include 'components/buttons/incremental_icon_button.html' with count=recipe.likes icon_class="fa-solid fa-heart" %}
-                    </div>
-                </div>
-            </section>
-            {% endfor %}
-        {% else %}
-            <!-- Inform that a login is required -->
-            {% include 'components/user/login_required.html' %}
-        {% endif %}
-    </div>
+    <!-- Check authentication -->
+    {% if user.is_authenticated %}
+        <!-- Recipe feed -->
+        {% include 'components/page/recipe_feed.html' with recipes=recipes %}
+    {% else %}
+        <!-- Inform that a login is required to explore the app -->
+        {% include 'components/user/login_required.html' %}
+    {% endif %}
 </div>
 
 <!-- Pass data into js -->
-<div id="user-data" data-profile="{{ user_profile|safe }}"></div>
 <script type="application/json" id="user-profile-data">
     {{ user_profile|safe }}
 </script>
 
-<div id="recipesJSON" data-profile="{{ recipesJSON|safe }}"></div>
 <script type="application/json" id="recipesJSON-data">
     {{ recipesJSON|safe }}
 </script>

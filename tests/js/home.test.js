@@ -53,7 +53,7 @@ describe('Vegan Mode Tests', () => {
 
     test('toggleVeganMode should toggle vegan mode and update UI', async () => {
         // Initial state: Vegan mode is ON
-        const globalVariables = { veganMode: true }; 
+        const globalVariables = { veganMode: true, recipes: [] }; 
 
         // Call toggleVeganMode and wait for async operation
         await toggleVeganMode(globalHTML, globalVariables);
