@@ -4,6 +4,7 @@ from pathlib import Path
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -88,7 +89,15 @@ modify the DEVELOPMENT_DATABASE environment variable.
 The DEVELOPMENT_DATABASE variable is configured as False in production by default,
 so you won't accidentally deploy using the development database.
 """
-if DEVELOPMENT_DATABASE:
+
+if 'test' in sys.argv: # When tests are running
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',  # Use in-memory database for tests
+        }
+    }
+elif DEVELOPMENT_DATABASE:
     DATABASES = {
         'default': dj_database_url.config(default=config('DEVELOPMENT_DATABASE_URL'))
     }
