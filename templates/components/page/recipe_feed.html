@@ -1,4 +1,4 @@
-
+{% load static %}
 <div class="feed">
     <!-- Recipes -->
         {% if recipes %}
@@ -16,28 +16,39 @@
                     <!-- User image -->
                     <button class="absolute-flex right-fib-1 top-fibb-1
                         recipe-item-user-image-container">
+                        {% if recipe.user.profile.image %}
                         <img 
                             src="{{ recipe.user.profile.image.url }}" 
                             alt="User Profile Picture"
                         />
+                        {% else %}
+                        <img 
+                            src="{% static 'images/icons/missing.webp' %}" 
+                            alt="Missing icon" 
+                        />
+                        {% endif %}
                     </button>
                     <!-- Bottle post count -->
                     <button class="absolute-flex recipe-item-bottle-post-count-container">
                         <div class="absolute-flex recipe-item-bottle-post-red-count">
                             {{recipe.bottle_posted_count}}
                         </div>
-                        {% load static %}
                         <img 
                             src="{% static 'images/global/logo.png' %}" 
-                            alt="User Profile Picture"
+                            alt="Bottle post icon"
                             style="background-color: transparent;"
                         />
                     </button>
                     <!-- Background shadow, image, sidebar, bottom bar -->
                     <div class="flex-row">
                         <div class="flex-column">
-                            {% if recipe.image.url %}
+                            {% if recipe.image %}
                             <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+                            {% else %}
+                            <img 
+                                src="{% static 'images/icons/missing.webp' %}" 
+                                alt="Missing icon" 
+                            />
                             {% endif %}
                         </div>
                         <!-- Sidebar (right) -->

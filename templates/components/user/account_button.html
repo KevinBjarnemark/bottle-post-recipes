@@ -1,5 +1,6 @@
 
 {% if user.is_authenticated %}
+{% load static %}
 
 <div class="dropdown position-fixed" style="right: 6.1%">
     <!-- Account button -->
@@ -10,7 +11,7 @@
         data-bs-toggle="dropdown" 
         aria-expanded="false">
         <!-- Profile image (Should be an image or null -->
-        {% if user.profile.image.url %}
+        {% if user.profile.image %}
         <img 
             class="profile-image"
             src="{{ user.profile.image.url }}" 
@@ -18,8 +19,10 @@
             style="width: 75px; height: 75px"
         />
         {% else %}
-            <i class="fas fa-user" style="font-size: 20px; 
-                color: #555b5e;"></i>
+        <img 
+            src="{% static 'images/icons/missing.webp' %}" 
+            alt="Missing icon" 
+        />
         {% endif %}
     </button>
     <!-- Dropdown menu -->
