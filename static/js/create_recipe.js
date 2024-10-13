@@ -7,8 +7,6 @@ document.addEventListener("DOMContentLoaded", function() {
         formData: JSON.parse(document.getElementById('form_data').textContent),
     }
 
-    console.log(initialData)
-
     // Targeted HTML elements
     const globalHTML = {
         form: document.getElementById('recipe-form'),

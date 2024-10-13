@@ -12,8 +12,6 @@ def test_homepage_uses_correct_templates_guest(client):
     assert 'components/page/hint_window.html' in templates_used
     assert 'components/user/login_required.html' in templates_used
     assert 'components/page/sidebar.html' in templates_used
-    # Should not render
-    assert 'components/page/recipe_feed.html' not in templates_used
 
 # Check if the homepage is using correct templates as a user
 @pytest.mark.django_db
@@ -26,7 +24,6 @@ def test_homepage_uses_correct_templates_user(client):
     assert 'base.html' in templates_used
     assert 'components/page/hint_window.html' in templates_used
     assert 'components/page/sidebar.html' in templates_used
-    assert 'components/page/recipe_feed.html' in templates_used
     # Should not render
     assert 'components/user/login_required.html' not in templates_used
 

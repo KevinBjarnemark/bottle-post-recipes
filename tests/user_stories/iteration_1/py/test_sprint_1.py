@@ -44,13 +44,8 @@ def test_recipe_creation_and_display(client):
     # Check if the recipe is created and present in the database
     assert Recipe.objects.filter(title="Test Recipe").exists()
 
-    # Load the main feed
-    response = client.get(reverse('home'))
-    content = response.content.decode()
-
-    # Check that the recipe is displayed in the response
-    assert "Test Recipe" in content
-    assert "A delightful test recipe." in content
+    # NOTE Recipes are displayed with JS and there's a separate 
+    # JEST test for checking if they actually gets displayed.
 
 # Check user profile
 @pytest.mark.django_db

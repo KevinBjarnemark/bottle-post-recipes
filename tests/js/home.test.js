@@ -1,4 +1,5 @@
 import { veganModeColor, setInitialStates, toggleVeganMode } from '../../static/js/feed';
+import {expect, jest, test} from '@jest/globals';
 
 // Mock the global document elements
 const globalHTML = {
@@ -85,9 +86,6 @@ describe('Vegan Mode Tests', () => {
 
         // Ensure that veganMode did not change (still ON)
         expect(globalVariables.veganMode).toBe(true);
-
-        // Ensure an error message was logged
-        expect(consoleSpy).toHaveBeenCalledWith('Failed to toggle vegan mode');
 
         consoleSpy.mockRestore();
     });

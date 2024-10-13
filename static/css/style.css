@@ -12,6 +12,7 @@
 button {
     background-color: transparent;
     border: 0 transparent;
+    border-radius: 5px;
 }
 
 .hidden-heading {
@@ -150,7 +151,12 @@ body {
     align-items: flex-start;
     flex-wrap: wrap;
     /* Take the left sidebar into account */
-    width: calc(80% - 70px);
+    width: calc(100% - 70px);
+}
+
+.feed section {
+    /* Force recipe padding after flex-wrap */
+    padding: 40px 10px
 }
 
 /* Sidebar as id, since it might be targeted with js later */
@@ -240,4 +246,13 @@ body {
     background-color: #ff6464;
     color: #ffffff;
     border: 1px solid #ffffff;
+}
+
+.load-recipes-button {
+    background-color: #6d7375;
+    padding: 10px 0;
+}
+
+.load-recipes-button:hover {
+    background-color: #747b7e;
 }
