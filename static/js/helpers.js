@@ -13,3 +13,24 @@ export const getCookie = (name) => {
     }
     return cookieValue;
 }
+
+/**
+ * 1. Trims lenghy text into a specified length. 
+ * 
+ * 2. Adds '....' to the end of the string
+ * 
+ * @param {String}  text
+ * @param {Integer}   slice Specified length of the text
+ * @returns {String} The trimmed text string
+ */
+export const trimText = (text, slice) => {
+    if (text){
+        if (text.length > slice){
+            return text.slice(0, slice) + "....";
+        }else {
+            return text;
+        }
+    }else {
+        return ""
+    };
+};

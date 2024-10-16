@@ -7,7 +7,6 @@ const globalHTML = {
     veganIcon: document.createElement('i'),
     hintWindow: document.createElement('div'),
     hintWindowText: document.createElement('div'),
-    veganStatusText: document.createElement('h2'),
 };
 
 // Add mock IDs
@@ -15,7 +14,6 @@ globalHTML.veganButton.id = 'vegan-mode-button';
 globalHTML.veganIcon.id = 'vegan-mode-icon';
 globalHTML.hintWindow.id = 'hint-window';
 globalHTML.hintWindowText.id = 'hint-window-text';
-globalHTML.veganStatusText.id = 'vegan-status-text';
 
 // Mock fetch function
 global.fetch = jest.fn(() =>

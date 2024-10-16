@@ -1,4 +1,4 @@
-import { getCookie } from './helpers.js';
+import { getCookie, trimText } from './helpers.js';
 
 document.addEventListener("DOMContentLoaded", function() {
     // Data loaded from db
@@ -12,8 +12,16 @@ document.addEventListener("DOMContentLoaded", function() {
         veganIcon: document.getElementById('vegan-mode-icon'),
         hintWindow: document.getElementById('hint-window'),
         hintWindowText: document.getElementById('hint-window-text'),
-        veganStatusText: document.querySelector('h2'),
         loadRecipesButton: document.getElementById('load-recipes-button'),
+        sidebarSearchButton: document.getElementById('sidebar-search-button'),
+        // Search
+        searchContainer: document.getElementById('search-container'),
+        searchInput: document.getElementById('search-input'),
+        searchButton: document.getElementById('search-button'),
+        // Filter
+        sidebarFilterButton: document.getElementById('sidebar-filter-button'),
+        filterContainer: document.getElementById('filter-container'),
+        filterButton: document.getElementById('filter-button'),
     };
 
     // Global states
@@ -22,29 +30,231 @@ document.addEventListener("DOMContentLoaded", function() {
         hintWindowTimer: null,
         recipes: [],
         total_recipes: 0,
+        filterObject: 
+            {
+                // Search query (string)
+                "q": "", 
+                // Include search areas (array of strings)
+                "search_areas": [], 
+            },
+        page: 1,
+        // Search areas ids (last item is extracted when creating listeners)
+        searchAreaBoolIds: [
+            "search-area-description", 
+            "search-area-ingredients", 
+            "search-area-tags"
+        ],
+        sidebarSettingContainers: [
+            "search-container",
+            "filter-container",
+
+        ],
     };
 
     // Set initial states
     setInitialStates(globalHTML, globalVariables);
+    // Configure listeners
+    configureListeners(globalHTML, globalVariables);
+});
 
-    // Listener (load recipes in groups)
-    let page = 1;
-    globalHTML.loadRecipesButton.addEventListener("click", async () => {
-        page++; // Increment page number
-        await getRecipePage(page, globalHTML, globalVariables);
+/**
+ * Removes all recipes 
+ * 
+ * @param {Object}  globalHTML 
+ * @param {Object}   globalVariables
+ */
+const cleanUpFeed = (globalHTML, globalVariables) => {
+    globalHTML.feed.innerHTML = '';
+    globalVariables.recipes = [];
+};
+
+/**
+ * Adds or removes an item from the search query include array
+ * in sync with the event.target.checked.
+ * 
+ * @param {Object}  globalVariables
+ * @param {Object}   checked event.target.checked
+ * @param {str}   area eg. tags, description, ingredients
+ */
+const toggleQIncludeItems = (globalVariables, checked, area) => {
+    const array = globalVariables.filterObject.search_areas;
+    // Add (if it doesn't exist)
+    if (checked) {
+        if (!array.includes(area)) {
+            array.push(area);
+        }
+    }else {
+        const newArray = array.filter(item => item !== area);
+        globalVariables.filterObject.search_areas = newArray;
+    }
+};
+
+/**
+ * Configure sidebar listeners such as search settings
+ * 
+ * @param {Object}  globalHTML
+ * @param {Object}   globalVariables
+ */
+const configureSidebarListeners = (globalHTML, globalVariables) => {
+    // Settings obejct
+    const sidebarButtonsObject = [
+        {
+            containerEntry: "searchContainer", // globalHTML
+            buttonEntry: "sidebarSearchButton", // globalHTML
+            icon: "magnifying-glass"
+        },
+        {
+            containerEntry: "filterContainer", // globalHTML
+            buttonEntry: "sidebarFilterButton", // globalHTML
+            icon: "filter"
+        },
+    ];
+    
+    // Setting containers and buttons
+    sidebarButtonsObject.forEach(i => {
+        globalHTML[i.buttonEntry].addEventListener("click", async () => {
+            // Close other open setting containers
+            sidebarButtonsObject.forEach(iNested => {
+                const containerIsOpen = globalHTML[iNested.containerEntry].
+                    style.display === "flex";
+                if (containerIsOpen && iNested.containerEntry !== i.containerEntry) {
+                    toggleSidebarSettings(
+                        globalHTML, 
+                        iNested.icon, 
+                        iNested.containerEntry, 
+                        iNested.buttonEntry
+                    );
+                }
+            });
+            toggleSidebarSettings(globalHTML, i.icon, i.containerEntry, i.buttonEntry);
+        });
     });
 
-    // Listener (toggle vegan mode button)
+    // Search input
+    globalHTML.searchInput.addEventListener("keyup", async function(event) {
+        globalVariables.filterObject.q = event.target.value;
+    });
+
+    // Search button
+    globalHTML.searchButton.addEventListener("click", async () => {
+        cleanUpFeed(globalHTML, globalVariables);
+        await getRecipePage(1, globalHTML, globalVariables);
+    });
+
+    // Set up listeners for all search area boolean checkboxes
+    globalVariables.searchAreaBoolIds.forEach(id => {
+        const element = document.getElementById(id);
+        // Extract the search area name
+        const searchAreaName = id.split("-").pop();
+
+        element.addEventListener("change", async function(event) {
+            toggleQIncludeItems(globalVariables, event.target.checked, searchAreaName);
+        });
+    });
+};
+
+/**
+ * Configures the listeners that should be active on page load
+ * 
+ * @param {Object}  globalHTML
+ * @param {Object}   globalVariables
+ */
+const configureListeners = (globalHTML, globalVariables) => {
+    // Toggle vegan mode button
     globalHTML.veganButton.addEventListener("click", () => {
-        toggleVeganMode(globalHTML, globalVariables)});
+        toggleVeganMode(globalHTML, globalVariables)
     });
+
+    // Load recipes in groups
+    globalHTML.loadRecipesButton.addEventListener("click", async () => {
+        globalVariables.page++; // Increment page number
+        await getRecipePage(globalVariables.page, globalHTML, globalVariables);
+    });
+
+    configureSidebarListeners(globalHTML, globalVariables);
+};
+
+/**
+ * 1. Toggles the container and its content (with CSS)
+ * 
+ * 2. Changes the previous icon to a close button when 
+ * toggled
+ *  
+ * 
+ * @param {Object}  globalHTML
+ * @param {str}   icon Font awesome declaration eg. "magnifying-glass"
+ * the container
+ * @param {str}   containerEntry The entry (in globalHTML) pointing to 
+ * the container
+ * @param {str}   buttonEntry The entry (in globalHTML) pointing to 
+ * the button
+ */
+const toggleSidebarSettings = (globalHTML, icon, containerEntry, buttonEntry) => {
+    // Display attribute
+    const previousAttribute = globalHTML[containerEntry].style.display;
+    // If it's previously hidden, show or vice versa
+    if (!previousAttribute || previousAttribute === "none") {
+        globalHTML[containerEntry].style.display = "flex";
+        // Transform search icon to an X button
+        globalHTML[buttonEntry].innerHTML = 
+            "<i class='fa-solid fa-x' style='color: rgb(255, 93, 93)'></i>";
+    }else {
+        globalHTML[containerEntry].style.display = "none";
+        globalHTML[buttonEntry].innerHTML = 
+            `<i class='fas fa-${icon}'></i>`;
+    }
+};
 
 const getRecipePage = async (page, globalHTML, globalVariables) => {
+    // Test fix, for some reason, tests can't read initial values
+    if (globalVariables.filterObject === undefined){
+        globalVariables.filterObject = {
+            q: "",
+            search_areas: [],
+        }
+    }
+
+    let filterObject = {
+        "q": globalVariables.filterObject.q,
+    };
+
+    /* Convert the included search areas array to a 
+    comma separated string */
+    const qInclude = globalVariables.filterObject["search_areas"]
+    if (Array.isArray(qInclude) && qInclude.length > 0) {
+        // Initialize the entry
+        filterObject["search_areas"] = "";
+        // Create a comma separated string
+        qInclude.forEach((i, index) => {
+            const addComma = index < qInclude.length -1 ? "," : "";
+            filterObject["search_areas"] += i + addComma;
+        });
+        // Trim whitespaces
+        filterObject["search_areas"].replace(/,\s*$/, "").trim();
+    }
+
+
+    // Additional filters (concatenated string)
+    let additionalParameters = ""
+    if (filterObject.q || filterObject.search_areas) {
+        Object.entries(filterObject).forEach(([key, value]) => {
+            additionalParameters += `&${key}=${value}`;
+        });
+    }
+
     // Fetch recipe 'group'
-    const response = await fetch(`/load_recipes?page=${page}`);
+    const response = await fetch(
+        `/load_recipes?page=${page}${additionalParameters}`
+    );
     const data = await response.json();
+
+    // Handle no recipes found and then render recipes
+    if (data.total_recipes === 0) {
+        hintWindow(globalVariables, globalHTML, "<p>Couldn't find any recipes.</p>");
+    }else {
     // Append new recipes to the recipe feed
     renderRecipes(data, globalHTML, globalVariables);
+    }
 };
 
 /**
@@ -149,24 +359,48 @@ const renderRecipes = (data, globalHTML, globalVariables) => {
                 <div class="flex-column">
                     <div class="recipe-shadow"></div>
                     <h4>${recipe.title}</h4>
-                    <button class="absolute-flex right-fib-1 top-fibb-1 recipe-item-user-image-container">
-                        <img src="${recipe.user_image ? recipe.user_image : '/static/images/icons/missing.webp'}" alt="User Profile Picture" />
-                    </button>
-                    <button class="absolute-flex recipe-item-bottle-post-count-container">
-                        <div class="absolute-flex recipe-item-bottle-post-red-count">${recipe.bottle_posted_count}</div>
-                        <img src="/static/images/global/logo.png" alt="Bottle post icon" style="background-color: transparent;" />
+                    <button class="absolute-flex right-fib-1 top-fibb-1 
+                        recipe-item-user-image-container">
+                        <img 
+                            src="${recipe.user_image ? 
+                                recipe.user_image : '/static/images/icons/missing.webp'}" 
+                            alt="User Profile Picture" 
+                        />
                     </button>
                     <div class="flex-row">
                         <div class="flex-column">
-                            <img src="${recipe.image ? recipe.image : '/static/images/icons/missing.webp'}" alt="${recipe.title}">
+                            <img 
+                                src="${recipe.image ? 
+                                    recipe.image : '/static/images/icons/missing.webp'}" 
+                                alt="${recipe.title}">
                         </div>
-                        <div class="d-flex align-items-start justify-content-center recipe-item-sidebar-right pt-5">
-                            ${recipe.in_ocean ? '<i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>' : ''}
+                        <div class="d-flex align-items-start justify-content-center 
+                            recipe-item-sidebar-right pt-5">
+                            ${recipe.in_ocean ? 
+                                '<i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>' 
+                                : 
+                                ''}
                         </div>
                     </div>
+                    <button class="absolute-flex recipe-item-bottle-post-count-container">
+                        <div class="absolute-flex recipe-item-bottle-post-red-count">
+                            ${recipe.bottle_posted_count}
+                        </div>
+                        <img 
+                            src="/static/images/global/logo.png" 
+                            alt="Bottle post icon" 
+                            style="background-color: transparent;" />
+                    </button>
                     <div class="recipe-item-bottom-bar">
-                        <button class="incremental-icon-button"><i class="fa-solid fa-comment"></i><span>0</span></button>
-                        <button class="incremental-icon-button"><i class="fa-solid fa-heart"></i><span>${recipe.likes}</span></button>
+                        <button class="incremental-icon-button">
+                            <i class="fa-solid fa-comment"></i><span>0</span>
+                        </button>
+                        <button class="incremental-icon-button">
+                            <i class="fa-solid fa-heart"></i><span>${recipe.likes}</span>
+                        </button>
+                    </div>
+                    <div class="d-flex recipe-item-description-container">
+                        <p class="flex-center">${trimText(recipe.description, 50)}</p>
                     </div>
                 </div>
             `;

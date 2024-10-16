@@ -9,6 +9,27 @@
     font-style: normal; /* Remove default cursive styles */
 }
 
+/* Scrollbars */
+::-webkit-scrollbar {
+    width: 5px; 
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #5e6267; 
+    border-radius: 6px;
+}
+::-webkit-scrollbar-corner {
+    background-color: #52565b; 
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #76797b;
+}
+
+:root {
+    --sidebar-width: 70px
+}
+
 button {
     background-color: transparent;
     border: 0 transparent;
@@ -138,7 +159,7 @@ body {
     align-items: flex-start;
     width: 100%;
     /* Prevent sidebar overlapping */
-    padding-left: 70px;
+    padding-left: var(--sidebar-width);
     margin: 130px 0px;
     min-height: 80vh;
     color: #cbd8dc;
@@ -151,7 +172,7 @@ body {
     align-items: flex-start;
     flex-wrap: wrap;
     /* Take the left sidebar into account */
-    width: calc(100% - 70px);
+    width: calc(100% - var(--sidebar-width));
 }
 
 .feed section {
@@ -166,7 +187,7 @@ body {
     z-index: 1;
     top: 0;
     left: 0;
-    width: 70px;
+    width: var(--sidebar-width);
     height: 100vh;
     background-color: #575c5e; 
 }
@@ -175,12 +196,45 @@ body {
     margin-top: 190px; /* Prevent header overlapping */
 }
 
-/* Search input */
-#search {
-    top: 210px; 
-    left: 75px;
+#search-button {
+    /* display: none; */ /* Hidden by default */
     height: 34px; 
+    width: 100%;
+    background-color: #779ab8;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 2px 2px #7dd9fe;
+}
+
+#search-button:hover {
+    background-color: #5b636a;
+}
+
+.sidebar-settings-container {
+    display: none; /* Hidden by default */
+    top: 208px; 
+    left: 75px;
     width: 180px;
+    padding-bottom: 10px;
+    background-color: #7b8389ba;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 5px;
+    backdrop-filter: blur(10px);
+}
+
+.sidebar-settings {
+    width: 94%;
+    height: 100%;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+   /*  background-color: #ffffff; */
+}
+
+.account-for-sidebar-ml {
+    margin-left: var(--sidebar-width);
 }
 
 /* Hint window */

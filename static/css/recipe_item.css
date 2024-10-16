@@ -114,14 +114,14 @@
 .recipe-item-bottle-post-count-container {
     width: 40px;
     height: 40px;
-    cursor: pointer;
-    bottom: 10%;
-    left: 7%;
+    top: 205px;
+    left: 47px;
     background-color: #E0E3E5;
     box-shadow: 0 0 2px 2px #4d525650; 
     border-radius: 50%;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 .recipe-item-bottle-post-count-container:hover {
     box-shadow: 0 0 2px 3px #565a5c9e;
@@ -158,4 +158,14 @@
     color: #39cdf5;
     font-size: 130%;
     font-weight: 800;
+}
+
+.recipe-item-description-container {
+    text-align: left;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: calc(var(--recipe-item-width) + 35px);
+    max-height: 50px;
+    overflow: auto;
+    padding: 5px 20px;
 }

@@ -10,15 +10,15 @@
 
 <!-- Check authentication -->
 {% if user.is_authenticated %}
-    <div class="flex-center flex-column">
+    <div class="flex-center flex-column w-100">
         <div class="feed-container">
             <!-- Recipe feed -->
             <div class="feed" id="feed"><!-- Generated content --></div>
         </div>
         <!-- Load recipes button -->
         <button 
-            class="load-recipes-button w-25 mb-4 text-white" 
-            id="load-recipes-button">
+            id="load-recipes-button"
+            class="load-recipes-button w-25 mb-4 text-white account-for-sidebar-ml">
             Load more
         </button>
     </div>

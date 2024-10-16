@@ -1,5 +1,5 @@
 import { textInput, textAreaInput, fileInput, 
-    checkboxInput, numberInput } from './htmlComponents/inputs.js'
+    checkboxInput, numberInput } from './htmlComponents/inputs.js';
 
 document.addEventListener("DOMContentLoaded", function() {
     // Data loaded from db
