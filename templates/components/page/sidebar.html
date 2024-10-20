@@ -26,7 +26,7 @@
             <!-- Search -->
             <div 
                 id="search-container" 
-                class="absolute-flex sidebar-settings-container">
+                class="absolute-flex sidebar-settings-container sidebar-settings-border">
                 <div class="flex-center sidebar-settings flex-column">
                     <input 
                         id="search-input" 
@@ -34,52 +34,15 @@
                         type="text" 
                         placeholder="eg. baba ganoush" />
 
-                    <div class="flex-column w-100 align-items-start">
-                        <p class="text-white fs-6 mb-0 text-decoration-underline">Also search in</p>
-
-                        <div class="flex-row align-items-start mb-1">
-                            <input 
-                                class="form-check-input"
-                                style="margin-right: 10px;" 
-                                type="checkbox" 
-                                name="Checkbox include description in search" 
-                                id="search-area-description"
-                            />
-                            <label class="form-check-label text-white" for="search-area-description">
-                                Description
-                            </label>
-                        </div>
-
-                        <div class="flex-row align-items-start mb-1">
-                            <input 
-                                class="form-check-input"
-                                style="margin-right: 10px;" 
-                                type="checkbox" 
-                                name="Checkbox include ingredients in search" 
-                                id="search-area-ingredients"
-                            />
-                            <label class="form-check-label text-white" for="search-area-ingredients">
-                                Ingredients
-                            </label>
-                        </div>
-                        <div class="flex-row align-items-start mb-1">
-                            <input 
-                                class="form-check-input"
-                                style="margin-right: 10px;" 
-                                type="checkbox" 
-                                name="Checkbox include tags in search" 
-                                id="search-area-tags"
-                            />
-                            <label class="form-check-label text-white" for="search-area-tags">
-                                Tags
-                            </label>
-                        </div>
+                    <p class="text-white fs-6 mb-0 text-decoration-underline">Also search in</p>
+                    <div id="search-areas" class="flex-column w-100 align-items-start">
+                        <!-- JS Generated content -->
                     </div>
 
                     <!-- Search button -->
                     <button 
                         id="search-button" 
-                        class="fs-6 text-white w-80">
+                        class="fs-6 text-white w-80 submit-settings-button">
                         Search
                     </button> 
                 </div>
@@ -88,13 +51,20 @@
             <!-- Filter -->
             <div 
                 id="filter-container" 
-                class="absolute-flex sidebar-settings-container">
-                <div class="flex-center sidebar-settings flex-column">
-                    <div class="flex-column w-100 align-items-start"></div>
+                class="absolute-flex sidebar-settings-container sidebar-settings-border">
+                <div class="flex-center sidebar-settings flex-column w-100">
+                    <!-- Title -->
+                    <h5 class="text-white fs-6">Filter</h5>
+                    <!-- Filters -->
+                    <div id="filters"
+                        class="flex-row justify-content-start w-100
+                            sidebar-settings-border-top sidebar-settings-border-bottom">
+                        <!-- JS generated filters -->
+                    </div>
                     <!-- Filter button -->
                     <button 
                         id="filter-button" 
-                        class="fs-6 text-white w-80">
+                        class="fs-6 text-white w-80 submit-settings-button">
                         Filter
                     </button> 
                 </div>

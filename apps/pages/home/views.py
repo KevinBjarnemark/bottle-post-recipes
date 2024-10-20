@@ -18,7 +18,6 @@ def load_user_profile(request):
         }
     return user_profile
 
-
 def load_recipes(request):
     """Loads public recipes in batches and order in 
     the following order: 
@@ -40,7 +39,6 @@ def load_recipes(request):
     if q_search_areas:
         if 'description' in include_areas:
             query_filter |= Q(description__icontains=q)
-            print(include_areas)
         if 'ingredients' in include_areas:
             query_filter |= Q(ingredients__name__icontains=q)
         if 'tags' in include_areas:

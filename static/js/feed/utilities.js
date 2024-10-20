@@ -1,0 +1,102 @@
+import { getCookie } from '../helpers.js';
+import { filterVeganRecipes, hintWindow } from './updateDOM.js';
+
+/**
+ * Adds or removes an item from the search query include array
+ * in sync with the event.target.checked.
+ * 
+ * @param {Object}  globalVariables
+ * @param {Object}   checked event.target.checked
+ * @param {str}   area eg. tags, description, ingredients
+ */
+export const toggleSearchAreaItems = (globalVariables, checked, area) => {
+    const array = globalVariables.filterObject.search_areas;
+    // Add (if it doesn't exist)
+    if (checked) {
+        if (!array.includes(area)) {
+            array.push(area);
+        }
+    }else {
+        const newArray = array.filter(item => item !== area);
+        globalVariables.filterObject.search_areas = newArray;
+    }
+};
+
+/**
+ * 1. Toggles the container and its content (with CSS)
+ * 
+ * 2. Changes the previous icon to a close button when 
+ * toggled
+ *  
+ * 
+ * @param {Object}  globalHTML
+ * @param {str}   icon Font awesome declaration eg. "magnifying-glass"
+ * the container
+ * @param {str}   containerEntry The entry (in globalHTML) pointing to 
+ * the container
+ * @param {str}   buttonEntry The entry (in globalHTML) pointing to 
+ * the button
+ */
+export const toggleSidebarSettings = (globalHTML, icon, containerEntry, buttonEntry) => {
+    // Display attribute
+    const previousAttribute = globalHTML[containerEntry].style.display;
+    // If it's previously hidden, show or vice versa
+    if (!previousAttribute || previousAttribute === "none") {
+        globalHTML[containerEntry].style.display = "flex";
+        // Transform search icon to an X button
+        globalHTML[buttonEntry].innerHTML = 
+            "<i class='fa-solid fa-x' style='color: rgb(255, 93, 93)'></i>";
+    }else {
+        globalHTML[containerEntry].style.display = "none";
+        globalHTML[buttonEntry].innerHTML = 
+            `<i class='fas fa-${icon}'></i>`;
+    }
+};
+
+/**
+ * Toggles the vegan_mode state (in Profile model) and 
+ * triggers the hint window to display an informative 
+ * message to the user. 
+ * 
+ */
+export const toggleVeganMode = async (globalHTML, globalVariables) => {
+    const request = await fetch('/toggle_vegan_mode/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ vegan_mode: !globalVariables.veganMode })
+    });
+    
+    if (request.status === 200) {
+        // Toggle vegan mode variable
+        globalVariables.veganMode = !globalVariables.veganMode; 
+        // Change color
+        globalHTML.veganIcon.style.color = globalVariables.veganMode ? '#ffa560' : 'rgb(255, 255, 255)';
+
+        const hintWindowHtml = globalVariables.veganMode ? 
+        `
+        <p>Vegan mode is 
+            <span style='color:#8aeb84; font-weight: 600'>
+                ON
+            </span>
+            <i class="fa-solid fa-carrot" id="vegan-mode-icon"></i>
+        </p>
+        ` 
+        :
+        `
+        <p>Vegan mode is 
+            <span style='color:#fa6e6e; font-weight: 600'>
+                OFF
+            </span>
+        </p>
+        `;
+        hintWindow(globalVariables, globalHTML, hintWindowHtml);
+
+        filterVeganRecipes(globalVariables);
+
+    } else {
+        console.error('Failed to toggle vegan mode');
+    }
+};
