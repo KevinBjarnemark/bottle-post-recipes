@@ -226,7 +226,6 @@ const addIngredientToList = (globalHTML, globalVariables, ingredient) => {
 };
 
 const buildDietaryAttributes = (globalHTML, globalVariables) => {
-    let attributes = [];
     const boolNamesArray = [
         "alcohol", 
         "dairy", 
@@ -242,14 +241,27 @@ const buildDietaryAttributes = (globalHTML, globalVariables) => {
         "peanuts",
         "caffeine",
     ];
+
+    const nonVeganAttributes = [ 
+        "dairy", 
+        "meat", 
+        "fish", 
+        "honey", 
+        "gelatin", 
+        "eggs", 
+        "lactose", 
+    ];
+
+    let attributes = [];
     // Build the boolean items
     boolNamesArray.forEach(i => {
         attributes.push(
             {
-                name: `dietary-attributes-${i.toLowerCase()}`,
-                field: `${i.toLowerCase()}`,
-                id: `create-recipe-boolean-dietary-attributes-${i.toLowerCase()}`,
+                name: `dietary-attributes-${i}`,
+                field: `${i}`,
+                id: `create-recipe-boolean-dietary-attributes-${i}`,
                 label: `${capitalizeFirstLetter(i)}`,
+                nonVegan: nonVeganAttributes.includes(i),
             }
         );
     });
@@ -258,7 +270,8 @@ const buildDietaryAttributes = (globalHTML, globalVariables) => {
     attributes.forEach(i => {
         htmlString += 
         `<div class="flex-row create-recipe-boolean-item align-items-start"
-            style="margin: 5px 5px; padding: 0 5px">
+            style="margin: 5px 5px; padding: 0 5px; 
+                ${i.nonVegan ? "box-shadow: 0 0 3px 1.8px #ffb472" : ""}">
             <input 
                 class="form-check-input"
                 style="margin-right: 10px;" 
