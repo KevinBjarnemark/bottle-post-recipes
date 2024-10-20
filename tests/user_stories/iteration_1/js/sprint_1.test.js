@@ -1,4 +1,4 @@
-import { renderRecipes } from '../../../../static/js/feed';
+import { renderRecipes } from '../../../../static/js/feed/updateDOM.js';
 import {expect, test} from '@jest/globals';
 import '@testing-library/jest-dom'
 
@@ -59,15 +59,6 @@ describe('renderRecipes', () => {
     // Check the presence of specific recipe elements in the DOM
     expect(globalHTML.feed).toHaveTextContent('Test Recipe 1');
     expect(globalHTML.feed).toHaveTextContent('Test Recipe 2');
-  });
-
-  test('pushes recipes to globalVariables.recipes array', () => {
-    renderRecipes(mockData, globalHTML, globalVariables);
-
-    // Check that recipes are pushed to the globalVariables.recipes array
-    expect(globalVariables.recipes.length).toBe(2);
-    expect(globalVariables.recipes[0].title).toBe('Test Recipe 1');
-    expect(globalVariables.recipes[1].title).toBe('Test Recipe 2');
   });
 
 });

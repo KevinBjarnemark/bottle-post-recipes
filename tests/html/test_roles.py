@@ -32,7 +32,7 @@ def test_homepage_uses_correct_templates_user(client):
 def test_js_feed_file_inclusion_user(client):
     user_log_in(client)
     response = client.get(reverse('home'))
-    assert 'js/feed.js' in response.content.decode()
+    assert 'js/feed/feed.js' in response.content.decode()
 
 # Make sure feed.js is not loaded for guests
 @pytest.mark.django_db

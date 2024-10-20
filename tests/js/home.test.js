@@ -1,4 +1,5 @@
-import { veganModeColor, setInitialStates, toggleVeganMode } from '../../static/js/feed';
+import { veganModeColor, setInitialStates } from '../../static/js/feed/feed.js';
+import { toggleVeganMode } from '../../static/js/feed/utilities.js';
 import {expect, jest, test} from '@jest/globals';
 
 // Mock the global document elements

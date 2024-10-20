@@ -3,6 +3,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
 
+class DietaryAttribute(models.Model):
+    # e.g., 'Alcohol', 'Dairy', 'Gluten'
+    name = models.CharField(max_length=50, unique=True)
+    
+    # Ensure ingredients are displayed in admn portal
+    def __str__(self):
+        return self.name
+
 # Recipe models
 class Recipe(models.Model):
     id = models.AutoField(primary_key=True)
@@ -17,8 +25,7 @@ class Recipe(models.Model):
     bottle_posted_count = models.IntegerField(default=0)
     in_ocean = models.BooleanField(default=True)
     public = models.BooleanField(default=True)
-    contains_alcohol = models.BooleanField(default=False)
-    contains_dairy = models.BooleanField(default=False)
+    dietary_attributes = models.ManyToManyField(DietaryAttribute, blank=True, related_name='recipes')
     vegan = models.BooleanField(default=False)
     tags = models.CharField(max_length=255, null=True, blank=True)
     instructions = models.TextField()

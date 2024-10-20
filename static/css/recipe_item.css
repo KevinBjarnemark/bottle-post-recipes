@@ -169,3 +169,17 @@
     overflow: auto;
     padding: 5px 20px;
 }
+
+.create-recipe-boolean-item {
+    background-color: #3d4346; 
+    border-radius: 5px;
+}
+
+.create-recipe-section {
+    flex-direction: column;
+    margin-bottom: 20px;
+    width: 50%;
+    background-color: #3b4043;
+    border-radius: 5px;
+    padding: 20px;
+}

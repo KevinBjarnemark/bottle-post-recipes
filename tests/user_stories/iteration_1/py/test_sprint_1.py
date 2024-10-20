@@ -9,40 +9,68 @@ import json
 # Move towards database filtering instead of client-side 
 # filtering, then create a vegan filter test 
 
+import pytest
+from django.urls import reverse
+from apps.pages.create_recipe.models import Recipe
+from tests.helpers.helpers import user_log_in
+import json
 
 # Recipe creation, javascript insertion, and render
 @pytest.mark.django_db
 def test_recipe_creation_and_display(client):
-    # Log in the user
+    # Log in user
     user = user_log_in(client)
-    # Create a new recipe
-    recipe = Recipe.objects.create(
-        user=user,
-        image=create_mock_image(), # Check!
-        title="Test Recipe", # Check!
-        description="A delightful test recipe.", # Check!
-        likes=10,
-        bottle_posted_count=5,
-        in_ocean=True,
-        contains_alcohol=False,
-        contains_dairy=True,
-        vegan=True,
-        tags="test, recipe",
-        instructions="1. Mix test ingredients",
-    )
+    # Convert to JSON string
+    dietary_attributes = json.dumps(['gluten, dairy'])
+    ingredient_data = json.dumps([
+        {'name': 'Ingredient 1', 'quantity': 1},
+        {'name': 'Ingredient 2', 'quantity': 200},
+    ])
+    preparation_time = json.dumps({
+        'preparation-time-minutes': 0,
+        'preparation-time-hours': 1,
+        'preparation-time-days': 0,
+    })
+    cooking_time = json.dumps({
+        'cooking-time-minutes': 20,
+        'cooking-time-hours': 1,
+        'cooking-time-days': 0,
+    })
+    estimate_price = json.dumps({
+        'estimate-price-from': 20,
+        'estimate-price-to': 40,
+    })
+    recipe = {
+        'title': 'Test Recipe',
+        'description': "Test description",
+        'dietary_attributes': dietary_attributes,
+        'vegan': False,
+        'image': create_mock_image(),
+        'tags': 'test, recipe',
+        'instructions': "Mix all ingredients.",
+        'ingredients': ingredient_data,
+        'preparation_time': preparation_time,
+        'cooking_time': cooking_time,
+        'estimate_price': estimate_price,
+        'likes': 10,
+        'bottle_posted_count': 5,
+        'in_ocean': True,
+        'vegan': True,
+    }
+    # Submit the form
+    response = client.post(reverse('submit_recipe'), recipe)
 
-    # Add ingredients
-    Ingredient.objects.create(recipe=recipe, name="Tomatoes", quantity="3")
-    Ingredient.objects.create(recipe=recipe, name="Onion", quantity="1")
+    assert response.status_code == 200
+    assert Recipe.objects.filter(title='Test Recipe').exists()
     
     # Verify that ingredients are associated with the recipe
-    ingredients = recipe.ingredients.all()
-    assert ingredients.count() == 2
-    assert ingredients.filter(name="Tomatoes").exists()
-    assert ingredients.filter(name="Onion").exists()
+    recipe_instance = Recipe.objects.get(user=user, title='Test Recipe')
 
-    # Check if the recipe is created and present in the database
-    assert Recipe.objects.filter(title="Test Recipe").exists()
+    # Verify that ingredients are associated with the recipe
+    ingredients = recipe_instance.ingredients.all()
+    assert ingredients.count() == 2
+    assert ingredients.filter(name="Ingredient 1", quantity=1).exists()
+    assert ingredients.filter(name="Ingredient 2", quantity=200).exists()
 
     # NOTE Recipes are displayed with JS and there's a separate 
     # JEST test for checking if they actually gets displayed.

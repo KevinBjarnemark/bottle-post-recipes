@@ -1,30 +1,56 @@
-import { textInput, textAreaInput, fileInput, 
-    checkboxInput, numberInput } from './htmlComponents/inputs.js';
+import { getCookie, capitalizeFirstLetter } from './helpers.js';
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Data loaded from db
-    const initialData = {
-        formData: JSON.parse(document.getElementById('form_data').textContent),
-    }
-
     // Targeted HTML elements
     const globalHTML = {
         form: document.getElementById('recipe-form'),
-        mappedForm: document.getElementById('mapped-form'),
-        ingredientsList: document.getElementById('ingredients-list'),
-        addIngredientButton: document.getElementById('add-ingredient-btn'),
-        ingredientNameInput: document.getElementById('ingredient-name'),
-        ingredientQuantityInput: document.getElementById('ingredient-quantity'),
+        ingredientsList: document.getElementById('create-recipe-ingredients-list'),
+        addIngredientButton: document.getElementById('create-recipe-add-ingredient-btn'),
+        ingredientNameInput: document.getElementById('create-recipe-ingredient-name'),
+        ingredientQuantityInput: document.getElementById('create-recipe-ingredient-quantity'),
+        dietaryAttributes: document.getElementById('create-recipe-dietary-attributes'),
+        image: document.getElementById('create-recipe-image'),
+        imagePreviewContainer: document.getElementById('create-recipe-image-preview-container'),
     };
 
     // Global states
     let globalVariables = {
-        formData: initialData.formData,
-        ingredients: [],
-
+        // Form data prepared for backend
+        formData: {
+            title: "",
+            description: "",
+            tags: "",
+            instructions: "",
+            ingredients: [],
+            "dietary_attributes": [],
+            image: null,
+            "preparation_time": {},
+            "cooking_time": {},
+            "estimate_price": {},
+        },
+        formObject: {
+            // All text inputs
+            textInputs: {
+                title: {id: "create-recipe-title"},
+                description: {id: "create-recipe-description"},
+                tags: {id: "create-recipe-tags"},
+                instructions: {id: "create-recipe-instructions"},
+            },
+        },
     };
 
-    // Event listeners
+    // Add event listeners
+    configureListeners(globalHTML, globalVariables);
+    // Build form components 
+    buildForm(globalHTML, globalVariables);
+    // Handle form submission
+    globalHTML.form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitForm(globalVariables);
+    });
+});
+
+const configureListeners = (globalHTML, globalVariables) => {
     globalHTML.addIngredientButton.addEventListener('click', function() {
         const ingredientName = globalHTML.ingredientNameInput.value;
         const ingredientQuantity = globalHTML.ingredientQuantityInput.value;
@@ -39,22 +65,82 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Handle form submission
-    globalHTML.form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        // Create a hidden input to send the ingredients array
-        const ingredientsField = document.createElement('input');
-        ingredientsField.setAttribute('type', 'hidden');
-        ingredientsField.setAttribute('name', 'ingredients');
-        ingredientsField.setAttribute('value', JSON.stringify(globalVariables.ingredients));
-        this.appendChild(ingredientsField);
-        // Submit form
-        submitForm(globalHTML, globalVariables);
+    // Recipe image
+    globalHTML.image.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        globalVariables.formData.image = file;
+        const imagePreviewUrl = URL.createObjectURL(file);
+         const previewImage = document.createElement('img');
+         previewImage.src = imagePreviewUrl;
+         previewImage.alt = 'Recipe image';
+         globalHTML.imagePreviewContainer.innerHTML = `
+         <img 
+             src=${imagePreviewUrl} 
+             alt="Recipe image" 
+             class="flex-center w-50"
+         />
+         `;
     });
 
-    // Generate the form based on models
-    mapForm(globalHTML, globalVariables)
-});
+    // Set up listeners for text inputs
+    const textInputs = globalVariables.formObject.textInputs;
+    Object.entries(textInputs).forEach(([entry, item]) => {
+        const element = document.getElementById(item.id);
+        element.addEventListener("keyup", function(e) {
+            // Update the form data
+            globalVariables.formData[entry] = e.target.value;
+        });
+    });
+};
+
+const buildNumberFields = (globalVariables) => {
+    // Combined number fields data
+    const numberFields = [
+        {
+            element: document.getElementById(
+                "create-recipe-preparation-time"
+            ),
+            formDataEntry: "preparation_time",
+            name: "preparation-time",
+            fields: ["days", "hours", "minutes"]
+        },
+        {
+            element: document.getElementById(
+                "create-recipe-cooking-time"
+            ),
+            formDataEntry: "cooking_time",
+            name: "cooking-time",
+            fields: ["days", "hours", "minutes"]
+        },
+        {
+            element: document.getElementById(
+                "create-recipe-estimate-price"
+            ),
+            formDataEntry: "estimate_price",
+            name: "estimate-price",
+            fields: ["from", "to"]
+        },
+    ]; 
+
+    numberFields.forEach(i => {
+        // Create numberinputs
+        const fields = i.fields.map(numberField => {
+            return (
+                {
+                    id: `create-recipe-${i.name}-${numberField}`,
+                    label: numberField,
+                    name: `${i.name}-${numberField}`
+                }
+            );
+        });
+        combinedNumberField(i.element, globalVariables, i.formDataEntry, fields);
+    });
+};
+
+const buildForm = (globalHTML, globalVariables) => {
+    buildDietaryAttributes(globalHTML, globalVariables);
+    buildNumberFields(globalVariables)
+};
 
 /**
  * Submits the concatenated form to the backend
@@ -62,72 +148,51 @@ document.addEventListener("DOMContentLoaded", function() {
  * @param {Object}  globalHTML 
  * @param {Object}   globalVariables 
  */
-const submitForm = async (globalHTML, globalVariables) => {
+const submitForm = async (globalVariables) => {
     const init = async () => {
-        // Gather all data
-        const formData = new FormData(globalHTML.form);
+        try {
+            // Create the form data constructor
+            const formData = new FormData();
+            // These entries should be stringified
+            const stringifyEntries = [
+                "dietary_attributes", 
+                "ingredients", 
+                "preparation_time", 
+                "cooking_time",
+                "estimate_price",
+            ];
+            Object.entries(globalVariables.formData).forEach(([entry, value]) => {
+                if (stringifyEntries.includes(entry)){
+                    formData.append(entry, JSON.stringify(value));
+                }else {
+                    formData.append(entry, value);
+                } 
+            });
 
-        // Append the ingredients array to FormData
-        formData.append('ingredients', JSON.stringify(globalVariables.ingredients));
-        // Send the data
-        await fetch(globalHTML.form.action, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-            },
-            body: formData,
-        });
-        alert('Recipe successfully created!');
-        // Redirect to home
-        window.location.href = '/'; 
+            // Send destructed form data
+            const response = await fetch('/submit_recipe/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: formData,
+            });
+
+            if (response.ok) {
+                // Show success message and redirect to home
+                alert('Recipe successfully created!');
+                window.location.href = '/';
+            } else {
+                // TODO handle backend errors
+                const data = await response.json();
+                console.error(data);
+            }
+        } catch (error) {
+            // TODO client errors
+            console.error('Error:', error);
+        }
     };
     await init();
-};
-
-/**
- * Generates the recipe_form inherited from backend. 
- * This avoids repetition by generating a full form based on a 
- * model in an iterated fasion. Default values, labels, and more 
- * are automatically referenced from source.
- * 
- * @param {Object}  globalHTML
- * @param {Object}  globalVariables
- * @param {String}  variableEntry An entry that points to an array of 
- * objects referncing the models from source. 
- * @param {String}  htmlEntry An entry that points to the html 
- * container, where the inputs should land. 
- */
-const generateForm = (globalHTML, globalVariables, variableEntry, htmlEntry) => {
-    globalVariables[variableEntry].forEach(i => {
-        Object.entries(i).forEach(([key, value]) => {
-            const newInput = document.createElement("div");
-            const inputType = value.widget.type;
-            let inputData = {
-                key, 
-                defaultValue: value.default_value, 
-                label: value.label,
-                placeholder: value?.widget.attrs?.placeholder
-            };
-
-            if (inputType === "TextInput"){
-                newInput.innerHTML = textInput(inputData);
-            }else if (inputType === "Textarea"){
-                newInput.innerHTML = textAreaInput(inputData);
-            }else if (inputType === "ClearableFileInput"){
-                newInput.innerHTML = fileInput(inputData);
-            }else if (inputType === "CheckboxInput"){
-                newInput.innerHTML = checkboxInput(inputData);
-            }else if (inputType === "NumberInput"){
-                newInput.innerHTML = numberInput(inputData);
-            }
-            // Append
-            globalHTML[htmlEntry].appendChild(newInput);
-        });
-    });
-};
-
-const mapForm = (globalHTML, globalVariables) => {
-    generateForm(globalHTML, globalVariables, "formData", "mappedForm");
 };
 
 /**
@@ -140,13 +205,14 @@ const mapForm = (globalHTML, globalVariables) => {
 const addIngredientToList = (globalHTML, globalVariables, ingredient) => {
     const ingredientElement = document.createElement("div");
     ingredientElement.className = "ingredient";
+    const ingredients = globalVariables.formData.ingredients;
 
     const removeIngredientButton = document.createElement("button");
     removeIngredientButton.innerText = "X";
     removeIngredientButton.className = "remove-ingredient-btn";
     removeIngredientButton.addEventListener("click", function() {
         ingredientElement.remove();
-        globalVariables.ingredients = globalVariables.ingredients.filter(i => i !== ingredient);
+        ingredients = ingredients.filter(i => i !== ingredient);
     });
 
     ingredientElement.innerHTML = `
@@ -156,5 +222,117 @@ const addIngredientToList = (globalHTML, globalVariables, ingredient) => {
     ingredientElement.appendChild(removeIngredientButton);
 
     globalHTML.ingredientsList.appendChild(ingredientElement);
-    globalVariables.ingredients.push(ingredient);
+    ingredients.push(ingredient);
+};
+
+const buildDietaryAttributes = (globalHTML, globalVariables) => {
+    let attributes = [];
+    const boolNamesArray = [
+        "alcohol", 
+        "dairy", 
+        "meat", 
+        "fish", 
+        "honey", 
+        "gelatin", 
+        "nuts", 
+        "gluten",
+        "eggs",
+        "soy",
+        "lactose",
+        "peanuts",
+        "caffeine",
+    ];
+    // Build the boolean items
+    boolNamesArray.forEach(i => {
+        attributes.push(
+            {
+                name: `dietary-attributes-${i.toLowerCase()}`,
+                field: `${i.toLowerCase()}`,
+                id: `create-recipe-boolean-dietary-attributes-${i.toLowerCase()}`,
+                label: `${capitalizeFirstLetter(i)}`,
+            }
+        );
+    });
+
+    let htmlString = "";
+    attributes.forEach(i => {
+        htmlString += 
+        `<div class="flex-row create-recipe-boolean-item align-items-start"
+            style="margin: 5px 5px; padding: 0 5px">
+            <input 
+                class="form-check-input"
+                style="margin-right: 10px;" 
+                type="checkbox" 
+                name="${i.name}" 
+                id="${i.id}"
+            />
+            <label class="form-check-label text-white" for="${i.id}">
+                ${i.label}
+            </label>
+        </div>
+        `;
+    });
+
+    globalHTML.dietaryAttributes.innerHTML = `
+    <div class="flex-row mb-4" style="flex-wrap: wrap;">
+        ${htmlString}
+    </div>
+    `;
+
+    attributes.forEach(i => {
+        // Set up listeners
+        const element = document.getElementById(i.id);
+        element.addEventListener("change", function(e) {
+            let dietaryAttributes = globalVariables.formData["dietary_attributes"];
+            if (e.target.checked) {
+                if (!dietaryAttributes.includes(i.field)){
+                    dietaryAttributes.push(i.field);
+                }
+            }else {
+                if (dietaryAttributes.includes(i.field)){
+                    dietaryAttributes = dietaryAttributes.filter(attr => attr !== i.field);
+                }
+            }
+            globalVariables.formData["dietary_attributes"] = dietaryAttributes;
+        });
+    });
+};
+
+const combinedNumberField = (element, globalVariables, formDataEntry, numberFields) => {
+    let htmlString = "";
+    numberFields.forEach(i => {
+        htmlString += 
+        `<div class="flex-column mb-4 text-white">
+            <label for="${i.id}">${i.label}</label>
+            <input 
+                class="form-control mt-1"
+                type="number" 
+                placeholder="${i.label}" 
+                name="${i.name}" 
+                id="${i.id}" 
+                value="0"
+            />
+        </div>
+        `;
+    });
+
+    element.innerHTML = 
+    `
+    <div class="flex-row mb-4 mt-2 text-white">
+        ${htmlString}
+    </div>
+    `;
+
+    // Configure listeners
+    numberFields.forEach(i => {
+
+        let formField = globalVariables.formData[formDataEntry];
+        formField[i.name] = 0; // Default to 0
+        // Get the recently created numberinput HTML
+        const element = document.getElementById(i.id);
+        element.addEventListener("input", function(e) {
+             // Update on input
+            formField[i.name] = Number(e.target.value);
+        });
+    });
 };

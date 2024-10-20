@@ -34,3 +34,12 @@ export const trimText = (text, slice) => {
         return ""
     };
 };
+
+/**
+ * 
+ * @param {str}   text
+ * @returns {any} The text with a capitalized first letter
+ */
+export const capitalizeFirstLetter = (text) => {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
