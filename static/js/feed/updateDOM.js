@@ -55,7 +55,7 @@ export const filterVeganRecipes = (globalVariables) => {
              }else {
                  recipeItem.style.display = "flex";
              }
-         })
+         });
 };
 
 /**
@@ -90,7 +90,7 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
 
     let recipesToRender = data.batch;
     const recipeAmount = globalVariables.recipes.length;
-    const totalRecipes = data['total_recipes'];
+    const totalRecipes = data.total_recipes;
     /* If it's the last recipe group, only calculate how 
     many items to render */
     if (recipeAmount + recipesToRender > totalRecipes){
@@ -171,7 +171,7 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
     }else {
         hintWindow(globalVariables, globalHTML, "<p>All recipes are loaded!</p>");
     }
-}
+};
 
 export const getRecipePage = async (page, globalHTML, globalVariables) => {
     // Test fix, for some reason, tests can't read initial values
@@ -185,28 +185,28 @@ export const getRecipePage = async (page, globalHTML, globalVariables) => {
                 fish: true,
                 meat: true,
             }
-        }
+        };
     }
 
     let additionalParametersObject = {
-        'q': globalVariables.filterObject.q,
-        'search_areas': "",
-        'recipe_types_exclude': "",
+        q: globalVariables.filterObject.q,
+        search_areas: "",
+        recipe_types_exclude: "",
     };
 
     /* Convert the included search areas array to a 
     comma separated string */
-    const searchAreas = globalVariables.filterObject.searchAreas
+    const searchAreas = globalVariables.filterObject.searchAreas;
     if (Array.isArray(searchAreas) && searchAreas.length > 0) {
         // Initialize the entry
-        additionalParametersObject["search_areas"] = "";
+        additionalParametersObject.search_areas = "";
         // Create a comma separated string
         searchAreas.forEach((i, index) => {
             const addComma = index < searchAreas.length -1 ? "," : "";
-            additionalParametersObject["search_areas"] += i + addComma;
+            additionalParametersObject.search_areas += i + addComma;
         });
         // Trim whitespaces
-        additionalParametersObject["search_areas"].replace(/,\s*$/, "").trim();
+        additionalParametersObject.search_areas.replace(/,\s*$/, "").trim();
     }
 
     // Convert dietary types to a comma separated string
@@ -215,11 +215,11 @@ export const getRecipePage = async (page, globalHTML, globalVariables) => {
         .filter(([, value]) => !value); 
         recipeTypes.forEach((i, index) => {
         const addComma = index < recipeTypes.length - 1 ? "," : "";
-        additionalParametersObject['recipe_types_exclude'] += i[0] + addComma;
+        additionalParametersObject.recipe_types_exclude += i[0] + addComma;
     });
 
     // Additional filters (concatenated string)
-    let additionalParameters = ""
+    let additionalParameters = "";
     Object.entries(additionalParametersObject).forEach(([key, value]) => {
         // Only add declared parameters
         if (value) {
@@ -232,8 +232,6 @@ export const getRecipePage = async (page, globalHTML, globalVariables) => {
         `/load_recipes?page=${page}${additionalParameters}`
     );
     const data = await response.json();
-
-    console.log(`/load_recipes?page=${page}${additionalParameters}`)
 
     // Handle no recipes found and then render recipes
     if (data.total_recipes === 0) {

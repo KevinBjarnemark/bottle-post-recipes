@@ -123,12 +123,13 @@
     align-items: center;
     cursor: pointer;
 }
+/* When hovering the bottle, apply box shadow on both the 
+bottle icon and the red counter */
 .recipe-item-bottle-post-count-container:hover {
     box-shadow: 0 0 2px 3px #565a5c9e;
-    /* Nested hover effect */
-    .recipe-item-bottle-post-red-count {
-        box-shadow: 0 0 1px 2px #565a5c9e;
-    }
+}
+.recipe-item-bottle-post-count-container:hover .recipe-item-bottle-post-red-count {
+    box-shadow: 0 0 1px 2px #565a5c9e;
 }
 
 .recipe-item-bottle-post-count-container img {

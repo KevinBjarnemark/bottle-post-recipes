@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Recipe, Ingredient, Comment, Time, EstimatedPricePerMeal, DietaryAttribute
+from .models import (
+    Recipe, Ingredient, Comment, Time,
+    EstimatedPricePerMeal, DietaryAttribute
+)
 
 admin.site.register(Recipe)
 admin.site.register(Ingredient)

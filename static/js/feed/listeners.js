@@ -73,7 +73,7 @@ const sidebarListeners = (globalHTML, globalVariables) => {
 export const configureListeners = (globalHTML, globalVariables) => {
     // Toggle vegan mode button
     globalHTML.veganButton.addEventListener("click", () => {
-        toggleVeganMode(globalHTML, globalVariables)
+        toggleVeganMode(globalHTML, globalVariables);
     });
 
     // Load recipes in groups

@@ -4,6 +4,7 @@ from apps.pages.create_recipe.models import Recipe
 from tests.helpers.helpers import user_log_in
 import json
 
+
 @pytest.mark.django_db
 def test_create_recipe(client):
     user_log_in(client)

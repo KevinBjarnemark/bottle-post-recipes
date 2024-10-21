@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Data loaded from db
     const initialData = {
         userProfileData: JSON.parse(document.getElementById('user-profile-data').textContent),
-    }
+    };
     // Targeted HTML elements
     const globalHTML = {
         feed: document.getElementById('feed'),

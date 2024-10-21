@@ -2,13 +2,13 @@ from django.shortcuts import render, redirect
 # Django's built-in authentication
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.signals import user_logged_in
 # Import all profile model
 from .models import Profile
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse
+
 
 def register(request):
     if request.method == 'POST':
@@ -37,7 +37,6 @@ def register(request):
     return render(request, 'registration/register.html', {'form': form})
 
 
-
 @csrf_exempt
 def toggle_vegan_mode(request):
     if request.method == 'POST':
@@ -48,4 +47,3 @@ def toggle_vegan_mode(request):
         profile.save()
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'failed'}, status=400)
-

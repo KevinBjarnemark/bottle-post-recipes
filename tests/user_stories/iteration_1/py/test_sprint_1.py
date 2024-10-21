@@ -1,19 +1,14 @@
 import pytest
 from django.urls import reverse
-from apps.pages.create_recipe.models import Recipe, Ingredient
+from apps.pages.create_recipe.models import Recipe
 from apps.users.models import User
 from tests.helpers.helpers import user_log_in, create_mock_image
 import json
 
 # TODO Test vegan filter
-# Move towards database filtering instead of client-side 
-# filtering, then create a vegan filter test 
+# Move towards database filtering instead of client-side
+# filtering, then create a vegan filter test
 
-import pytest
-from django.urls import reverse
-from apps.pages.create_recipe.models import Recipe
-from tests.helpers.helpers import user_log_in
-import json
 
 # Recipe creation, javascript insertion, and render
 @pytest.mark.django_db
@@ -44,7 +39,6 @@ def test_recipe_creation_and_display(client):
         'title': 'Test Recipe',
         'description': "Test description",
         'dietary_attributes': dietary_attributes,
-        'vegan': False,
         'image': create_mock_image(),
         'tags': 'test, recipe',
         'instructions': "Mix all ingredients.",
@@ -62,7 +56,7 @@ def test_recipe_creation_and_display(client):
 
     assert response.status_code == 200
     assert Recipe.objects.filter(title='Test Recipe').exists()
-    
+
     # Verify that ingredients are associated with the recipe
     recipe_instance = Recipe.objects.get(user=user, title='Test Recipe')
 
@@ -72,8 +66,9 @@ def test_recipe_creation_and_display(client):
     assert ingredients.filter(name="Ingredient 1", quantity=1).exists()
     assert ingredients.filter(name="Ingredient 2", quantity=200).exists()
 
-    # NOTE Recipes are displayed with JS and there's a separate 
+    # NOTE Recipes are displayed with JS and there's a separate
     # JEST test for checking if they actually gets displayed.
+
 
 # Check user profile
 @pytest.mark.django_db
@@ -87,13 +82,13 @@ def test_user_profile_data_in_js(client):
     assert '"user-profile-data"' in response.content.decode()
     assert user_profile_json['vegan_mode'] == user.profile.vegan_mode
 
-    # Check if vegan mode is True by default 
+    # Check if vegan mode is True by default
     assert user.profile.vegan_mode is True
 
     # Check if vegan mode can be configured
     user.profile.vegan_mode = False
     user.profile.save()
-    user.refresh_from_db() 
+    user.refresh_from_db()
     assert user.profile.vegan_mode is False
 
     # Check if vegan mode toggle button exists
@@ -111,7 +106,7 @@ def test_user_registration(client):
     }
     # Submit signup data
     response = client.post(reverse('register'), data=signup_data)
-    
+
     # Check that the user was created
     user_exists = User.objects.filter(username='new_user').exists()
     assert user_exists
@@ -120,23 +115,25 @@ def test_user_registration(client):
     assert response.status_code == 302
     assert response.url == reverse('home')
 
+
 # Check user login
 @pytest.mark.django_db
 def test_user_login(client, django_user_model):
     # Create a user in the database
     username = "testuser"
     password = "securePassword123"
-    user = django_user_model.objects.create_user(username=username, password=password)
-    
+    django_user_model.objects.create_user(username=username, password=password)
+
     # Define the login data
     login_data = {
         'username': username,
         'password': password,
     }
-    
+
     # Submit login data
     response = client.post(reverse('login'), data=login_data)
-    
-    # Check that the login was successful by verifying redirection to the home page
+
+    # Check that the login was successful by verifying
+    # redirection to the home page
     assert response.status_code == 302
     assert response.url == reverse('home')

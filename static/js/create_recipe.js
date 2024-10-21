@@ -22,11 +22,11 @@ document.addEventListener("DOMContentLoaded", function() {
             tags: "",
             instructions: "",
             ingredients: [],
-            "dietary_attributes": [],
+            dietary_attributes: [],
             image: null,
-            "preparation_time": {},
-            "cooking_time": {},
-            "estimate_price": {},
+            preparation_time: {},
+            cooking_time: {},
+            estimate_price: {},
         },
         formObject: {
             // All text inputs
@@ -139,7 +139,7 @@ const buildNumberFields = (globalVariables) => {
 
 const buildForm = (globalHTML, globalVariables) => {
     buildDietaryAttributes(globalHTML, globalVariables);
-    buildNumberFields(globalVariables)
+    buildNumberFields(globalVariables);
 };
 
 /**
@@ -205,7 +205,7 @@ const submitForm = async (globalVariables) => {
 const addIngredientToList = (globalHTML, globalVariables, ingredient) => {
     const ingredientElement = document.createElement("div");
     ingredientElement.className = "ingredient";
-    const ingredients = globalVariables.formData.ingredients;
+    let ingredients = globalVariables.formData.ingredients;
 
     const removeIngredientButton = document.createElement("button");
     removeIngredientButton.innerText = "X";
@@ -296,7 +296,7 @@ const buildDietaryAttributes = (globalHTML, globalVariables) => {
         // Set up listeners
         const element = document.getElementById(i.id);
         element.addEventListener("change", function(e) {
-            let dietaryAttributes = globalVariables.formData["dietary_attributes"];
+            let dietaryAttributes = globalVariables.formData.dietary_attributes;
             if (e.target.checked) {
                 if (!dietaryAttributes.includes(i.field)){
                     dietaryAttributes.push(i.field);
@@ -306,7 +306,7 @@ const buildDietaryAttributes = (globalHTML, globalVariables) => {
                     dietaryAttributes = dietaryAttributes.filter(attr => attr !== i.field);
                 }
             }
-            globalVariables.formData["dietary_attributes"] = dietaryAttributes;
+            globalVariables.formData.dietary_attributes = dietaryAttributes;
         });
     });
 };

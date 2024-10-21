@@ -18,11 +18,15 @@ DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 # SECURITY WARNING: do not deploy the development db!
 DEVELOPMENT_DATABASE = config('DEVELOPMENT_DATABASE', default=False, cast=bool)
 
-# Cloudinary 
-cloudinary.config(secure=True) # Enforce secure connections
+# Cloudinary
+cloudinary.config(secure=True)  # Enforce secure connections
 CLOUDINARY_URL = config('CLOUDINARY_URL')
 
-ALLOWED_HOSTS = ['bottle-post-recipes-eb1abd9c13ee.herokuapp.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+    'bottle-post-recipes-eb1abd9c13ee.herokuapp.com',
+    'localhost',
+    '127.0.0.1'
+]
 
 # Authentication
 LOGIN_REDIRECT_URL = '/'
@@ -35,9 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_browser_reload', # Hot-reloading
+    'django_browser_reload',  # Hot-reloading
     # Free static media solution
-    'cloudinary_storage', 
+    'cloudinary_storage',
     'cloudinary',
     # Custo apps
     'apps.pages.home',
@@ -53,7 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "django_browser_reload.middleware.BrowserReloadMiddleware", # Hot-reloading
+    # Hot-reloading
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware"
 ]
 
@@ -81,16 +86,17 @@ WSGI_APPLICATION = 'config.wsgi.application'
 """
 Databases
 SECURITY WARNING: Do not deploy the development database!
-If you need to access the production database in 
+If you need to access the production database in
 development (NOT RECOMMENDED OR USE WITH CAUTION),
 DO NOT CHANGE THE IF STATEMENT BELOW. Instead,
 modify the DEVELOPMENT_DATABASE environment variable.
 
-The DEVELOPMENT_DATABASE variable is configured as False in production by default,
-so you won't accidentally deploy using the development database.
+The DEVELOPMENT_DATABASE variable is configured as False in
+production by default, so you won't accidentally deploy using
+the development database.
 """
 
-if 'test' in sys.argv: # When tests are running
+if 'test' in sys.argv:  # When tests are running
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -99,7 +105,9 @@ if 'test' in sys.argv: # When tests are running
     }
 elif DEVELOPMENT_DATABASE:
     DATABASES = {
-        'default': dj_database_url.config(default=config('DEVELOPMENT_DATABASE_URL'))
+        'default': dj_database_url.config(
+            default=config('DEVELOPMENT_DATABASE_URL')
+        )
     }
 else:
     DATABASES = {

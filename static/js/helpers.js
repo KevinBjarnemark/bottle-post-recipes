@@ -12,7 +12,7 @@ export const getCookie = (name) => {
         }
     }
     return cookieValue;
-}
+};
 
 /**
  * 1. Trims lenghy text into a specified length. 
@@ -31,8 +31,8 @@ export const trimText = (text, slice) => {
             return text;
         }
     }else {
-        return ""
-    };
+        return "";
+    }
 };
 
 /**
@@ -42,4 +42,4 @@ export const trimText = (text, slice) => {
  */
 export const capitalizeFirstLetter = (text) => {
     return text.charAt(0).toUpperCase() + text.slice(1);
-}
+};

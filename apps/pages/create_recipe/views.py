@@ -1,9 +1,13 @@
 from django.http import JsonResponse
-from .models import DietaryAttribute, Recipe, Ingredient, Time, EstimatedPricePerMeal
+from .models import (
+    DietaryAttribute, Recipe, Ingredient, Time,
+    EstimatedPricePerMeal
+)
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 import json
 from constants import NON_VEGAN_ATTRIBUTES
+
 
 @csrf_exempt
 def submit_recipe(request):
@@ -19,18 +23,20 @@ def submit_recipe(request):
             # Recipe image
             image = request.FILES.get('image')
             # Handle dietary attributes and determine if the recipe is vegan
-            dietary_attributes = json.loads(request.POST.get('dietary_attributes', '[]'))
+            dietary_attributes = json.loads(
+                request.POST.get('dietary_attributes', '[]')
+            )
             # Defult to true
             vegan = True
             # Check if any non-vegan ingredients are present
             for attribute in dietary_attributes:
                 if attribute in NON_VEGAN_ATTRIBUTES:
                     # If a non-vegan attribute is found, set vegan to False
-                    vegan = False  
+                    vegan = False
                     break
 
-            # Determine recipe type 
-            recipe_type = "vegan" # Default to vegan
+            # Determine recipe type
+            recipe_type = "vegan"  # Default to vegan
             for attribute in dietary_attributes:
                 if attribute in NON_VEGAN_ATTRIBUTES:
                     recipe_type = "vegetarian"
@@ -42,21 +48,23 @@ def submit_recipe(request):
 
             # Create the Recipe object
             recipe = Recipe(
-                user=request.user, # Ensure the user is logged in
-                title = title,
-                description = description,
-                instructions = instructions,
-                tags = tags,
-                image = image,
-                vegan = vegan,
-                recipe_type = recipe_type,
+                user=request.user,  # Ensure the user is logged in
+                title=title,
+                description=description,
+                instructions=instructions,
+                tags=tags,
+                image=image,
+                vegan=vegan,
+                recipe_type=recipe_type,
             )
             recipe.save()
 
             # Save dietary attributes to the recipe
             for dietry_attribute in dietary_attributes:
-                dietry_attribute, created = DietaryAttribute.objects.get_or_create(
-                    name=dietry_attribute
+                dietry_attribute, created = (
+                    DietaryAttribute.objects.get_or_create(
+                        name=dietry_attribute
+                    )
                 )
                 recipe.dietary_attributes.add(dietry_attribute)
 
@@ -70,20 +78,30 @@ def submit_recipe(request):
                 )
 
             # Handle cooking and preparation time
-            preparation_time = json.loads(request.POST.get('preparation_time', '{}'))
+            preparation_time = json.loads(
+                request.POST.get('preparation_time', '{}')
+            )
             cooking_time = json.loads(request.POST.get('cooking_time', '{}'))
             Time.objects.create(
                 recipe=recipe,
-                preparation_minutes=preparation_time.get('preparation-time-minutes', 0),
-                preparation_hours=preparation_time.get('preparation-time-hours', 0),
-                preparation_days=preparation_time.get('preparation-time-days', 0),
+                preparation_minutes=preparation_time.get(
+                    'preparation-time-minutes', 0
+                ),
+                preparation_hours=preparation_time.get(
+                    'preparation-time-hours', 0
+                ),
+                preparation_days=preparation_time.get(
+                    'preparation-time-days', 0
+                ),
                 cooking_minutes=cooking_time.get('cooking-time-minutes', 0),
                 cooking_hours=cooking_time.get('cooking-time-hours', 0),
                 cooking_days=cooking_time.get('cooking-time-days', 0),
             )
 
             # Handle estimated price
-            estimate_price = json.loads(request.POST.get('estimate_price', '{}'))
+            estimate_price = json.loads(
+                request.POST.get('estimate_price', '{}')
+            )
             EstimatedPricePerMeal.objects.create(
                 recipe=recipe,
                 price_from=estimate_price.get('estimate-price-from', 0),
@@ -93,8 +111,9 @@ def submit_recipe(request):
         except Exception as e:
             print("Error:", e)
             return JsonResponse({'success': False, 'error': str(e)})
-        
+
     return JsonResponse({'success': True})
+
 
 def create_recipe(request):
     return render(request, 'pages/create_recipe/create_recipe.html')

@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
 
+
 def load_user_profile(request):
     # Default profile
     user_profile = {
@@ -18,50 +19,54 @@ def load_user_profile(request):
         }
     return user_profile
 
+
 def load_recipes(request):
-    """Loads public recipes in batches and order in 
-    the following order: 
-    
+    """Loads public recipes in batches and order in
+    the following order:
+
     bottle_posted_count, likes, created_at"""
 
-    batch = 6
+    # Load 6 recipes per 'page'
+    BATCH = 6
+    # URL parameters
     page_number = request.GET.get('page')
-    # Search query
-    q = request.GET.get('q') # Query
-    q_search_areas = request.GET.get('search_areas')
-    # Filters
+    q = request.GET.get('q')  # Query
+    search_areas = request.GET.get('search_areas')
     recipe_types_exclude = request.GET.get('recipe_types_exclude')
 
-    # Split search_areas into a list (e.g., ['ingredients', 'tags'])
-    if q_search_areas:
-        include_areas = [field.strip() for field in q_search_areas.split(',') if field.strip()]
-
+    # Make sure q is declared and then create a query filter
+    if not q:
+        q = ""
     query_filter = Q()
     if q:
         query_filter |= Q(title__icontains=q)
-    if q_search_areas:
-        if 'description' in include_areas:
+
+    # Apply search areas
+    if search_areas:
+        # Split search_areas into a list (e.g., ['ingredients', 'tags'])
+        search_areas = search_areas.split(',')
+        if 'description' in search_areas:
             query_filter |= Q(description__icontains=q)
-        if 'ingredients' in include_areas:
+        if 'ingredients' in search_areas:
             query_filter |= Q(ingredients__name__icontains=q)
-        if 'tags' in include_areas:
+        if 'tags' in search_areas:
             query_filter |= Q(tags__icontains=q)
 
     # Exclude recipe types
     if recipe_types_exclude:
-        exclude_types = [field.strip() for field in recipe_types_exclude.split(',') if field.strip()]
+        exclude_types = recipe_types_exclude.split(',')
         if exclude_types:
             query_filter &= ~Q(recipe_type__in=exclude_types)
 
     # Apply filters and prevent duplicate search results with distinct
     recipes = Recipe.objects.filter(query_filter).distinct()
 
-    # NOTE! Do not remove '-created' at as it is ensuring consistent 
-    # order and may cause duplicated search results 
+    # NOTE! Do not remove '-created' at as it is ensuring consistent
+    # order and may cause duplicated search results
     recipes = recipes.order_by('-bottle_posted_count', '-likes', '-created_at')
 
     total_recipes = recipes.count()
-    paginator = Paginator(recipes, batch)  
+    paginator = Paginator(recipes, BATCH)
     page = paginator.get_page(page_number)
 
     # Send necessary fields for frontend rendering
@@ -74,7 +79,11 @@ def load_recipes(request):
             'likes': recipe.likes,
             'in_ocean': recipe.in_ocean,
             'image': recipe.image.url if recipe.image else None,
-            'user_image': recipe.user.profile.image.url if recipe.user.profile.image else None,
+            'user_image': (
+                recipe.user.profile.image.url
+                if recipe.user.profile.image
+                else None
+            ),
             'vegan': recipe.vegan,
         }
         for recipe in page.object_list
@@ -82,18 +91,18 @@ def load_recipes(request):
 
     return JsonResponse(
         {
-            'recipes' : data, 
+            'recipes': data,
             'total_recipes': total_recipes,
-            'batch': batch,
-        }, 
+            'batch': BATCH,
+        },
         safe=False
     )
+
 
 def home(request):
     user_profile = load_user_profile(request)
 
-    return render(request, 'pages/home/home.html', 
-        {
+    return render(request, 'pages/home/home.html', {
             'vegan_mode': user_profile['vegan_mode'],
             'user_profile': json.dumps(user_profile),
         }
