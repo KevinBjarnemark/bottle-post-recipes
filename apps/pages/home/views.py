@@ -26,11 +26,14 @@ def load_recipes(request):
 
     batch = 6
     page_number = request.GET.get('page')
+    # Search query
     q = request.GET.get('q') # Query
     q_search_areas = request.GET.get('search_areas')
+    # Filters
+    recipe_types_exclude = request.GET.get('recipe_types_exclude')
 
+    # Split search_areas into a list (e.g., ['ingredients', 'tags'])
     if q_search_areas:
-        # Split search_areas into a list (e.g., ['ingredients', 'tags'])
         include_areas = [field.strip() for field in q_search_areas.split(',') if field.strip()]
 
     query_filter = Q()
@@ -43,6 +46,12 @@ def load_recipes(request):
             query_filter |= Q(ingredients__name__icontains=q)
         if 'tags' in include_areas:
             query_filter |= Q(tags__icontains=q)
+
+    # Exclude recipe types
+    if recipe_types_exclude:
+        exclude_types = [field.strip() for field in recipe_types_exclude.split(',') if field.strip()]
+        if exclude_types:
+            query_filter &= ~Q(recipe_type__in=exclude_types)
 
     # Apply filters and prevent duplicate search results with distinct
     recipes = Recipe.objects.filter(query_filter).distinct()

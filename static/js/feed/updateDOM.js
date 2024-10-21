@@ -44,9 +44,6 @@ export const cleanUpFeed = (globalHTML, globalVariables) => {
  * 
  */
 export const filterVeganRecipes = (globalVariables) => {
-    /*  const slicedRecipes = globalVariables.recipes.slice(
-         globalVariables.recipes.length - slice, slice); */
- 
          globalVariables.recipes.forEach(i => {
              const recipeItem = document.getElementById(`recipe-item-${i.id}`);
              if (globalVariables.veganMode){
@@ -181,43 +178,62 @@ export const getRecipePage = async (page, globalHTML, globalVariables) => {
     if (globalVariables.filterObject === undefined){
         globalVariables.filterObject = {
             q: "",
-            search_areas: [],
+            searchAreas: [],
+            recipeTypes: {
+                vegan: true,
+                vegetarian: true,
+                fish: true,
+                meat: true,
+            }
         }
     }
 
-    let filterObject = {
-        "q": globalVariables.filterObject.q,
+    let additionalParametersObject = {
+        'q': globalVariables.filterObject.q,
+        'search_areas': "",
+        'recipe_types_exclude': "",
     };
 
     /* Convert the included search areas array to a 
     comma separated string */
-    const searchAreas = globalVariables.filterObject["search_areas"]
+    const searchAreas = globalVariables.filterObject.searchAreas
     if (Array.isArray(searchAreas) && searchAreas.length > 0) {
         // Initialize the entry
-        filterObject["search_areas"] = "";
+        additionalParametersObject["search_areas"] = "";
         // Create a comma separated string
         searchAreas.forEach((i, index) => {
             const addComma = index < searchAreas.length -1 ? "," : "";
-            filterObject["search_areas"] += i + addComma;
+            additionalParametersObject["search_areas"] += i + addComma;
         });
         // Trim whitespaces
-        filterObject["search_areas"].replace(/,\s*$/, "").trim();
+        additionalParametersObject["search_areas"].replace(/,\s*$/, "").trim();
     }
 
+    // Convert dietary types to a comma separated string
+    // Filter only the 'false' ones to exclude
+    const recipeTypes = Object.entries(globalVariables.filterObject.recipeTypes)
+        .filter(([, value]) => !value); 
+        recipeTypes.forEach((i, index) => {
+        const addComma = index < recipeTypes.length - 1 ? "," : "";
+        additionalParametersObject['recipe_types_exclude'] += i[0] + addComma;
+    });
 
     // Additional filters (concatenated string)
     let additionalParameters = ""
-    if (filterObject.q || filterObject.search_areas) {
-        Object.entries(filterObject).forEach(([key, value]) => {
+    Object.entries(additionalParametersObject).forEach(([key, value]) => {
+        // Only add declared parameters
+        if (value) {
             additionalParameters += `&${key}=${value}`;
-        });
-    }
+        }
+    });
 
     // Fetch recipe 'group'
     const response = await fetch(
         `/load_recipes?page=${page}${additionalParameters}`
     );
     const data = await response.json();
+
+    console.log(`/load_recipes?page=${page}${additionalParameters}`)
 
     // Handle no recipes found and then render recipes
     if (data.total_recipes === 0) {

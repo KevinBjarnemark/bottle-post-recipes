@@ -37,17 +37,17 @@ document.addEventListener("DOMContentLoaded", function() {
         filterObject: 
             {
                 // Search query (string)
-                "q": "", 
+                q: "", 
                 // Include search areas (array of strings)
-                "search_areas": [], 
+                searchAreas: [], 
+                recipeTypes: {
+                    vegan: true,
+                    vegetarian: true,
+                    fish: true,
+                    meat: true,
+                },
             },
         page: 1,
-        // Search areas ids (last item is extracted when creating listeners)
-        searchAreaBoolIds: [
-            "search-area-description", 
-            "search-area-ingredients", 
-            "search-area-tags",
-        ],
         sidebarSettingContainers: [
             "search-container",
             "filter-container",
@@ -57,16 +57,16 @@ document.addEventListener("DOMContentLoaded", function() {
     // Set initial states
     setInitialStates(globalHTML, globalVariables);
     // Generate html
-    generateHTML(globalHTML);
+    generateHTML(globalHTML, globalVariables);
     // Configure listeners
     configureListeners(globalHTML, globalVariables);
 });
 
-const generateHTML = (globalHTML) => {
+const generateHTML = (globalHTML, globalVariables) => {
     // Sidebar search areas checkboxes
-    htmlSidebarSearchAreas(globalHTML);
+    htmlSidebarSearchAreas(globalHTML, globalVariables);
     // Sidebar include filters (vegan, vegetarian, meat)
-    htmlSidebarFilters(globalHTML);
+    htmlSidebarFilters(globalHTML, globalVariables);
 };
 
 /**

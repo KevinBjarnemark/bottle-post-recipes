@@ -15,6 +15,13 @@ class DietaryAttribute(models.Model):
 class Recipe(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    RECIPE_TYPES = [
+        ('vegan', 'Vegan'),
+        ('vegetarian', 'Vegetarian'),
+        ('fish', 'Fish'),
+        ('meat', 'Meat'),
+    ]
+    recipe_type = models.CharField(max_length=50, choices=RECIPE_TYPES)
     title = models.CharField(max_length=255)
     if settings.DEBUG:
         image = models.ImageField(upload_to='recipe_images/', blank=True, null=True)

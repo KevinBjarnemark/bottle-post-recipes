@@ -27,22 +27,38 @@
             <div 
                 id="search-container" 
                 class="absolute-flex sidebar-settings-container sidebar-settings-border">
-                <div class="flex-center sidebar-settings flex-column">
-                    <input 
-                        id="search-input" 
-                        class="form-control fs-6 mt-1" 
-                        type="text" 
-                        placeholder="eg. baba ganoush" />
-
-                    <p class="text-white fs-6 mb-0 text-decoration-underline">Also search in</p>
-                    <div id="search-areas" class="flex-column w-100 align-items-start">
-                        <!-- JS Generated content -->
+                <div class="flex-center sidebar-settings flex-column w-100">
+                    <div class="flex-center w-100 sidebar-settings-border-bottom">
+                        <input 
+                            id="search-input" 
+                            class="form-control fs-6 mt-1" 
+                            type="text" 
+                            placeholder="eg. baba ganoush" />
                     </div>
+                        <p class="text-white fs-6 mt-2 text-decoration-underline">
+                            Also search in
+                        </p>
+                    <div 
+                        id="search-areas"
+                        class="flex-row justify-content-start w-100
+                            sidebar-settings-border-top sidebar-settings-border-bottom">
+                        <!-- JS generated search areas -->
+                    </div>
+
+                    <!-- <div class="flex-column w-100 sidebar-settings-border-top">
+                        <p class="text-white fs-6 text-decoration-underline">
+                            Also search in
+                        </p>
+                        <div id="search-areas" class="flex-column w-100 align-items-start 
+                            sidebar-settings-border-bottom">
+                           
+                        </div>
+                    </div> -->
 
                     <!-- Search button -->
                     <button 
                         id="search-button" 
-                        class="fs-6 text-white w-80 submit-settings-button">
+                        class="fs-6 text-white pt-1 pb-1 submit-settings-button">
                         Search
                     </button> 
                 </div>
@@ -54,7 +70,7 @@
                 class="absolute-flex sidebar-settings-container sidebar-settings-border">
                 <div class="flex-center sidebar-settings flex-column w-100">
                     <!-- Title -->
-                    <h5 class="text-white fs-6">Filter</h5>
+                    <h5 class="text-white fs-6 pt-2">Filter</h5>
                     <!-- Filters -->
                     <div id="filters"
                         class="flex-row justify-content-start w-100
@@ -64,8 +80,8 @@
                     <!-- Filter button -->
                     <button 
                         id="filter-button" 
-                        class="fs-6 text-white w-80 submit-settings-button">
-                        Filter
+                        class="fs-6 text-white pt-1 pb-1 submit-settings-button">
+                        Search
                     </button> 
                 </div>
             </div>

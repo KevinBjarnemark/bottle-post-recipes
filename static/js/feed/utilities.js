@@ -1,26 +1,5 @@
-import { getCookie } from '../helpers.js';
+import { getCookie, capitalizeFirstLetter } from '../helpers.js';
 import { filterVeganRecipes, hintWindow } from './updateDOM.js';
-
-/**
- * Adds or removes an item from the search query include array
- * in sync with the event.target.checked.
- * 
- * @param {Object}  globalVariables
- * @param {Object}   checked event.target.checked
- * @param {str}   area eg. tags, description, ingredients
- */
-export const toggleSearchAreaItems = (globalVariables, checked, area) => {
-    const array = globalVariables.filterObject.search_areas;
-    // Add (if it doesn't exist)
-    if (checked) {
-        if (!array.includes(area)) {
-            array.push(area);
-        }
-    }else {
-        const newArray = array.filter(item => item !== area);
-        globalVariables.filterObject.search_areas = newArray;
-    }
-};
 
 /**
  * 1. Toggles the container and its content (with CSS)
@@ -77,16 +56,20 @@ export const toggleVeganMode = async (globalHTML, globalVariables) => {
 
         const hintWindowHtml = globalVariables.veganMode ? 
         `
-        <p>Vegan mode is 
+        <p>
+            Vegan mode is 
             <span style='color:#8aeb84; font-weight: 600'>
                 ON
             </span>
             <i class="fa-solid fa-carrot" id="vegan-mode-icon"></i>
+            <br />
+            This overrides any other settings.
         </p>
         ` 
         :
         `
-        <p>Vegan mode is 
+        <p>
+            Vegan mode is 
             <span style='color:#fa6e6e; font-weight: 600'>
                 OFF
             </span>
@@ -98,5 +81,59 @@ export const toggleVeganMode = async (globalHTML, globalVariables) => {
 
     } else {
         console.error('Failed to toggle vegan mode');
+    }
+};
+
+/**
+ * Toggles the filter buttons 
+ * 
+ */
+export const toggleFilters = async (globalHTML, globalVariables, filter) => {
+    // Toggle filter variable
+    globalVariables.filterObject.recipeTypes[filter] = 
+        !globalVariables.filterObject.recipeTypes[filter];
+
+    const hintWindowHtml = globalVariables.filterObject.recipeTypes[filter] ? 
+    `
+    <p>
+        <em>${capitalizeFirstLetter(filter)}</em> recipes are 
+        <span style='color:#8aeb84; font-weight: 600'>
+            included
+        </span>
+        in your search.
+    </p>
+    ` 
+    :
+    `
+    <p>
+        <em>${capitalizeFirstLetter(filter)}</em> recipes are
+        <span style='color:#fa6e6e; font-weight: 600'>
+                excluded
+        </span>
+        in your search.
+    </p>
+    `;
+    hintWindow(globalVariables, globalHTML, hintWindowHtml);
+};
+
+
+/**
+ * Adds or removes an item from the search query include array
+ * in sync with the event.target.checked.
+ * 
+ * @param {Object}  globalVariables
+ * @param {Object}   checked event.target.checked
+ * @param {str}   area eg. tags, description, ingredients
+ */
+export const toggleSearchAreaItems = (globalVariables, checked, area) => {
+    const array = globalVariables.filterObject.searchAreas;
+    // Add (if it doesn't exist)
+    if (checked) {
+        if (!array.includes(area)) {
+            array.push(area);
+        }
+    }else {
+        const newArray = array.filter(item => item !== area);
+        globalVariables.filterObject.searchAreas = newArray;
     }
 };

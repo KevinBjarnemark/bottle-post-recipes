@@ -1,6 +1,5 @@
 
 import { 
-    toggleSearchAreaItems, 
     toggleSidebarSettings, 
     toggleVeganMode 
 } from './utilities.js';
@@ -58,15 +57,10 @@ const sidebarListeners = (globalHTML, globalVariables) => {
         await getRecipePage(1, globalHTML, globalVariables);
     });
 
-    // Set up listeners for all search area boolean checkboxes
-    globalVariables.searchAreaBoolIds.forEach(id => {
-        const element = document.getElementById(id);
-        // Extract the search area name
-        const searchAreaName = id.split("-").pop();
-
-        element.addEventListener("change", async function(event) {
-            toggleSearchAreaItems(globalVariables, event.target.checked, searchAreaName);
-        });
+    // Filter button
+    globalHTML.filterButton.addEventListener("click", async () => {
+        cleanUpFeed(globalHTML, globalVariables);
+        await getRecipePage(1, globalHTML, globalVariables);
     });
 };
 

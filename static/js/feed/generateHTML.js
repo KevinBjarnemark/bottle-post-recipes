@@ -1,25 +1,29 @@
+import { toggleFilters, toggleSearchAreaItems } from "./utilities.js";
 
-export const htmlSidebarFilters = (globalHTML) => {
+export const htmlSidebarFilters = (globalHTML, globalVariables) => {
     const filters = [
         {
             title: "Vegan",
             border: "sidebar-settings-border-right",
-            name: "Include vegan recipes",
-            id: "filter-include-vegan",
+            id: "filter-recipe-type-vegan",
             icon: "carrot",
         },
         {
             title: "Vegetarian",
             border: "sidebar-settings-border-right",
-            name: "Include vegetarian recipes",
-            id: "filter-include-vegitarian",
+            id: "filter-include-vegetarian",
             icon: "egg",
+        },
+        {
+            title: "Fish",
+            border: "sidebar-settings-border-right",
+            id: "filter-recipe-type-fish",
+            icon: "fish",
         },
         {
             title: "Meat",
             border: "",
-            name: "Include carnivore recipes",
-            id: "filter-include-carnivore",
+            id: "filter-recipe-type-meat",
             icon: "drumstick-bite",
         },
     ];
@@ -35,51 +39,70 @@ export const htmlSidebarFilters = (globalHTML) => {
                     class="form-check-input"
                     style="margin-top: 10px"
                     type="checkbox" 
-                    name=${i.name} 
-                    id=${i.id} 
-                />
+                    name=${i.id} 
+                    id=${i.id}
+                checked />
         </div>`;
     });
 
     globalHTML.filters.innerHTML = htmlString;
+
+    filters.forEach(i => {
+        const element = document.getElementById(i.id);
+        element.addEventListener('click', function() {
+            toggleFilters(globalHTML, globalVariables, i.title.toLowerCase());
+        });
+    });
 };
 
-export const htmlSidebarSearchAreas = (globalHTML) => {
+export const htmlSidebarSearchAreas = (globalHTML, globalVariables) => {
     const filters = [
         {
-            name: "Include description in search",
+            title: "Description",
+            border: "sidebar-settings-border-right",
             id: "search-area-description",
-            label: "Description",
+            icon: "font"
         },
         {
-            name: "Checkbox include ingredients in search",
+            title: "Ingredients",
+            border: "sidebar-settings-border-right",
             id: "search-area-ingredients",
-            label: "Ingredients",
+            icon: "apple-whole"
+
         },
         {
-            name: "Checkbox include tags in search",
+            title: "Tags",
+            border: "",
             id: "search-area-tags",
-            label: "Tags",
-        },
+            icon: "hashtag"
 
+        },
     ];
 
     let htmlString = "";
     filters.forEach(i => {
         htmlString +=
-        `<div class="flex-row align-items-start mb-1">
-            <input 
-                class="form-check-input"
-                style="margin-right: 10px;" 
-                type="checkbox" 
-                name=${i.name}
-                id=${i.id}
-            />
-            <label class="form-check-label text-white" for=${i.id}>
-                ${i.label}
-            </label>
+        `<div class="flex-center flex-column width-third ${i.border} 
+            pt-1 pb-1">
+            <p class="small-font text-white">${i.title}</p>
+            <i class="fa-solid fa-${i.icon} text-white fs-3"></i>
+                <input 
+                    class="form-check-input"
+                    style="margin-top: 10px"
+                    type="checkbox" 
+                    name=${i.id} 
+                    id=${i.id} />
         </div>`;
     });
 
     globalHTML.searchAreas.innerHTML = htmlString;
+
+    filters.forEach(i => {
+        const element = document.getElementById(i.id);
+        element.addEventListener('change', function(e) {
+            // Extract the search area name
+            const searchAreaName = i.id.split("-").pop();
+            toggleSearchAreaItems(globalVariables, e.target.checked, searchAreaName);
+        });
+    });
 };
