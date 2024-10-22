@@ -112,10 +112,12 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
             recipeContainer.innerHTML = `
                 <h1 class="hidden-heading">${recipe.title}</h1>
                 <div class="flex-column">
-                    <div class="recipe-shadow"></div>
-                    <h4>${trimText(recipe.title, 20)}</h4>
+                    <div class="recipe-item-background backdrop-blur"></div>
+                    <h4 class="recipe-item-title backdrop-blur">
+                        ${trimText(recipe.title, 20)}
+                    </h4>
                     <button class="absolute-flex right-fib-1 top-fibb-1 
-                        recipe-item-user-image-container">
+                        recipe-item-user-image-container interactive-turn">
                         <img 
                             src="${recipe.user_image ? 
                                 recipe.user_image : '/static/images/icons/missing.webp'}" 
@@ -124,20 +126,22 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                     </button>
                     <div class="flex-row">
                         <div class="flex-column">
-                            <img 
-                                src="${recipe.image ? 
-                                    recipe.image : '/static/images/icons/missing.webp'}" 
-                                alt="${recipe.title}">
+                            <button class="flex-center interactive-turn">
+                                <img 
+                                    src="${recipe.image ? 
+                                        recipe.image : '/static/images/icons/missing.webp'}" 
+                                    alt="${recipe.title}">
+                            </buttoon>
                         </div>
-                        <div class="d-flex align-items-start justify-content-center 
-                            recipe-item-sidebar-right pt-5">
+                        <button class="d-flex align-items-start justify-content-center 
+                            recipe-item-sidebar-right pt-5 mt-2 interactive-turn">
                             ${recipe.in_ocean ? 
                                 '<i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>' 
                                 : 
                                 ''}
-                        </div>
+                        </button>
                     </div>
-                    <button class="absolute-flex recipe-item-bottle-post-count-container">
+                    <button class="absolute-flex recipe-item-bottle-post-count-container interactive-turn">
                         <div class="absolute-flex recipe-item-bottle-post-red-count">
                             ${recipe.bottle_posted_count}
                         </div>
@@ -148,10 +152,12 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                     </button>
                     <div class="recipe-item-bottom-bar">
                         <button class="incremental-icon-button">
-                            <i class="fa-solid fa-comment"></i><span>0</span>
+                            <i class="fa-solid fa-comment text-white interactive-turn"></i>
+                            <span class="text-white">0</span>
                         </button>
                         <button class="incremental-icon-button">
-                            <i class="fa-solid fa-heart"></i><span>${recipe.likes}</span>
+                            <i class="fa-solid fa-heart text-white interactive-turn"></i>
+                            <span class="text-white">${recipe.likes}</span>
                         </button>
                     </div>
                     <div class="d-flex recipe-item-description-container">

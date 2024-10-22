@@ -26,10 +26,12 @@
     background: #76797b;
 }
 
+/* Variables */
 :root {
     --sidebar-width: 70px;
     --settings-border: 4px solid #383c3f;
     --settings-border-radius: 7px;
+    --layout-box-shadow: 0 0 5px 2px #25282929;
 }
 
 em {
@@ -43,12 +45,12 @@ button {
     border-radius: 5px;
 }
 
-.hidden-heading {
-    display: none;
-}
-
 body {
     background-color: #494C4E;
+}
+
+.hidden-heading {
+    display: none;
 }
 
 .nav {
@@ -65,11 +67,7 @@ body {
     z-index: 1;
     height: 75px;
     background-color: #404546;
-}
-
-/* Links */
-.no-decoration {
-    text-decoration: none;
+    box-shadow: var(--layout-box-shadow);
 }
 
 /* Base classes */
@@ -94,22 +92,6 @@ body {
 }
 
 /* Custom Bootstrap friendly classes */
-.right-fib-1 {
-    right: 6.1%;
-}
-
-.top-fib-1 {
-    top: 6.1%;
-}
-
-.left-fib-1 {
-    left: 6.1%;
-}
-
-.bottom-fib-1 {
-    bottom: 6.1%;
-}
-
 .flex-center {
     display: flex;
     justify-content: center;
@@ -136,18 +118,50 @@ body {
     flex-direction: column;
 }
 
+.right-fib-1 {
+    right: 6.1%;
+}
+
+.top-fib-1 {
+    top: 6.1%;
+}
+
+.left-fib-1 {
+    left: 6.1%;
+}
+
+.bottom-fib-1 {
+    bottom: 6.1%;
+}
+
+.no-decoration {
+    text-decoration: none;
+}
+
+.width-third {
+    width: 33.3%;
+}
+
+.small-font {
+    font-size: 10px;
+}
+
+.backdrop-blur {
+    backdrop-filter: blur(3px);
+}
+
+/* Account button */
 .account-button {
-    border-radius: 5px;
+    border-radius: 3px;
     border: none;
-    background-color: #cbd1d3b6;
+    background-color: #252829;
     padding: 5px 10px;
-    box-shadow: 0 0 4px 2px #d8dadc;
+    box-shadow: 0 0 4px 2px #3e4142;
+    color: #8e989e
 }
-
 .account-button:hover {
-    background-color: #a9b0b3b6;
+    background-color: #636b6c;
 }
-
 .profile-image {
     object-fit: cover; /* Prevent stretching */
     background-repeat: no-repeat;
@@ -155,9 +169,10 @@ body {
     background-attachment: scroll; box-shadow: none;
     overflow: hidden;
     border-radius: 50%;
-    box-shadow: 0 0 8px 2px #ffffff;
+    box-shadow: 0 0 2px 2px #74797a;
 }
 
+/* Feed */
 .feed-container {
     display: flex;
     position: relative;
@@ -187,8 +202,8 @@ body {
     padding: 40px 10px
 }
 
-/* Sidebar as id, since it might be targeted with js later */
-#feed-sidebar {
+/* Sidebar */
+.feed-sidebar {
     display: flex;
     position: fixed;
     z-index: 1;
@@ -196,11 +211,22 @@ body {
     left: 0;
     width: var(--sidebar-width);
     height: 100vh;
-    background-color: #575c5e; 
+    background-color: #575c5e;
+    box-shadow: var(--layout-box-shadow);
 }
-
 #feed-sidebar-buttons-container {
     margin-top: 190px; /* Prevent header overlapping */
+}
+/* Sidebar settings */
+.sidebar-settings-container {
+    display: none; /* Hidden by default */
+    top: 208px; 
+    left: var(--sidebar-width);
+    width: 250px;
+    background-color: #5B5F62;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .submit-settings-button {
@@ -209,24 +235,9 @@ body {
     width: 100%;
     background-color: #787d82;
     justify-content: center;
-    /* align-items: center; */
-    /* box-shadow: 0 0 2px 2px #7dd9fe; */
 }
-
 .submit-settings-button:hover {
     background-color: #5b636a;
-}
-
-.sidebar-settings-container {
-    display: none; /* Hidden by default */
-    top: 208px; 
-    left: var(--sidebar-width);
-    width: 250px;
-    /* padding-bottom: 10px; */
-    background-color: #5B5F62;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
 }
 
 .sidebar-settings-border-left {
@@ -248,14 +259,6 @@ body {
 .sidebar-settings-border {
     border: var(--settings-border);
     border-radius:  var(--settings-border-radius);
-}
-
-.width-third {
-    width: 33.3%;
-}
-
-.small-font {
-    font-size: 10px;
 }
 
 .sidebar-settings {
@@ -293,47 +296,6 @@ body {
     font-weight: 400;
 }
 
-/* Create recipe classes */
-.ingredient {
-    display: flex;
-    flex-direction: row;
-    position: relative;
-    justify-content: center;
-    align-items: center;
-    background-color: #3f4445;
-    border-radius: 4px;
-    margin: 5px 0;
-}
-
-.ingredients {
-    display: flex;
-    position: relative;
-    justify-content: flex-start;
-    align-items: center;
-    flex-direction: column;
-    width: fit-content;
-    min-width: 280px;
-    min-height: 300px;
-    padding: 10px 10px;
-    border: 2px solid #ffffff;
-    border-radius: 5px;
-}
-
-.ingredient .quantity {
-    background-color: #565b5c;
-    border-radius: 4px;
-    padding: 0 10px;
-}
-
-.remove-ingredient-btn {
-    border-radius: 4px;
-    padding: 0 10px;
-    margin: 0 10px;
-    background-color: #ff6464;
-    color: #ffffff;
-    border: 1px solid #ffffff;
-}
-
 .load-recipes-button {
     background-color: #6d7375;
     padding: 10px 0;
@@ -341,4 +303,32 @@ body {
 
 .load-recipes-button:hover {
     background-color: #747b7e;
+}
+
+.background-texture {
+    z-index: -1;
+    display: flex;
+    flex-direction: row;
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background-repeat: repeat-y repeat-x;
+    background-size: 145px; 
+    object-fit: cover; 
+    opacity: 0.12;
+    background-image: url('../images/textures/cutlery.svg');
+}
+
+.interactive-turn:hover {
+    animation-name: scale-and-turn-animation;
+    animation-duration: 0.1s; 
+    animation-timing-function: ease-in-out;
+    transform: rotate(-3.5deg) scale(1.1);
+}
+
+@keyframes scale-and-turn-animation {
+    0% {transform: rotate(0deg) scale(1)}
+    100% {transform: rotate(-3.5deg) scale(1.1)}
 }

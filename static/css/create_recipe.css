@@ -1,0 +1,54 @@
+
+/* Section */
+.create-recipe-section {
+    flex-direction: column;
+    margin-bottom: 20px;
+    width: 50%;
+    background-color: #3b4043;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+/* Boolean */
+.create-recipe-boolean-item {
+    background-color: #4e555a; 
+    border-radius: 5px;
+}
+
+/* Add ingrediants */
+.ingredient {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    background-color: #3f4445;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+.ingredients {
+    display: flex;
+    position: relative;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    width: fit-content;
+    min-width: 280px;
+    min-height: 300px;
+    padding: 10px 10px;
+    border: 2px solid #ffffff;
+    border-radius: 5px;
+}
+.ingredient .quantity {
+    background-color: #565b5c;
+    border-radius: 4px;
+    padding: 0 10px;
+}
+.remove-ingredient-btn {
+    border-radius: 4px;
+    padding: 0 10px;
+    margin: 0 10px;
+    background-color: #ff6464;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
