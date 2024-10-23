@@ -52,6 +52,8 @@ document.addEventListener("DOMContentLoaded", function() {
             "search-container",
             "filter-container",
         ],
+        // Stored event listeners that might be removed at some point
+        eventListeners: {},
     };
 
     // Set initial states

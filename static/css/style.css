@@ -332,3 +332,105 @@ body {
     0% {transform: rotate(0deg) scale(1)}
     100% {transform: rotate(-3.5deg) scale(1.1)}
 }
+
+#recipe-viewer-container {
+    visibility: hidden; /* Hidden by default */
+    z-index: 10;
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    background-color: #25282983;
+}
+
+#recipe-viewer {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    padding-top: 40px;
+    align-items: center;
+    justify-content: flex-start;
+    width: 95%;
+    height: 95vh;
+    background-color: #252829;
+    border-radius: 10px;
+    overflow: auto;
+    /* box-shadow: 0 0 2px 2px #ffffff; */
+}
+
+/* Target sections */
+#recipe-viewer-generated section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px 0;
+    /* box-shadow: 0 0 2px 2px #acb2b4; */
+}
+
+/* Target images */
+#recipe-viewer-generated img {
+    display: flex;
+    position: relative;
+    background-color: #282a2b; /* Fallback color */
+    width: 75%;
+    object-fit: contain;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 5px solid #2c2f30;
+    border-radius: 5px;
+}
+
+#recipe-viewer-generated {
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    width: 90%;
+    min-height: 80vh;
+    height: fit-content;
+    /* background-color: #3a3f40; */
+    border-radius: 10px;
+}
+
+.close-button {
+    position: fixed;
+    top: 20px;
+    right: 6.1%;
+    background-color: #5b6365;
+    color: #ffb560;
+    padding: 8px 13px;
+    margin: 30px;
+};
+
+.highlighted-item {
+    background-color: #979fa334;
+    padding: 0 10px;
+    margin: 0 5px;
+    border-radius: 3px;
+}
+
+.highlighted-word {
+    display: inline-block;
+    background-color: #979fa334;
+    padding: 0 10px;
+    margin: 3px 5px;
+    border-radius: 3px;
+
+}
+
+/* Inline text classes */
+span.inline-highlight {
+    background-color: #979fa334;
+    padding: 0 10px;
+    border-radius: 3px;
+}
+
+.pre-line {
+    white-space: pre-line;
+}

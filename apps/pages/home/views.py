@@ -75,6 +75,16 @@ def load_recipes(request):
             'id': recipe.id,
             'title': recipe.title,
             'description': recipe.description,
+            'instructions': recipe.instructions,
+            'dietary_attributes': [
+                attr.name for attr in recipe.dietary_attributes.all()
+            ],
+            'ingredients': [
+                {
+                    'name': ingredient.name, 'quantity': ingredient.quantity
+                } 
+                for ingredient in recipe.ingredients.all()
+            ],
             'bottle_posted_count': recipe.bottle_posted_count,
             'likes': recipe.likes,
             'in_ocean': recipe.in_ocean,

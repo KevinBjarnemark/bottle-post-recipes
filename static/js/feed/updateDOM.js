@@ -1,4 +1,5 @@
 import { trimText } from "../helpers.js";
+import { buildRecipeViewer } from "./generateHTML.js";
 
 /**
  * Sets the innerHTML of hint_window.html component and clear it after 
@@ -44,18 +45,18 @@ export const cleanUpFeed = (globalHTML, globalVariables) => {
  * 
  */
 export const filterVeganRecipes = (globalVariables) => {
-         globalVariables.recipes.forEach(i => {
-             const recipeItem = document.getElementById(`recipe-item-${i.id}`);
-             if (globalVariables.veganMode){
-                 if (!i.vegan){
-                     recipeItem.style.display = "none";
-                 }else {
-                     recipeItem.style.display = "flex";
-                 }
-             }else {
-                 recipeItem.style.display = "flex";
-             }
-         });
+    globalVariables.recipes.forEach(i => {
+        const recipeItem = document.getElementById(`recipe-item-${i.id}`);
+        if (globalVariables.veganMode){
+            if (!i.vegan){
+                recipeItem.style.display = "none";
+                }else {
+                recipeItem.style.display = "flex";
+            }
+        }else {
+            recipeItem.style.display = "flex";
+        }
+    });
 };
 
 /**
@@ -86,7 +87,6 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
     if (!Array.isArray(globalVariables.recipes)) {
         globalVariables.recipes = [];
     }
-
 
     let recipesToRender = data.batch;
     const recipeAmount = globalVariables.recipes.length;
@@ -126,12 +126,14 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                     </button>
                     <div class="flex-row">
                         <div class="flex-column">
-                            <button class="flex-center interactive-turn">
+                            <button
+                                id="recipe-image-button-${recipe.id}" 
+                                class="flex-center interactive-turn">
                                 <img 
                                     src="${recipe.image ? 
                                         recipe.image : '/static/images/icons/missing.webp'}" 
                                     alt="${recipe.title}">
-                            </buttoon>
+                            </button>
                         </div>
                         <button class="d-flex align-items-start justify-content-center 
                             recipe-item-sidebar-right pt-5 mt-2 interactive-turn">
@@ -168,12 +170,15 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
         
             // Append the recipe container to the feed
             globalHTML.feed.appendChild(recipeContainer);
+
             // Push to global variable
             globalVariables.recipes.push(recipe);
         });
 
         // Show recipes based on vegan mode
         filterVeganRecipes(globalVariables);
+        // Build the recipe viewer component
+        buildRecipeViewer(globalVariables);
     }else {
         hintWindow(globalVariables, globalHTML, "<p>All recipes are loaded!</p>");
     }
@@ -243,7 +248,7 @@ export const getRecipePage = async (page, globalHTML, globalVariables) => {
     if (data.total_recipes === 0) {
         hintWindow(globalVariables, globalHTML, "<p>Couldn't find any recipes.</p>");
     }else {
-    // Append new recipes to the recipe feed
-    renderRecipes(data, globalHTML, globalVariables);
+        // Append new recipes to the recipe feed
+        renderRecipes(data, globalHTML, globalVariables);
     }
 };

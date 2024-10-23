@@ -43,3 +43,39 @@ export const trimText = (text, slice) => {
 export const capitalizeFirstLetter = (text) => {
     return text.charAt(0).toUpperCase() + text.slice(1);
 };
+
+/**
+ * Adds an event listener as a global variable. 
+ * Used for event listeners that need to be properly
+ * removed after they have already been added. 
+ * 
+ * @param {object}    globalVariables Specifically the 'eventListeners' entry
+ * @param {str}       eventString eg. 'click', 'mouseup', etc.
+ * @param {str}       id The html element's id, NOTE! This is used entry -->
+ * globalVariables.eventListeners[id]
+ * @param {Function}  listenerFunction The reference function that the eventlistener 
+ * should reference.
+ */
+export const addStoredEventListener = (globalVariables, eventString, id, listenerFunction) => {
+    /* 
+        Testing issue fix 
+        For some reason JEST tests identify this as 
+        something other than an object despite it 
+        is already decalred as such.
+    */
+    if (!globalVariables.eventListeners) {
+        globalVariables.eventListeners = {};
+    }
+
+    const element = document.getElementById(id);
+    // Remove existing event listener, if any
+    if (globalVariables.eventListeners[id]) {
+        element.removeEventListener(
+            eventString,
+            globalVariables.eventListeners[id]
+        );
+    }
+    // Add and store listener
+    element.addEventListener(eventString, listenerFunction);
+    globalVariables.eventListeners[id] = listenerFunction;
+};
