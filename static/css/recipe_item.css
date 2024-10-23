@@ -82,7 +82,7 @@
 }
 
 /* Recipe image */
-.recipe-item img {
+.recipe-image {
     background-color: #282a2b; /* Fallback color */
     width: var(--recipe-item-width);
     object-fit: contain;
@@ -90,27 +90,6 @@
     overflow: hidden;
     border: 5px solid #2c2f30;
     border-radius: 5px;
-}
-
-/* User image */
-.recipe-item-user-image-container {
-    width: 80px;
-    height: 80px;
-    cursor: pointer;
-    background-color: #282a2b; /* Fallback color */
-    border: 2px solid #6c7377;
-    border-radius: 50%;
-    justify-content: center;
-    align-items: center;
-}
-
-.recipe-item-user-image-container img {
-    width: 100%;
-    object-fit: cover;
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-    border: 0;
-    border-radius: 50%;
 }
 
 /* Bottle posts button */

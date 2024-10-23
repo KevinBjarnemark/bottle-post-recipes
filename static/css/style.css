@@ -53,6 +53,7 @@ body {
     display: none;
 }
 
+/* Header */
 .nav {
     position: relative;
     z-index: 10;
@@ -60,6 +61,7 @@ body {
     background-color: #ffffff;
 }
 
+/* The small navigation bar beneath the header */
 .nav-below {
     display: flex;
     justify-content: center;
@@ -91,83 +93,42 @@ body {
     width: 100%;
 }
 
-/* Custom Bootstrap friendly classes */
-.flex-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.absolute-flex {
-    display: flex;
-    position: absolute;
-}
-
-.relative-flex {
-    display: flex;
-    position: relative;
-}
-
-.flex-row {
-    display: flex;
-    flex-direction: row;
-}
-
-.flex-column {
-    display: flex;
-    flex-direction: column;
-}
-
-.right-fib-1 {
-    right: 6.1%;
-}
-
-.top-fib-1 {
-    top: 6.1%;
-}
-
-.left-fib-1 {
-    left: 6.1%;
-}
-
-.bottom-fib-1 {
-    bottom: 6.1%;
-}
-
-.no-decoration {
-    text-decoration: none;
-}
-
-.width-third {
-    width: 33.3%;
-}
-
-.small-font {
-    font-size: 10px;
-}
-
-.backdrop-blur {
-    backdrop-filter: blur(3px);
-}
-
 /* Account button */
 .account-button {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     border-radius: 3px;
-    border: none;
-    background-color: #252829;
+    background-color: #363c3e;
     padding: 5px 10px;
     box-shadow: 0 0 4px 2px #3e4142;
-    color: #8e989e
+    color: #959fa4;
 }
 .account-button:hover {
-    background-color: #636b6c;
+    background-color: #292d2f;
+    box-shadow: 0 0 2px 2px #a7adae;
 }
-.profile-image {
+
+/* Profile image */
+.profile-image-container {
     object-fit: cover; /* Prevent stretching */
     background-repeat: no-repeat;
     background-size: cover;
-    background-attachment: scroll; box-shadow: none;
+    background-attachment: scroll; 
     overflow: hidden;
+    border-radius: 50%;
+    box-shadow: 0 0 2px 2px #74797a;
+    width: 80px;
+    height: 80px;
+}
+
+.profile-image {
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border: 0;
     border-radius: 50%;
     box-shadow: 0 0 2px 2px #74797a;
 }
@@ -229,6 +190,7 @@ body {
     flex-direction: column;
 }
 
+/* Sidebar Settings button */
 .submit-settings-button {
     display: flex;
     height: 100%; 
@@ -268,10 +230,6 @@ body {
     align-items: center;
 }
 
-.account-for-sidebar-ml {
-    margin-left: var(--sidebar-width);
-}
-
 /* Hint window */
 #hint-window {
     z-index: 1;
@@ -296,15 +254,6 @@ body {
     font-weight: 400;
 }
 
-.load-recipes-button {
-    background-color: #6d7375;
-    padding: 10px 0;
-}
-
-.load-recipes-button:hover {
-    background-color: #747b7e;
-}
-
 .background-texture {
     z-index: -1;
     display: flex;
@@ -319,18 +268,6 @@ body {
     object-fit: cover; 
     opacity: 0.12;
     background-image: url('../images/textures/cutlery.svg');
-}
-
-.interactive-turn:hover {
-    animation-name: scale-and-turn-animation;
-    animation-duration: 0.1s; 
-    animation-timing-function: ease-in-out;
-    transform: rotate(-3.5deg) scale(1.1);
-}
-
-@keyframes scale-and-turn-animation {
-    0% {transform: rotate(0deg) scale(1)}
-    100% {transform: rotate(-3.5deg) scale(1.1)}
 }
 
 #recipe-viewer-container {
@@ -396,41 +333,4 @@ body {
     height: fit-content;
     /* background-color: #3a3f40; */
     border-radius: 10px;
-}
-
-.close-button {
-    position: fixed;
-    top: 20px;
-    right: 6.1%;
-    background-color: #5b6365;
-    color: #ffb560;
-    padding: 8px 13px;
-    margin: 30px;
-};
-
-.highlighted-item {
-    background-color: #979fa334;
-    padding: 0 10px;
-    margin: 0 5px;
-    border-radius: 3px;
-}
-
-.highlighted-word {
-    display: inline-block;
-    background-color: #979fa334;
-    padding: 0 10px;
-    margin: 3px 5px;
-    border-radius: 3px;
-
-}
-
-/* Inline text classes */
-span.inline-highlight {
-    background-color: #979fa334;
-    padding: 0 10px;
-    border-radius: 3px;
-}
-
-.pre-line {
-    white-space: pre-line;
 }

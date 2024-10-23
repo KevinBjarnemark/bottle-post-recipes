@@ -211,7 +211,7 @@ export const buildRecipeViewer = (globalVariables) => {
                     
                     <button
                         id="recipe-viewer-close-button-${recipe.id}" 
-                        class="close-button">
+                        class="close-button-fixed">
                         X
                     </button>
                 `;

@@ -117,8 +117,9 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                         ${trimText(recipe.title, 20)}
                     </h4>
                     <button class="absolute-flex right-fib-1 top-fibb-1 
-                        recipe-item-user-image-container interactive-turn">
+                        profile-image-container interactive-turn">
                         <img 
+                            class="profile-image"
                             src="${recipe.user_image ? 
                                 recipe.user_image : '/static/images/icons/missing.webp'}" 
                             alt="User Profile Picture" 
@@ -130,6 +131,7 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                                 id="recipe-image-button-${recipe.id}" 
                                 class="flex-center interactive-turn">
                                 <img 
+                                    class="recipe-image"
                                     src="${recipe.image ? 
                                         recipe.image : '/static/images/icons/missing.webp'}" 
                                     alt="${recipe.title}">

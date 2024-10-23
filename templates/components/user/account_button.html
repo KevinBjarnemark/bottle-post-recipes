@@ -12,19 +12,23 @@
         aria-expanded="false">
         <!-- Profile image (Should be an image or null -->
         {% if user.profile.image %}
-        <img 
-            class="profile-image"
-            src="{{ user.profile.image.url }}" 
-            alt="Profile Picture" 
-            style="width: 75px; height: 75px"
-        />
-        {% else %}
-        <img 
-            src="{% static 'images/icons/missing.webp' %}" 
-            alt="Missing icon" 
-        />
-        {% endif %}
+        <div class="profile-image-container">
+            <img 
+                class="profile-image"
+                src="{{ user.profile.image.url }}" 
+                alt="Profile Picture"
+            />
+            {% else %}
+            <img 
+                class="profile-image"
+                src="{% static 'images/icons/missing.webp' %}" 
+                alt="Missing icon" 
+            />
+            {% endif %}
+        </div>
+        <p>Account</p>
     </button>
+    
     <!-- Dropdown menu -->
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
         <li>

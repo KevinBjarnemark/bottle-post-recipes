@@ -1,0 +1,128 @@
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.absolute-flex {
+    display: flex;
+    position: absolute;
+}
+
+.relative-flex {
+    display: flex;
+    position: relative;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sidebar offset */
+.account-for-sidebar-ml {
+    margin-left: var(--sidebar-width);
+}
+
+.right-fib-1 {
+    right: 6.1%;
+}
+
+.top-fib-1 {
+    top: 6.1%;
+}
+
+.left-fib-1 {
+    left: 6.1%;
+}
+
+.bottom-fib-1 {
+    bottom: 6.1%;
+}
+
+.width-third {
+    width: 33.3%;
+}
+
+.no-decoration {
+    text-decoration: none;
+}
+
+/* Small font */
+.small-font {
+    font-size: 10px;
+}
+
+/* Keep combined elements intact */
+.pre-line {
+    white-space: pre-line;
+}
+
+/* Blur effect */
+.backdrop-blur {
+    backdrop-filter: blur(3px);
+}
+
+/* Close button, mostly for full sized pop-up 
+components */
+.close-button-fixed {
+    position: fixed;
+    top: 20px;
+    right: 6.1%;
+    background-color: #5b6365;
+    color: #ffb560;
+    padding: 8px 13px;
+    margin: 30px;
+}
+
+/* Highlight words without overlap */
+.highlighted-word {
+    display: inline-block;
+    background-color: #979fa334;
+    padding: 0 10px;
+    margin: 3px 5px;
+    border-radius: 3px;
+}
+
+/* Buttons */
+.standard-button {
+    background-color: #636a6e;
+    padding: 10px 0;
+    color: #ffff;
+    box-shadow: 0 0 2px 2px #424647;
+}
+
+.standard-button:hover {
+    background-color: #6e767a;
+}
+
+.submit-button {
+    background-color: #7bc27f;
+    padding: 10px 0;
+    color: #ffff;
+    box-shadow: 0 0 5px 2px #dde3e4;
+}
+
+.submit-button:hover {
+    background-color: #75ba78;
+    box-shadow: 0 0 7px 2px #edf1f1;
+}
+
+/* Interactive */
+.interactive-turn:hover {
+    animation-name: scale-and-turn-animation;
+    animation-duration: 0.1s; 
+    animation-timing-function: ease-in-out;
+    transform: rotate(-3.5deg) scale(1.1);
+}
+
+@keyframes scale-and-turn-animation {
+    0% {transform: rotate(0deg) scale(1)}
+    100% {transform: rotate(-3.5deg) scale(1.1)}
+}
