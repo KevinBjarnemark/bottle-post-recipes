@@ -26,26 +26,22 @@ def submit_recipe(request):
             dietary_attributes = json.loads(
                 request.POST.get('dietary_attributes', '[]')
             )
-            # Defult to true
-            vegan = True
-            # Check if any non-vegan ingredients are present
-            for attribute in dietary_attributes:
-                if attribute in NON_VEGAN_ATTRIBUTES:
-                    # If a non-vegan attribute is found, set vegan to False
-                    vegan = False
-                    break
 
             # Determine recipe type
             recipe_type = "vegan"  # Default to vegan
             for attribute in dietary_attributes:
                 if attribute in NON_VEGAN_ATTRIBUTES:
                     recipe_type = "vegetarian"
-                if attribute == "fish":
+                if attribute == "fish" and not ("meat" in dietary_attributes):
                     recipe_type = "fish"
                 if attribute == "meat":
                     recipe_type = "meat"
                     break
-
+        
+            vegan = True
+            if not recipe_type == "vegan":
+                vegan = False
+            
             # Create the Recipe object
             recipe = Recipe(
                 user=request.user,  # Ensure the user is logged in
