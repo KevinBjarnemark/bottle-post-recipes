@@ -10,6 +10,11 @@
     position: absolute;
 }
 
+.flex-fixed {
+    display: flex;
+    position: fixed;
+}
+
 .relative-flex {
     display: flex;
     position: relative;
@@ -23,6 +28,10 @@
 .flex-column {
     display: flex;
     flex-direction: column;
+}
+
+.border-radius-soft {
+    border-radius: 10px;
 }
 
 /* Sidebar offset */
@@ -69,9 +78,15 @@
     backdrop-filter: blur(3px);
 }
 
+/* Text colors */
+.text-orange {
+    color: #ffb579
+}
+
 /* Close button, mostly for full sized pop-up 
 components */
 .close-button-fixed {
+    display: flex;
     position: fixed;
     top: 20px;
     right: 6.1%;

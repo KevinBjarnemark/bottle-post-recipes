@@ -51,7 +51,7 @@ export const capitalizeFirstLetter = (text) => {
  * 
  * @param {object}    globalVariables Specifically the 'eventListeners' entry
  * @param {str}       eventString eg. 'click', 'mouseup', etc.
- * @param {str}       id The html element's id, NOTE! This is used entry -->
+ * @param {str}       id The HTML element's id, NOTE! This is used entry -->
  * globalVariables.eventListeners[id]
  * @param {Function}  listenerFunction The reference function that the eventlistener 
  * should reference.

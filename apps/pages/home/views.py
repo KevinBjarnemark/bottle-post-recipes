@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from apps.users.models import Profile
-from apps.pages.create_recipe.models import Recipe
+from apps.pages.create_recipe.models import Recipe, Comment
 import json
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
 
 
 def load_user_profile(request):
@@ -15,6 +16,7 @@ def load_user_profile(request):
     if request.user.is_authenticated:
         profile = Profile.objects.get(user=request.user)
         user_profile = {
+            'username': profile.user.username,
             'vegan_mode': profile.vegan_mode,
         }
     return user_profile
@@ -82,7 +84,7 @@ def load_recipes(request):
             'ingredients': [
                 {
                     'name': ingredient.name, 'quantity': ingredient.quantity
-                } 
+                }
                 for ingredient in recipe.ingredients.all()
             ],
             'bottle_posted_count': recipe.bottle_posted_count,
@@ -95,6 +97,16 @@ def load_recipes(request):
                 else None
             ),
             'vegan': recipe.vegan,
+            'comments': [
+                {
+                    'user': comment.user.username,
+                    'text': comment.text,
+                    'created_at': comment.created_at.strftime(
+                        '%Y-%m-%d %H:%M:%S'
+                    )
+                }
+                for comment in recipe.comments.all().order_by('created_at')
+            ],
         }
         for recipe in page.object_list
     ]
@@ -107,6 +119,32 @@ def load_recipes(request):
         },
         safe=False
     )
+
+
+@csrf_exempt
+def publish_comment(request):
+    if request.method == 'POST' and request.user.is_authenticated:
+        try:
+            # URL parameters
+            recipe_id = request.POST.get('recipe_id')
+            comment_text = request.POST.get('comment')
+
+            # Fetch the recipe
+            recipe = Recipe.objects.get(id=recipe_id)
+
+            # Create the comment
+            Comment.objects.create(
+                recipe=recipe,
+                user=request.user,
+                text=comment_text
+            )
+
+            return JsonResponse({'success': True})
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'message': 'Invalid request'})
 
 
 def home(request):

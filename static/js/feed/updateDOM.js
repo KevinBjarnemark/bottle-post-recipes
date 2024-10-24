@@ -1,5 +1,5 @@
 import { trimText } from "../helpers.js";
-import { buildRecipeViewer } from "./generateHTML.js";
+import { recipeViewer } from "./recipeViewer.js";
 
 /**
  * Sets the innerHTML of hint_window.html component and clear it after 
@@ -155,9 +155,13 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                             style="background-color: transparent;" />
                     </button>
                     <div class="recipe-item-bottom-bar">
-                        <button class="incremental-icon-button">
+                        <button 
+                            id="comment-button-${recipe.id}"
+                            class="incremental-icon-button">
                             <i class="fa-solid fa-comment text-white interactive-turn"></i>
-                            <span class="text-white">0</span>
+                            <span class="text-white">
+                                ${recipe.comments ? recipe.comments.length : 0}
+                            </span>
                         </button>
                         <button class="incremental-icon-button">
                             <i class="fa-solid fa-heart text-white interactive-turn"></i>
@@ -180,7 +184,7 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
         // Show recipes based on vegan mode
         filterVeganRecipes(globalVariables);
         // Build the recipe viewer component
-        buildRecipeViewer(globalVariables);
+        recipeViewer(globalVariables);
     }else {
         hintWindow(globalVariables, globalHTML, "<p>All recipes are loaded!</p>");
     }

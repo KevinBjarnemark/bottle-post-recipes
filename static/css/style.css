@@ -165,8 +165,6 @@ body {
 
 /* Sidebar */
 .feed-sidebar {
-    display: flex;
-    position: fixed;
     z-index: 1;
     top: 0;
     left: 0;
@@ -273,8 +271,6 @@ body {
 #recipe-viewer-container {
     visibility: hidden; /* Hidden by default */
     z-index: 10;
-    display: flex;
-    position: fixed;
     top: 0;
     left: 0;
     align-items: center;
@@ -285,16 +281,13 @@ body {
 }
 
 #recipe-viewer {
-    display: flex;
     position: relative;
-    flex-direction: column;
     padding-top: 40px;
     align-items: center;
     justify-content: flex-start;
     width: 95%;
     height: 95vh;
     background-color: #252829;
-    border-radius: 10px;
     overflow: auto;
     /* box-shadow: 0 0 2px 2px #ffffff; */
 }
@@ -306,7 +299,6 @@ body {
     align-items: center;
     width: 100%;
     padding: 20px 0;
-    /* box-shadow: 0 0 2px 2px #acb2b4; */
 }
 
 /* Target images */
@@ -331,6 +323,57 @@ body {
     width: 90%;
     min-height: 80vh;
     height: fit-content;
-    /* background-color: #3a3f40; */
+    border-radius: 10px;
+}
+
+.comment-section {
+    position: relative;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.comment-section > div:first-child {
+    position: relative;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 10px 5px;
+    background-color: #494e51;
+    border-radius: 10px;
+    min-height: 300px;
+    max-height: 300px;
+    overflow: auto;
+}
+
+.comment-section textarea {
+    padding: 13px 15px;
+    margin: 20px 0;
+}
+
+.comment-item {
+    padding: 5px 8px;
+    border-radius: 10px;
+    display: inline-block;
+
+}
+.comment-item-user {
+    padding: 5px 8px;
+}
+.comment-item-date {
+    padding: 5px 8px;
+    color: #7f8589;
+}
+.comment-item-text {
+    background-color: #333638;
+    padding: 5px 8px;
+}
+
+.comment-input {
+    position: relative;
+    justify-content: flex-start;
+    align-items: center;
+    width: 80%;
+    min-height: 120px;
+    background-color: #ffffff;
     border-radius: 10px;
 }

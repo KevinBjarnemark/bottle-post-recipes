@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Global states
     let globalVariables = {
         veganMode: initialData.userProfileData.vegan_mode,
+        username: initialData.userProfileData.username,
         hintWindowTimer: null,
         recipes: [],
         total_recipes: 0,
@@ -54,11 +55,13 @@ document.addEventListener("DOMContentLoaded", function() {
         ],
         // Stored event listeners that might be removed at some point
         eventListeners: {},
+
+        currentComment: "",
     };
 
     // Set initial states
     setInitialStates(globalHTML, globalVariables);
-    // Generate html
+    // Generate HTML
     generateHTML(globalHTML, globalVariables);
     // Configure listeners
     configureListeners(globalHTML, globalVariables);
