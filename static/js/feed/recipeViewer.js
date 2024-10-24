@@ -59,7 +59,7 @@ const handleCommentTextarea = (e, globalVariables, commentFormData) => {
  * 
  * @param {String} recipeId
  */
-const handlePublishComment = async (recipeId) => {
+const handlePublishComment = async (globalVariables, recipeId, commentFormData) => {
     try {
         // Add recipe_id to the FormData
         commentFormData.append("recipe_id", recipeId);
@@ -238,7 +238,7 @@ export const recipeViewer = (globalVariables) => {
                 globalVariables,
                 "input", 
                 `comment-input-${recipe.id}`, 
-                () => {handleCommentTextarea(e, globalVariables, commentFormData)}
+                (e) => {handleCommentTextarea(e, globalVariables, commentFormData)}
             );
 
             // Add and store publish comment listener
@@ -246,7 +246,7 @@ export const recipeViewer = (globalVariables) => {
                 globalVariables,
                 "click", 
                 `publish-comment-button-${recipe.id}`, 
-                () => handlePublishComment(recipe.id)
+                () => handlePublishComment(globalVariables, recipe.id, commentFormData)
             );
             // Add and store close button listener
             addStoredEventListener(
