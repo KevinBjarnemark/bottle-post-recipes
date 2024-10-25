@@ -1,4 +1,4 @@
-import { getCookie, capitalizeFirstLetter } from '../helpers.js';
+import { getCookie, capitalizeFirstLetter, veganModeColor } from '../helpers.js';
 import { filterVeganRecipes, hintWindow } from './updateDOM.js';
 
 /**
@@ -52,8 +52,8 @@ export const toggleVeganMode = async (globalHTML, globalVariables) => {
         // Toggle vegan mode variable
         globalVariables.veganMode = !globalVariables.veganMode; 
         // Change color
-        globalHTML.veganIcon.style.color = globalVariables.veganMode ? '#ffa560' : 'rgb(255, 255, 255)';
-
+        globalHTML.veganIcon.style.color = veganModeColor(globalVariables.veganMode);
+        // Hint window message
         const hintWindowHtml = globalVariables.veganMode ? 
         `
         <p>
@@ -61,7 +61,7 @@ export const toggleVeganMode = async (globalHTML, globalVariables) => {
             <span style='color:#8aeb84; font-weight: 600'>
                 ON
             </span>
-            <i class="fa-solid fa-carrot" id="vegan-mode-icon"></i>
+            <i class="fa-solid fa-carrot"></i>
             <br />
             This overrides any other settings.
         </p>
@@ -78,7 +78,6 @@ export const toggleVeganMode = async (globalHTML, globalVariables) => {
         hintWindow(globalVariables, globalHTML, hintWindowHtml);
 
         filterVeganRecipes(globalVariables);
-
     } else {
         console.error('Failed to toggle vegan mode');
     }
@@ -88,7 +87,7 @@ export const toggleVeganMode = async (globalHTML, globalVariables) => {
  * Toggles the filter buttons 
  * 
  */
-export const toggleFilters = async (globalHTML, globalVariables, filter) => {
+export const toggleFilters = (globalHTML, globalVariables, filter) => {
     // Toggle filter variable
     globalVariables.filterObject.recipeTypes[filter] = 
         !globalVariables.filterObject.recipeTypes[filter];

@@ -1,7 +1,7 @@
 import pytest
 from django.urls import reverse
 from apps.pages.create_recipe.models import Recipe
-from tests.helpers.helpers import user_log_in
+from tests.helpers.py.helpers import user_log_in
 import json
 
 

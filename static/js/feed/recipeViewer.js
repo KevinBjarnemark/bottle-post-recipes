@@ -6,11 +6,11 @@ import { addStoredEventListener, getCookie } from "../helpers.js";
  * previously generated content.
  * 
  */
-const handleClose = (globalVariables, elements) => {
+const handleClose = (globalHTML, globalVariables) => {
     // Clean up and hide
     globalVariables.currentComment = "";
-    elements.recipeViewerGenerated.innerHTML = "";
-    elements.recipeViewerContainer.style.visibility = "hidden";
+    globalHTML.recipeViewerGenerated.innerHTML = "";
+    globalHTML.recipeViewerContainer.style.visibility = "hidden";
 };
 
 /**
@@ -110,26 +110,16 @@ const handlePublishComment = async (globalVariables, recipeId, commentFormData) 
  * loaded recipe.
  * 
  */
-export const recipeViewer = (globalVariables) => {
+export const recipeViewer = (globalHTML, globalVariables) => {
     // Comments form data
     const commentFormData = new FormData();
-    // Associated HTML elements
-    const elements = {
-        recipeViewerGenerated: document.getElementById(
-            "recipe-viewer-generated"
-        ),
-        recipeViewerContainer: document.getElementById(
-            "recipe-viewer-container"
-        ),
-        recipeViewer: document.getElementById("recipe-viewer"),
-    };
 
     // Prepare click-triggered listeners that generate the respective recipe
     globalVariables.recipes.forEach(recipe => {
         // Define listener function
         const listener = () => {
             // Make the component visible
-            elements.recipeViewerContainer.style.visibility = "visible";
+            globalHTML.recipeViewerContainer.style.visibility = "visible";
 
             /* Dietary attributes 
             Note, This will be invisible if no dietary attributes are 
@@ -182,7 +172,7 @@ export const recipeViewer = (globalVariables) => {
                     });
                 }
 
-            elements.recipeViewerGenerated.innerHTML = `<h2>${recipe.title}</h2>
+                globalHTML.recipeViewerGenerated.innerHTML = `<h2>${recipe.title}</h2>
                     <section>
                         <img
                             src="${recipe.image ? 
@@ -253,7 +243,7 @@ export const recipeViewer = (globalVariables) => {
                 globalVariables,
                 "click", 
                 `recipe-viewer-close-button-${recipe.id}`, 
-                () => {handleClose(globalVariables, elements)}
+                () => {handleClose(globalHTML, globalVariables)}
             );
         };
 

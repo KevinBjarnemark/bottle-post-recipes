@@ -1,6 +1,6 @@
 import pytest
 from django.urls import reverse
-from tests.helpers.helpers import user_log_in
+from tests.helpers.py.helpers import user_log_in
 
 
 # Check if the homepage is using correct templates as a guest

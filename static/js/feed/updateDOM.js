@@ -73,7 +73,7 @@ export const filterVeganRecipes = (globalVariables) => {
  * 4. Filters out vegan recipes and displays the recipes 
  * afterwards
  * 
- * @param {Object}  data Data from backend {recipes, total_recipes, batch}
+ * @param {Object}   data Data from backend {recipes, total_recipes, batch}
  * @param {Object}   globalHTML
  * @param {Object}   globalVariables
  */
@@ -184,7 +184,7 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
         // Show recipes based on vegan mode
         filterVeganRecipes(globalVariables);
         // Build the recipe viewer component
-        recipeViewer(globalVariables);
+        recipeViewer(globalHTML, globalVariables);
     }else {
         hintWindow(globalVariables, globalHTML, "<p>All recipes are loaded!</p>");
     }

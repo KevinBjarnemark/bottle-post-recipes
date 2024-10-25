@@ -1,6 +1,7 @@
 import { htmlSidebarFilters, htmlSidebarSearchAreas } from './generateHTML.js';
 import { configureListeners } from './listeners.js';
 import { getRecipePage } from './updateDOM.js';
+import { veganModeColor } from '../helpers.js';
 
 document.addEventListener("DOMContentLoaded", function() {
     // Data loaded from db
@@ -9,13 +10,14 @@ document.addEventListener("DOMContentLoaded", function() {
     };
     // Targeted HTML elements
     const globalHTML = {
+        // Feed
         feed: document.getElementById('feed'),
-        veganButton: document.getElementById('vegan-mode-button'),
-        veganIcon: document.getElementById('vegan-mode-icon'),
-        hintWindow: document.getElementById('hint-window'),
-        hintWindowText: document.getElementById('hint-window-text'),
-        loadRecipesButton: document.getElementById('load-recipes-button'),
+        feedContainer: document.getElementById('feed-container'),
         sidebarSearchButton: document.getElementById('sidebar-search-button'),
+        // Sidebar
+        feedSidebarButtonsContainer: document.getElementById(
+            'feed-sidebar-buttons-container'
+        ),
         // Search
         searchContainer: document.getElementById('search-container'),
         searchInput: document.getElementById('search-input'),
@@ -26,15 +28,30 @@ document.addEventListener("DOMContentLoaded", function() {
         filterContainer: document.getElementById('filter-container'),
         filters: document.getElementById('filters'),
         filterButton: document.getElementById('filter-button'),
+        // Vegan button
+        veganButton: document.getElementById('vegan-mode-button'),
+        veganIcon: document.getElementById('vegan-mode-icon'),
+        // Hint window
+        hintWindow: document.getElementById('hint-window'),
+        hintWindowText: document.getElementById('hint-window-text'),
+        loadRecipesButton: document.getElementById('load-recipes-button'),
+        // Recipe viewer
+        recipeViewerContainer: document.getElementById("recipe-viewer-container"),
+        recipeViewer: document.getElementById("recipe-viewer"),
+        recipeViewerGenerated: document.getElementById("recipe-viewer-generated"),
     };
 
     // Global states
     let globalVariables = {
+        page: 1, // The recipe group loaded represented as 'page'
         veganMode: initialData.userProfileData.vegan_mode,
         username: initialData.userProfileData.username,
+        // Hint window timer
         hintWindowTimer: null,
         recipes: [],
-        total_recipes: 0,
+        // A managed comment state for the recipe viewer component
+        currentComment: "", 
+        // Sidebar filter settings
         filterObject: 
             {
                 // Search query (string)
@@ -48,15 +65,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     meat: true,
                 },
             },
-        page: 1,
-        sidebarSettingContainers: [
-            "search-container",
-            "filter-container",
-        ],
         // Stored event listeners that might be removed at some point
         eventListeners: {},
-
-        currentComment: "",
     };
 
     // Set initial states
@@ -75,20 +85,11 @@ const generateHTML = (globalHTML, globalVariables) => {
 };
 
 /**
- * 
- * @param {Boolean}  Vegan bool
- * @returns {String} Returns the color of the vegan depending on its state.
- */
-const veganModeColor = (veganMode) => {
-    return veganMode ? 'rgb(255, 165, 96)' : 'rgb(255, 255, 255)';
-};
-
-/**
  * Sets the initial states when the user arrives after a page load.
  * 
  */
 const setInitialStates = async (globalHTML, globalVariables) => {
-    // Set vegan mode color
+    // Set vegan mode button color
     globalHTML.veganIcon.style.color = veganModeColor(globalVariables.veganMode);
     // Load the first recipe group
     await getRecipePage(1, globalHTML, globalVariables);

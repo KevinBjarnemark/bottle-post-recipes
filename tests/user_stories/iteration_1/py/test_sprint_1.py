@@ -2,72 +2,62 @@ import pytest
 from django.urls import reverse
 from apps.pages.create_recipe.models import Recipe
 from apps.users.models import User
-from tests.helpers.helpers import user_log_in, create_mock_image
+from tests.helpers.py.helpers import (
+    MOCKRECIPEDATA,
+    user_log_in,
+    create_mock_image
+)
 import json
-
-# TODO Test vegan filter
-# Move towards database filtering instead of client-side
-# filtering, then create a vegan filter test
 
 
 # Recipe creation, javascript insertion, and render
 @pytest.mark.django_db
-def test_recipe_creation_and_display(client):
+def test_recipe_creation(client):
     # Log in user
     user = user_log_in(client)
-    # Convert to JSON string
-    dietary_attributes = json.dumps(['gluten, dairy'])
-    ingredient_data = json.dumps([
-        {'name': 'Ingredient 1', 'quantity': 1},
-        {'name': 'Ingredient 2', 'quantity': 200},
-    ])
-    preparation_time = json.dumps({
-        'preparation-time-minutes': 0,
-        'preparation-time-hours': 1,
-        'preparation-time-days': 0,
-    })
-    cooking_time = json.dumps({
-        'cooking-time-minutes': 20,
-        'cooking-time-hours': 1,
-        'cooking-time-days': 0,
-    })
-    estimate_price = json.dumps({
-        'estimate-price-from': 20,
-        'estimate-price-to': 40,
-    })
-    recipe = {
-        'title': 'Test Recipe',
-        'description': "Test description",
-        'dietary_attributes': dietary_attributes,
-        'image': create_mock_image(),
-        'tags': 'test, recipe',
-        'instructions': "Mix all ingredients.",
-        'ingredients': ingredient_data,
-        'preparation_time': preparation_time,
-        'cooking_time': cooking_time,
-        'estimate_price': estimate_price,
-        'likes': 10,
-        'bottle_posted_count': 5,
-        'in_ocean': True,
-        'vegan': True,
-    }
-    # Submit the form
-    response = client.post(reverse('submit_recipe'), recipe)
 
-    assert response.status_code == 200
-    assert Recipe.objects.filter(title='Test Recipe').exists()
+    # Submit all mock recipes
+    for recipe_data in MOCKRECIPEDATA:
+        # Convert to JSON string
+        dietary_attributes = json.dumps(recipe_data['dietary_attributes'])
+        ingredients = json.dumps(recipe_data['ingredients'])
+        preparation_time = json.dumps(recipe_data['preparation_time'])
+        cooking_time = json.dumps(recipe_data['cooking_time'])
+        estimate_price = json.dumps(recipe_data['estimate_price'])
 
-    # Verify that ingredients are associated with the recipe
-    recipe_instance = Recipe.objects.get(user=user, title='Test Recipe')
+        recipe = {
+            'title': recipe_data['title'],
+            'description': recipe_data['description'],
+            'dietary_attributes': dietary_attributes,
+            'image': create_mock_image(),
+            'tags': recipe_data['tags'],
+            'instructions': recipe_data['instructions'],
+            'ingredients': ingredients,
+            'preparation_time': preparation_time,
+            'cooking_time': cooking_time,
+            'estimate_price': estimate_price,
+        }
+        # Submit form
+        response = client.post(reverse('submit_recipe'), recipe)
+        # Ensure successful response
+        assert response.status_code == 200
+        # Ensure the recipe was created
+        assert Recipe.objects.filter(title=recipe_data['title']).exists()
+        # Get the created recipe instance
+        recipe_instance = Recipe.objects.get(
+            user=user, title=recipe_data['title']
+        )
+        # Deserialize submitted ingredients for verification
+        submitted_ingredients = json.loads(ingredients)
+        # Verify that ingredients are associated with the recipe
+        for ingredient_data in submitted_ingredients:
+            assert recipe_instance.ingredients.filter(
+                name=ingredient_data['name'],
+                quantity=ingredient_data['quantity']
+            ).exists()
 
-    # Verify that ingredients are associated with the recipe
-    ingredients = recipe_instance.ingredients.all()
-    assert ingredients.count() == 2
-    assert ingredients.filter(name="Ingredient 1", quantity=1).exists()
-    assert ingredients.filter(name="Ingredient 2", quantity=200).exists()
-
-    # NOTE Recipes are displayed with JS and there's a separate
-    # JEST test for checking if they actually gets displayed.
+    # NOTE Recipes are displayed with JS, there are separate
+    # JEST tests for checking if recipe components gets displayed.
 
 
 # Check user profile

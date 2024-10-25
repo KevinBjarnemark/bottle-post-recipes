@@ -15,6 +15,16 @@ export const getCookie = (name) => {
 };
 
 /**
+ * 
+ * @param {Boolean}  Vegan bool
+ * @returns {String} Returns the color of the vegan button depending 
+ * on its state.
+ */
+export const veganModeColor = (veganMode) => {
+    return veganMode ? 'rgb(255, 165, 96)' : 'rgb(255, 255, 255)';
+};
+
+/**
  * 1. Trims lenghy text into a specified length. 
  * 
  * 2. Adds '....' to the end of the string

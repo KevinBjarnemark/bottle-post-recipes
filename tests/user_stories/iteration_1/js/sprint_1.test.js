@@ -1,64 +1,72 @@
-import { renderRecipes } from '../../../../static/js/feed/updateDOM.js';
+import { getRecipePage, filterVeganRecipes } from '../../../../static/js/feed/updateDOM.js';
+import { toggleVeganMode } from '../../../../static/js/feed/utilities.js';
+import { veganModeColor } from '../../../../static/js/helpers.js';
+import { MOCKRECIPEDATA, getFeedGlobalVariablesMockData, 
+  getFeedGlobalHtmlMockData } from '../../../helpers/js/helpers.js';
 import {expect, test} from '@jest/globals';
 import '@testing-library/jest-dom'
 
-// Mock the globalHTML and globalVariables objects
-const mockFeedContainer = document.createElement('div');
-mockFeedContainer.className = 'feed-container';
-document.body.appendChild(mockFeedContainer);
+// Mock data
+let globalHTML = getFeedGlobalHtmlMockData();
+let globalVariables = getFeedGlobalVariablesMockData();
 
-let globalHTML = {
-  feed: mockFeedContainer,
-};
+/* REMINDER! You cannot test filtering and quering
+with static MOCKRECIPEDATA data! These operations takes 
+place on the backend.  */
 
-let globalVariables = {
-  recipes: [],
-  veganMode: false,
-};
-
-// Mock data from the backend
-const mockData = {
-  recipes: [
-    {
-      id: 1,
-      title: 'Test Recipe 1',
-      user_image: null,
-      bottle_posted_count: 5,
-      in_ocean: true,
-      image: null,
-      vegan: true,
-      likes: 10,
-    },
-    {
-      id: 2,
-      title: 'Test Recipe 2',
-      user_image: null,
-      bottle_posted_count: 3,
-      in_ocean: false,
-      image: null,
-      vegan: false,
-      likes: 15,
+/* NOTE! These simulate successful responses */
+global.fetch = jest.fn((url) => {
+    if (url.includes('/toggle_vegan_mode')) {
+        return Promise.resolve({
+        status: 200,
+        json: () => Promise.resolve({})
+        });
+    } else if (url.includes('/load_recipes')) {
+        return Promise.resolve({
+        status: 200,
+        json: () => Promise.resolve(MOCKRECIPEDATA)
+        });
+    } else {
+        return Promise.reject(new Error('Unknown endpoint'));
     }
-  ],
-  total_recipes: 2,
-  batch: 2
-};
+});
 
-describe('renderRecipes', () => {
-  beforeEach(() => {
-    // Clear the feed container and reset recipes array
-    mockFeedContainer.innerHTML = '';
-    globalVariables.recipes = [];
-  });
+describe('Render recipes', () => {
+    beforeEach(() => {
+        globalHTML = getFeedGlobalHtmlMockData();
+        globalVariables = getFeedGlobalVariablesMockData();
+    });
 
-  test('renders recipes and appends to the DOM', () => {
-    renderRecipes(mockData, globalHTML, globalVariables);
-    // Check that recipes were appended to the feed container
-    expect(globalHTML.feed.childElementCount).toBe(2);
-    
-    // Check the presence of specific recipe elements in the DOM
-    expect(globalHTML.feed).toHaveTextContent('Test Recipe 1');
-    expect(globalHTML.feed).toHaveTextContent('Test Recipe 2');
-  });
+    test("renders recipes and appends to the DOM", async () => {
+        await getRecipePage(1, globalHTML, globalVariables);
+        // Check that recipes were appended to the DOM
+        expect(globalHTML.feed.childElementCount).toBe(4);
+        // Check the presence of all recipes in the DOM
+        MOCKRECIPEDATA.recipes.forEach(recipe => {
+            expect(globalHTML.feed).toHaveTextContent(recipe.title);
+        });
+    });
+});
 
+describe('Vegan mode button', () => {
+    beforeEach(() => {
+        globalHTML = getFeedGlobalHtmlMockData();
+        globalVariables = getFeedGlobalVariablesMockData();
+    });
+
+    test("Swiches vegan mode, color and text accurately", async () => {
+        // Expect vegan mode to be true initially
+        expect(globalVariables.veganMode).toBe(true);
+        // Toggle off, check color and text 
+        await toggleVeganMode(globalHTML, globalVariables);
+        expect(globalHTML.veganIcon.style.color).toBe(veganModeColor(false));
+        expect(globalHTML.hintWindowText).toHaveTextContent("OFF");
+        // Toggle off, check color and text
+        await toggleVeganMode(globalHTML, globalVariables);
+        expect(globalHTML.veganIcon.style.color).toBe(veganModeColor(true));
+        expect(globalHTML.hintWindowText).toHaveTextContent("ON");
+        expect(globalHTML.hintWindowText).toHaveTextContent(
+            "This overrides any other settings."
+        );
+    });
 });
