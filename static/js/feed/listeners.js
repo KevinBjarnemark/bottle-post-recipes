@@ -3,7 +3,7 @@ import {
     toggleSidebarSettings, 
     toggleVeganMode 
 } from './utilities.js';
-import { getRecipePage, cleanUpFeed } from './updateDOM.js';
+import { getRecipePage, cleanUpFeed } from './update_dom.js';
 
 /**
  * Configure sidebar listeners such as search settings

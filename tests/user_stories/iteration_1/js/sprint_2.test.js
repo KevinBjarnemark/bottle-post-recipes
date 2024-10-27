@@ -3,7 +3,7 @@ import { getFeedGlobalVariablesMockData,
     getFeedGlobalHtmlMockData, MOCKRECIPEDATA } from '../../../helpers/js/helpers.js';
 import { capitalizeFirstLetter } from '../../../../static/js/helpers.js';
 import { toggleFilters } from '../../../../static/js/feed/utilities.js';
-import { getRecipePage } from '../../../../static/js/feed/updateDOM.js';
+import { getRecipePage } from '../../../../static/js/feed/update_dom.js';
 import {expect, test} from '@jest/globals';
 import '@testing-library/jest-dom'
 

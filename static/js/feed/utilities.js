@@ -1,5 +1,5 @@
 import { getCookie, capitalizeFirstLetter, veganModeColor } from '../helpers.js';
-import { filterVeganRecipes, hintWindow } from './updateDOM.js';
+import { filterVeganRecipes, hintWindow } from './update_dom.js';
 
 /**
  * 1. Toggles the container and its content (with CSS)

@@ -1,5 +1,5 @@
 import { trimText, addStoredEventListener } from "../helpers.js";
-import { recipeViewer } from "./recipeViewer.js";
+import { recipeViewer } from "./recipe_viewer.js";
 import { recipeEditor } from "./recipe_editor.js";
 
 /**

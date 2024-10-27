@@ -1,6 +1,6 @@
-import { htmlSidebarFilters, htmlSidebarSearchAreas } from './generateHTML.js';
+import { htmlSidebarFilters, htmlSidebarSearchAreas } from './generate_html.js';
 import { configureListeners } from './listeners.js';
-import { getRecipePage } from './updateDOM.js';
+import { getRecipePage } from './update_dom.js';
 import { veganModeColor } from '../helpers.js';
 import { recipeEditor } from '../feed/recipe_editor.js';
 

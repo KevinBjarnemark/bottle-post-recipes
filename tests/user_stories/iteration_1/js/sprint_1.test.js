@@ -1,4 +1,4 @@
-import { getRecipePage, filterVeganRecipes } from '../../../../static/js/feed/updateDOM.js';
+import { getRecipePage, filterVeganRecipes } from '../../../../static/js/feed/update_dom.js';
 import { toggleVeganMode } from '../../../../static/js/feed/utilities.js';
 import { veganModeColor } from '../../../../static/js/helpers.js';
 import { MOCKRECIPEDATA, getFeedGlobalVariablesMockData, 
