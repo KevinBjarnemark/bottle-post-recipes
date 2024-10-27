@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
             image: null,
             preparation_time: {},
             cooking_time: {},
-            estimate_price: {},
+            estimated_price: {},
         },
         formObject: {
             // All text inputs
@@ -114,10 +114,10 @@ const buildNumberFields = (globalVariables) => {
         },
         {
             element: document.getElementById(
-                "create-recipe-estimate-price"
+                "create-recipe-estimated-price"
             ),
-            formDataEntry: "estimate_price",
-            name: "estimate-price",
+            formDataEntry: "estimated_price",
+            name: "estimated-price",
             fields: ["from", "to"]
         },
     ]; 
@@ -159,7 +159,7 @@ const submitForm = async (globalVariables) => {
                 "ingredients", 
                 "preparation_time", 
                 "cooking_time",
-                "estimate_price",
+                "estimated_price",
             ];
             Object.entries(globalVariables.formData).forEach(([entry, value]) => {
                 if (stringifyEntries.includes(entry)){

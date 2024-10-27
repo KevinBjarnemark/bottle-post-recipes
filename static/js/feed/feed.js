@@ -39,6 +39,47 @@ document.addEventListener("DOMContentLoaded", function() {
         recipeViewerContainer: document.getElementById("recipe-viewer-container"),
         recipeViewer: document.getElementById("recipe-viewer"),
         recipeViewerGenerated: document.getElementById("recipe-viewer-generated"),
+        // Recipe editor
+        recipeEditor: {
+            form: document.getElementById('recipe-editor-form'),
+            container: document.getElementById("recipe-editor-container"),
+            childContainer: document.getElementById("recipe-editor"),
+            generated: document.getElementById("recipe-editor-generated"),
+            imagePreviewContainer: document.getElementById(
+                "recipe-editor-image-preview-container"
+            ),
+            textInputs: {
+                title: document.getElementById("recipe-editor-title"),
+                description: document.getElementById("recipe-editor-description"),
+                instructions: document.getElementById("recipe-editor-instructions"),
+                tags: document.getElementById("recipe-editor-tags"),
+            },
+            combinedNumberInputs: {
+                preparationTime: {
+                    days: document.getElementById("recipe-editor-preparation-time-days"),
+                    hours: document.getElementById("recipe-editor-preparation-time-hours"),
+                    minutes: document.getElementById("recipe-editor-preparation-time-minutes"),
+                },
+                cookingTime: {
+                    days: document.getElementById("recipe-editor-cooking-time-days"),
+                    hours: document.getElementById("recipe-editor-cooking-time-hours"),
+                    minutes: document.getElementById("recipe-editor-cooking-time-minutes"),
+                },
+                estimatedPrice: {
+                    from: document.getElementById("recipe-editor-estimated-price-from"),
+                    to: document.getElementById("recipe-editor-estimated-price-to"),
+                }
+            },
+            dietaryAttributes: document.getElementById(
+                "recipe-editor-dietary-attributes"
+            ),
+            ingredient: {
+                quantity: document.getElementById("recipe-editor-ingredient-quantity"),
+                name: document.getElementById("recipe-editor-ingredient-name"),
+                addButton: document.getElementById("recipe-editor-ingredient-add-button"),
+            },
+            ingredients: document.getElementById("recipe-editor-added-ingredients"),
+        },
     };
 
     // Global states
@@ -67,6 +108,20 @@ document.addEventListener("DOMContentLoaded", function() {
             },
         // Stored event listeners that might be removed at some point
         eventListeners: {},
+
+        // Form data prepared for backend
+        formData: {
+            title: "",
+            description: "",
+            tags: "",
+            instructions: "",
+            ingredients: [],
+            dietary_attributes: [],
+            image: null,
+            preparation_time: {days: 0, hours: 0, minutes: 0},
+            cooking_time: {days: 0, hours: 0, minutes: 0},
+            estimated_price: {from: 0, to: 0},
+        },
     };
 
     // Set initial states

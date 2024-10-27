@@ -46,15 +46,6 @@ export const trimText = (text, slice) => {
 };
 
 /**
- * 
- * @param {str}   text
- * @returns {any} The text with a capitalized first letter
- */
-export const capitalizeFirstLetter = (text) => {
-    return text.charAt(0).toUpperCase() + text.slice(1);
-};
-
-/**
  * Adds an event listener as a global variable. 
  * Used for event listeners that need to be properly
  * removed after they have already been added. 
@@ -89,3 +80,20 @@ export const addStoredEventListener = (globalVariables, eventString, id, listene
     element.addEventListener(eventString, listenerFunction);
     globalVariables.eventListeners[id] = listenerFunction;
 };
+
+/**
+ * 
+ * @param {str}   text
+ * @returns {any} The text with a capitalized first letter
+ */
+export const capitalizeFirstLetter = (text) => {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
+export const toSnakeCase = (str) => {
+    return str
+        // Insert a hyphen between lowercase and uppercase letters
+        .replace(/([a-z])([A-Z])/g, '$1_$2')
+        // Make everything lower case
+        .toLowerCase();
+}

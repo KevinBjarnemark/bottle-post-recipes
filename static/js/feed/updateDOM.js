@@ -1,5 +1,6 @@
-import { trimText } from "../helpers.js";
+import { trimText, addStoredEventListener } from "../helpers.js";
 import { recipeViewer } from "./recipeViewer.js";
+import { recipeEditor } from "./recipeEditor.js";
 
 /**
  * Sets the innerHTML of hint_window.html component and clear it after 
@@ -137,13 +138,21 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                                     alt="${recipe.title}">
                             </button>
                         </div>
-                        <button class="d-flex align-items-start justify-content-center 
-                            recipe-item-sidebar-right pt-5 mt-2 interactive-turn">
-                            ${recipe.in_ocean ? 
-                                '<i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>' 
-                                : 
-                                ''}
-                        </button>
+                        <div class="flex-column recipe-item-sidebar-right">
+                            <button class="d-flex align-items-start justify-content-center 
+                                pt-5 mt-2 interactive-turn">
+                                ${recipe.in_ocean ? 
+                                    '<i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>' 
+                                    : 
+                                    ''}
+                            </button>
+                            <button
+                                id="recipe-edit-button-${recipe.id}"
+                                class="d-flex align-items-start justify-content-center 
+                                    pt-3 interactive-turn">
+                                <i class="fa-solid text-white fs-5 fa-edit"></i>
+                            </button>
+                        </div>
                     </div>
                     <button class="absolute-flex recipe-item-bottle-post-count-container interactive-turn">
                         <div class="absolute-flex recipe-item-bottle-post-red-count">
@@ -179,6 +188,16 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
 
             // Push to global variable
             globalVariables.recipes.push(recipe);
+
+            // Add and store event listener for the recip editor button
+            addStoredEventListener(
+                globalVariables, 
+                "click", 
+                `recipe-edit-button-${recipe.id}`, 
+                () => {
+                    recipeEditor(globalHTML, globalVariables, recipe.id);
+                }
+            );
         });
 
         // Show recipes based on vegan mode

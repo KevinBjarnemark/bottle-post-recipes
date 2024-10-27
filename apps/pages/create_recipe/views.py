@@ -95,13 +95,13 @@ def submit_recipe(request):
             )
 
             # Handle estimated price
-            estimate_price = json.loads(
-                request.POST.get('estimate_price', '{}')
+            estimated_price = json.loads(
+                request.POST.get('estimated_price', '{}')
             )
             EstimatedPricePerMeal.objects.create(
                 recipe=recipe,
-                price_from=estimate_price.get('estimate-price-from', 0),
-                price_to=estimate_price.get('estimate-price-to', 0)
+                price_from=estimated_price.get('estimated-price-from', 0),
+                price_to=estimated_price.get('estimated-price-to', 0)
             )
 
         except Exception as e:

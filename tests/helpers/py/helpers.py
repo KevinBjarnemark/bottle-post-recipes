@@ -28,9 +28,9 @@ MOCKRECIPEDATA = [
                 'cooking-time-hours': 1,
                 'cooking-time-days': 0,
             },
-            'estimate_price': {
-                'estimate-price-from': 20,
-                'estimate-price-to': 40,
+            'estimated_price': {
+                'estimated-price-from': 20,
+                'estimated-price-to': 40,
             },
         },
         {
@@ -57,9 +57,9 @@ MOCKRECIPEDATA = [
                 'cooking-time-hours': 1,
                 'cooking-time-days': 0,
             },
-            'estimate_price': {
-                'estimate-price-from': 20,
-                'estimate-price-to': 40,
+            'estimated_price': {
+                'estimated-price-from': 20,
+                'estimated-price-to': 40,
             },
         },
         {
@@ -86,9 +86,9 @@ MOCKRECIPEDATA = [
                 'cooking-time-hours': 1,
                 'cooking-time-days': 0,
             },
-            'estimate_price': {
-                'estimate-price-from': 20,
-                'estimate-price-to': 40,
+            'estimated_price': {
+                'estimated-price-from': 20,
+                'estimated-price-to': 40,
             },
         },
         {
@@ -115,9 +115,9 @@ MOCKRECIPEDATA = [
                 'cooking-time-hours': 1,
                 'cooking-time-days': 0,
             },
-            'estimate_price': {
-                'estimate-price-from': 20,
-                'estimate-price-to': 40,
+            'estimated_price': {
+                'estimated-price-from': 20,
+                'estimated-price-to': 40,
             },
         },
 ]

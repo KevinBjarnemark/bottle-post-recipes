@@ -4,9 +4,7 @@
     flex-direction: column;
     margin-bottom: 20px;
     width: 50%;
-    background-color: #3b4043;
-    border-radius: 5px;
-    padding: 20px;
+    padding: 40px 10px;
 }
 
 /* Boolean */
@@ -20,13 +18,12 @@
     display: flex;
     flex-direction: row;
     position: relative;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    background-color: #3f4445;
     border-radius: 4px;
     margin: 5px 0;
 }
-.ingredients {
+.added-ingredients {
     display: flex;
     position: relative;
     justify-content: flex-start;

@@ -23,7 +23,7 @@ def test_recipe_creation(client):
         ingredients = json.dumps(recipe_data['ingredients'])
         preparation_time = json.dumps(recipe_data['preparation_time'])
         cooking_time = json.dumps(recipe_data['cooking_time'])
-        estimate_price = json.dumps(recipe_data['estimate_price'])
+        estimated_price = json.dumps(recipe_data['estimated_price'])
 
         recipe = {
             'title': recipe_data['title'],
@@ -35,7 +35,7 @@ def test_recipe_creation(client):
             'ingredients': ingredients,
             'preparation_time': preparation_time,
             'cooking_time': cooking_time,
-            'estimate_price': estimate_price,
+            'estimated_price': estimated_price,
         }
         # Submit form
         response = client.post(reverse('submit_recipe'), recipe)

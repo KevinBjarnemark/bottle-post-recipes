@@ -26,9 +26,9 @@ def test_create_recipe(client):
                 'cooking-time-hours': 1,
                 'cooking-time-days': 0,
         },
-        'estimate_price': {
-              'estimate-price-from': 20,
-              'estimate-price-to': 40,
+        'estimated_price': {
+              'estimated-price-from': 20,
+              'estimated-price-to': 40,
         },
         'ingredients': [
             {'name': 'Ingredient 1', 'quantity': 1},
@@ -41,7 +41,7 @@ def test_create_recipe(client):
     ingredient_data = json.dumps(recipe_data['ingredients'])
     preparation_time = json.dumps(recipe_data['preparation_time'])
     cooking_time = json.dumps(recipe_data['cooking_time'])
-    estimate_price = json.dumps(recipe_data['estimate_price'])
+    estimated_price = json.dumps(recipe_data['estimated_price'])
 
     # Submit the form
     response = client.post(reverse('submit_recipe'), {
@@ -54,7 +54,7 @@ def test_create_recipe(client):
         'ingredients': ingredient_data,
         'preparation_time': preparation_time,
         'cooking_time': cooking_time,
-        'estimate_price': estimate_price,
+        'estimated_price': estimated_price,
     })
 
     assert response.status_code == 200

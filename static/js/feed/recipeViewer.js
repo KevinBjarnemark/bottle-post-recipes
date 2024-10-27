@@ -203,6 +203,7 @@ export const recipeViewer = (globalHTML, globalVariables) => {
 
                     <section>
                         <h5>Comments <span class="text-orange">(BETA)</span></h5>
+                        <p>If your comment disappears, refresh the browser!</p>
                         <div class="flex-column comment-section w-100">
                             <div class="flex-column w-100">${comments}</div>
                             <textarea 

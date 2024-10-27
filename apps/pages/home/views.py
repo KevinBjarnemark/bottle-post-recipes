@@ -78,6 +78,7 @@ def load_recipes(request):
             'title': recipe.title,
             'description': recipe.description,
             'instructions': recipe.instructions,
+            'tags': recipe.tags,
             'dietary_attributes': [
                 attr.name for attr in recipe.dietary_attributes.all()
             ],
@@ -97,6 +98,26 @@ def load_recipes(request):
                 else None
             ),
             'vegan': recipe.vegan,
+            'preparation_time': [
+                {
+                    'days': recipe.time.preparation_days,
+                    'hours': recipe.time.preparation_hours,
+                    'minutes': recipe.time.preparation_minutes,
+                }
+            ],
+            'cooking_time': [
+                {
+                    'days': recipe.time.cooking_days,
+                    'hours': recipe.time.cooking_hours,
+                    'minutes': recipe.time.cooking_minutes,
+                }
+            ],
+            'estimated_price': [
+                {
+                    'from': recipe.estimated_price.price_from,
+                    'to': recipe.estimated_price.price_to,
+                }
+            ],
             'comments': [
                 {
                     'user': comment.user.username,
