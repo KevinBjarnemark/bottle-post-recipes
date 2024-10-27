@@ -119,12 +119,12 @@ def load_recipes(request):
                     'minutes': recipe.time.cooking_minutes,
                 }
             ],
-            'estimated_price': [
-                {
-                    'from': float(recipe.estimated_price.price_from),
-                    'to': float(recipe.estimated_price.price_to),
-                }
-            ],
+            'estimated_price': [{
+                'from': float(recipe.estimated_price.price_from) if hasattr(
+                    recipe, 'estimated_price') else 0.0,
+                'to': float(recipe.estimated_price.price_to) if hasattr(
+                    recipe, 'estimated_price') else 0.0,
+            }],
             'comments': [
                 {
                     'user': comment.user.username,
