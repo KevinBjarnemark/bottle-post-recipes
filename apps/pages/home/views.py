@@ -36,6 +36,8 @@ def load_recipes(request):
     q = request.GET.get('q')  # Query
     search_areas = request.GET.get('search_areas')
     recipe_types_exclude = request.GET.get('recipe_types_exclude')
+    # Only show recipes of a certain id
+    user_id = request.GET.get('user_id')
 
     # Make sure q is declared and then create a query filter
     if not q:
@@ -60,6 +62,9 @@ def load_recipes(request):
         exclude_types = recipe_types_exclude.split(',')
         if exclude_types:
             query_filter &= ~Q(recipe_type__in=exclude_types)
+    
+    if user_id:
+        query_filter &= Q(user__id=user_id)
 
     # Apply filters and prevent duplicate search results with distinct
     recipes = Recipe.objects.filter(query_filter).distinct()

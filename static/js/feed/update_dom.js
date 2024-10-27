@@ -239,6 +239,8 @@ export const getRecipePage = async (page, globalHTML, globalVariables) => {
         q: globalVariables.filterObject.q,
         search_areas: "",
         recipe_types_exclude: "",
+        // Only show recipes created by a certain user
+        user_id: globalVariables.filterObject.userId,
     };
 
     /* Convert the included search areas array to a 

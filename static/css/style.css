@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
 
 /* Override default styles added by the browser */
 * {
@@ -126,6 +127,10 @@ body {
     background-color: #43484a;
 }
 
+#account-button-my-recipes {
+    display: none; /* Hidden by default */
+}
+
 /* Profile image */
 .profile-image-container {
     object-fit: cover; /* Prevent stretching */
@@ -171,7 +176,7 @@ body {
     width: 100%;
     /* Prevent sidebar overlapping */
     padding-left: var(--sidebar-width);
-    margin: 130px 0px;
+    margin: 0 0 130px 0px;
     min-height: 80vh;
     color: #cbd8dc;
 }
@@ -189,6 +194,44 @@ body {
 .feed section {
     /* Force recipe padding after flex-wrap */
     padding: 40px 10px
+}
+
+/* Large dynamic text on top of the feed */
+.feed-top-text-container {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 88%;
+    /* Prevent sidebar overlapping */
+    padding-left: var(--sidebar-width);
+    margin: 70px 0px;
+    min-height: 40px;
+    color: #ccd9dc;
+}
+.feed-top-text {
+    font-size: 25px;
+    font-weight: 500;
+    color: #bac3c6;
+    border-radius: 5px;
+    background-color: #383b3d;
+    box-shadow: 0 0 10px 10px #383b3d;
+    font-family: "Lilita One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.feed-top-text-hint {
+    font-size: 15px;
+    font-weight: 500;
+    color: #bac3c6;
+    border-radius: 5px;
+    background-color: #383b3d;
+    box-shadow: 0 0 8px 8px #383b3d;
+    font-family: "Lilita One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 /* Sidebar */

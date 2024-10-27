@@ -1,6 +1,6 @@
 import { htmlSidebarFilters, htmlSidebarSearchAreas } from './generate_html.js';
 import { configureListeners } from './listeners.js';
-import { getRecipePage } from './update_dom.js';
+import { getRecipePage, cleanUpFeed } from './update_dom.js';
 import { veganModeColor } from '../helpers.js';
 import { recipeEditor } from '../feed/recipe_editor.js';
 
@@ -11,9 +11,15 @@ document.addEventListener("DOMContentLoaded", function() {
     };
     // Targeted HTML elements
     const globalHTML = {
+        // Account button
+        accountButton: {
+            // NOTE! This should be moved to a profile page in the future
+            myRecipes: document.getElementById('account-button-my-recipes'),
+        },
         // Feed
         feed: document.getElementById('feed'),
         feedContainer: document.getElementById('feed-container'),
+        topText: document.getElementById('feed-top-text'),
         sidebarSearchButton: document.getElementById('sidebar-search-button'),
         // Sidebar
         feedSidebarButtonsContainer: document.getElementById(
@@ -119,6 +125,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     fish: true,
                     meat: true,
                 },
+                userId: "",
             },
         // Stored event listeners that might be removed at some point
         eventListeners: {},
@@ -148,6 +155,17 @@ document.addEventListener("DOMContentLoaded", function() {
     globalHTML.createRecipeButton.addEventListener('click', function(e) {
         e.preventDefault();
         recipeEditor(globalHTML, globalVariables, "NEW RECIPE");
+    });
+
+    // Show my recipes button
+    globalHTML.accountButton.myRecipes.style.display = "block";
+    globalHTML.accountButton.myRecipes.addEventListener('click', async function(e) {
+        // Set user id as a filter
+        globalVariables.filterObject.userId = globalVariables.user.userId;
+        // Clean up feed and load page 1
+        cleanUpFeed(globalHTML, globalVariables);
+        await getRecipePage(1, globalHTML, globalVariables);
+        globalHTML.topText.innerText = "Showing only your recipes";
     });
 });
 

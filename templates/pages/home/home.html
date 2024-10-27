@@ -11,6 +11,13 @@
 <!-- Check authentication -->
 {% if user.is_authenticated %}
     <div class="flex-center flex-column w-100">
+        <!-- Top text -->
+        <section class="flex-center text-align-center feed-top-text-container">
+            <h1 id="feed-top-text" class="feed-top-text">
+                FORGET NETWORKING AND START COOKING!
+            </h1>
+        </section>
+
         <div class="feed-container">
             <!-- Recipe feed -->
             <div class="feed" id="feed"><!-- Generated content --></div>
