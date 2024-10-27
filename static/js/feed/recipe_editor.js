@@ -64,8 +64,6 @@ const publishRecipe = async (globalVariables, recipeId) => {
     await init();
 };
 
-
-
 const buildDietaryAttributes = (globalHTML, globalVariables, attributesPreFill) => {
     // Clear previous elements
     globalHTML.recipeEditor.dietaryAttributes.innerHTML = "";
@@ -210,45 +208,6 @@ const buildIngredients = (globalHTML, globalVariables, ingredientsPreFill) => {
 
 }
 
-const combinedNumberField = (element, globalVariables, formDataEntry, numberFields) => {
-    let htmlString = "";
-    numberFields.forEach(i => {
-        htmlString += 
-        `<div class="flex-column mb-4 text-white">
-            <label for="${i.id}">${i.label}</label>
-            <input 
-                class="form-control mt-1"
-                type="number" 
-                placeholder="${i.label}" 
-                name="${i.name}" 
-                id="${i.id}" 
-                value="0"
-            />
-        </div>
-        `;
-    });
-
-    element.innerHTML = 
-    `
-    <div class="flex-row mb-4 mt-2 text-white">
-        ${htmlString}
-    </div>
-    `;
-
-    // Configure listeners
-    numberFields.forEach(i => {
-
-        let formField = globalVariables.formData[formDataEntry];
-        formField[i.name] = 0; // Default to 0
-        // Get the recently created numberinput HTML
-        const element = document.getElementById(i.id);
-        element.addEventListener("input", function(e) {
-             // Update on input
-            formField[i.name] = Number(e.target.value);
-        });
-    });
-};
-
 /**
  * Closes the recipe editor component and clears 
  * previously generated content.
@@ -332,26 +291,23 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
             .style.display = "none";
     }
 
-        // Add and store close button listener
-        addStoredEventListener(
-            globalVariables,
-            "click", 
-            globalHTML.recipeEditor.deleteButton.id, 
-            () => {
-                const convertToNumber = parseInt(globalHTML.recipeEditor
-                    .deleteRecipeClickCount.innerText);
-                // Decrement number
-                globalHTML.recipeEditor
-                    .deleteRecipeClickCount.innerText = `${convertToNumber - 1}`;
-                if (convertToNumber - 1 === 0) {
-                    // TODO
-                    console.log("ADD DELETE FUNCTION HERE");
-                }
+    // Add and store close button listener
+    addStoredEventListener(
+        globalVariables,
+        "click", 
+        globalHTML.recipeEditor.deleteButton.id, 
+        () => {
+            const convertToNumber = parseInt(globalHTML.recipeEditor
+                .deleteRecipeClickCount.innerText);
+            // Decrement number
+            globalHTML.recipeEditor
+                .deleteRecipeClickCount.innerText = `${convertToNumber - 1}`;
+            if (convertToNumber - 1 === 0) {
+                // TODO
+                console.log("ADD DELETE FUNCTION HERE");
             }
-        );
-    
-    
-    
+        }
+    );
 
     // Text inputs (pre filling and listeners) 
     const textInputs = globalHTML.recipeEditor.textInputs;
@@ -395,6 +351,8 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
             const entrySnake = toSnakeCase(entry)
             const entryData = recipe[globalHtmlEntrySnake][0][entrySnake];
 
+            console.log(entryData)
+
             // Clear previous value (form data and input)
             element.value = "";
             globalVariables.formData[globalHtmlEntrySnake][entrySnake] = "";
@@ -403,6 +361,7 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
             if (entryData){
                 element.value = entryData;
                 globalVariables.formData[globalHtmlEntrySnake][entrySnake] = entryData;
+
             }else {
                 element.value = 0;
                 globalVariables.formData[globalHtmlEntrySnake][entrySnake] = 0;
@@ -410,7 +369,8 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
             // Update the form data on keyup
             element.addEventListener("change", function(e) {
                 // Set form data and convert to a number
-                globalVariables.formData[globalHtmlEntrySnake][entrySnake] = +e.target.value 
+                globalVariables.formData[globalHtmlEntrySnake][entrySnake] = +e.target.value;
+                console.log(globalVariables.formData)
             });
         });
     };

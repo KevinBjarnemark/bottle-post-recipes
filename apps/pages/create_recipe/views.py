@@ -79,18 +79,12 @@ def submit_recipe(request):
             cooking_time = json.loads(request.POST.get('cooking_time', '{}'))
             Time.objects.create(
                 recipe=recipe,
-                preparation_minutes=preparation_time.get(
-                    'preparation-time-minutes', 0
-                ),
-                preparation_hours=preparation_time.get(
-                    'preparation-time-hours', 0
-                ),
-                preparation_days=preparation_time.get(
-                    'preparation-time-days', 0
-                ),
-                cooking_minutes=cooking_time.get('cooking-time-minutes', 0),
-                cooking_hours=cooking_time.get('cooking-time-hours', 0),
-                cooking_days=cooking_time.get('cooking-time-days', 0),
+                preparation_minutes=preparation_time.get('minutes', 0),
+                preparation_hours=preparation_time.get('hours', 0),
+                preparation_days=preparation_time.get('days', 0),
+                cooking_minutes=cooking_time.get('minutes', 0),
+                cooking_hours=cooking_time.get('hours', 0),
+                cooking_days=cooking_time.get('days', 0),
             )
 
             # Handle estimated price
@@ -99,8 +93,8 @@ def submit_recipe(request):
             )
             EstimatedPricePerMeal.objects.create(
                 recipe=recipe,
-                price_from=estimated_price.get('estimated-price-from', 0),
-                price_to=estimated_price.get('estimated-price-to', 0)
+                price_from=estimated_price.get('from', 0),
+                price_to=estimated_price.get('to', 0)
             )
 
         except Exception as e:
