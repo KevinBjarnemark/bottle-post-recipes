@@ -166,7 +166,7 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                             ${recipe.bottle_posted_count}
                         </div>
                         <img 
-                            src="/static/images/global/logo.png" 
+                            src="/static/images/global/logo_black.webp" 
                             alt="Bottle post icon" 
                             style="background-color: transparent;" />
                     </button>
