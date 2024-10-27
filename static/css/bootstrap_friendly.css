@@ -135,10 +135,27 @@ components */
     color: #ffff;
     box-shadow: 0 0 5px 2px #dde3e4;
 }
-
 .submit-button:hover {
     background-color: #75ba78;
     box-shadow: 0 0 7px 2px #edf1f1;
+}
+
+.delete-button {
+    background-color: #e45d5d;
+    padding: 10px 0;
+    color: #ffff;
+    box-shadow: 0 0 5px 2px #dde3e4;
+}
+.delete-button:hover {
+    background-color: #ee6363;
+    box-shadow: 0 0 7px 2px #edf1f1;
+}
+
+.delete-count-number {
+    color: #f16363;
+    font-size: 25px;
+    font-weight: 200;
+    font-family: 'Luckiest Guy', cursive;
 }
 
 /* Interactive */

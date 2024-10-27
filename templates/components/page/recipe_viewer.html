@@ -9,10 +9,8 @@
             <div class="recipe-item-pop-up-generated">
                 <!-- Main title -->
                 <h2 class="pb-3">
-                    <span 
-                        id="recipe-editor-main-title" 
-                        class="text-orange text-decoration-underline">
-                        <!-- Conditionally rendrered title -->
+                    <span class="text-orange text-decoration-underline">
+                        Edit recipe
                     </span>
                     <i class="fa-solid fa-gear"></i>
                 </h2>
@@ -21,32 +19,12 @@
                 <section class="pop-up-section mt-2 w-75">
                     <!-- How it works -->
                     <i class="fa-solid fa-circle-info fs-4 pb-2"></i>
-                    <div id="recipe-editor-main-info" class="flex-column w-100">
-                        <!-- Conditionally rendrered info content -->
-                    </div>
-                </section>
-
-                <!-- Delete recipe button -->
-                <section 
-                    id="recipe-editor-delete-button-container" 
-                    class="pop-up-section mt-2 w-75">
                     <p>
-                        If you want to delete this recipe 
-                        <span class="text-orange">(cannot be undone)</span>, 
-                        you need to click on this delete button 
-                        <span 
-                            id="recipe-editor-delete-button-click-count" 
-                            class="text-orange delete-count-number">
-                            <!-- JS Generated -->
-                        </span> 
-                        times.
+                        In this window, you can edit your already published recipe. 
+                        This won't affect your ocean status or previous engagements 
+                        such as likes and comments.
                     </p>
-                    <button 
-                        id="recipe-editor-delete-button"
-                        class="flex-center delete-button w-100">
-                        Delete recipe
-                    </button>
-                 </section>
+                </section>
 
                 <!-- Recipe title -->
                 <section class="pop-up-section">
@@ -118,6 +96,19 @@
                         name="Description"></textarea>
                 </section>
 
+                <!-- Dietary attributes -->
+                <section class="pop-up-section w-75">
+                    <h4 class="text-decoration-underline">My recipe contains:</h4>
+                    <p>
+                        Your recipe will be hidden in vegan mode if you enable 
+                        any of the highlighted ingredients. Tick the ones that 
+                        are included in your recipe. 
+                    </p>
+                    <div id="recipe-editor-dietary-attributes">
+                        <!-- JS generated attributes -->
+                    </div>
+                </section>
+
                 <!-- Add ingredient component -->
                 <section class="pop-up-section">
                     <h4 class="text-decoration-underline mb-3">
@@ -162,20 +153,6 @@
                         class="flex-column justify-content-start">
                             <!-- Generated js content -->
                     </ul>
-                </section>
-
-                
-                <!-- Dietary attributes -->
-                <section class="pop-up-section w-75">
-                    <h4 class="text-decoration-underline">My recipe contains:</h4>
-                    <p>
-                        Your recipe will be hidden in vegan mode if you enable 
-                        any of the highlighted ingredients. Tick the ones that 
-                        are included in your recipe. 
-                    </p>
-                    <div id="recipe-editor-dietary-attributes">
-                        <!-- JS generated attributes -->
-                    </div>
                 </section>
 
                 <!-- Info note -->
@@ -299,7 +276,7 @@
                 <!-- Estimated price -->
                 <section class="pop-up-section">
                     <h4 class="text-decoration-underline mb-3">
-                        Estimated price per meal
+                        Estimated price
                     </h4>
                     <div class="flex-center w-100">
                         <div>

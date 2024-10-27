@@ -1,0 +1,33 @@
+
+/* Section */
+.pop-up-section {
+    flex-direction: column;
+    margin-bottom: 20px;
+    width: 50%;
+    padding: 40px 10px;
+}
+
+/* Boolean */
+.pop-up-boolean-item {
+    background-color: #4e555a; 
+    border-radius: 5px;
+}
+
+.pop-up-list-element-container {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+
+.pop-up-list-element-remove-button {
+    border-radius: 4px;
+    padding: 0 10px;
+    margin: 0 10px;
+    background-color: #ff6464;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}

@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     # Free static media solution
     'cloudinary_storage',
     'cloudinary',
-    # Custo apps
+    # Custom apps
     'apps.pages.home',
     'apps.pages.create_recipe',
     'apps.users',

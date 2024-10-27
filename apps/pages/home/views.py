@@ -114,8 +114,8 @@ def load_recipes(request):
             ],
             'estimated_price': [
                 {
-                    'from': recipe.estimated_price.price_from,
-                    'to': recipe.estimated_price.price_to,
+                    'from': float(recipe.estimated_price.price_from),
+                    'to': float(recipe.estimated_price.price_to),
                 }
             ],
             'comments': [

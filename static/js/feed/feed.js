@@ -2,6 +2,7 @@ import { htmlSidebarFilters, htmlSidebarSearchAreas } from './generateHTML.js';
 import { configureListeners } from './listeners.js';
 import { getRecipePage } from './updateDOM.js';
 import { veganModeColor } from '../helpers.js';
+import { recipeEditor } from '../feed/recipe_editor.js';
 
 document.addEventListener("DOMContentLoaded", function() {
     // Data loaded from db
@@ -18,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
         feedSidebarButtonsContainer: document.getElementById(
             'feed-sidebar-buttons-container'
         ),
+        createRecipeButton: document.getElementById('create-recipe-button'),
         // Search
         searchContainer: document.getElementById('search-container'),
         searchInput: document.getElementById('search-input'),
@@ -41,6 +43,15 @@ document.addEventListener("DOMContentLoaded", function() {
         recipeViewerGenerated: document.getElementById("recipe-viewer-generated"),
         // Recipe editor
         recipeEditor: {
+            deleteButtonContainer: document.getElementById(
+                'recipe-editor-delete-button-container'
+            ),
+            deleteRecipeClickCount: document.getElementById(
+                'recipe-editor-delete-button-click-count'
+            ),
+            deleteButton: document.getElementById('recipe-editor-delete-button'),
+            mainTitle: document.getElementById('recipe-editor-main-title'),
+            mainInfo: document.getElementById('recipe-editor-main-info'),
             form: document.getElementById('recipe-editor-form'),
             container: document.getElementById("recipe-editor-container"),
             childContainer: document.getElementById("recipe-editor"),
@@ -130,6 +141,11 @@ document.addEventListener("DOMContentLoaded", function() {
     generateHTML(globalHTML, globalVariables);
     // Configure listeners
     configureListeners(globalHTML, globalVariables);
+
+    globalHTML.createRecipeButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        recipeEditor(globalHTML, globalVariables, "NEW RECIPE");
+    });
 });
 
 const generateHTML = (globalHTML, globalVariables) => {

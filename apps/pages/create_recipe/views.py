@@ -3,7 +3,6 @@ from .models import (
     DietaryAttribute, Recipe, Ingredient, Time,
     EstimatedPricePerMeal
 )
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 import json
 from constants import NON_VEGAN_ATTRIBUTES
@@ -37,11 +36,11 @@ def submit_recipe(request):
                 if attribute == "meat":
                     recipe_type = "meat"
                     break
-        
+
             vegan = True
             if not recipe_type == "vegan":
                 vegan = False
-            
+
             # Create the Recipe object
             recipe = Recipe(
                 user=request.user,  # Ensure the user is logged in
@@ -109,7 +108,3 @@ def submit_recipe(request):
             return JsonResponse({'success': False, 'error': str(e)})
 
     return JsonResponse({'success': True})
-
-
-def create_recipe(request):
-    return render(request, 'pages/create_recipe/create_recipe.html')

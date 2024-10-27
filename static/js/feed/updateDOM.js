@@ -1,6 +1,6 @@
 import { trimText, addStoredEventListener } from "../helpers.js";
 import { recipeViewer } from "./recipeViewer.js";
-import { recipeEditor } from "./recipeEditor.js";
+import { recipeEditor } from "./recipe_editor.js";
 
 /**
  * Sets the innerHTML of hint_window.html component and clear it after 
@@ -199,11 +199,12 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                 }
             );
         });
-
         // Show recipes based on vegan mode
         filterVeganRecipes(globalVariables);
         // Build the recipe viewer component
         recipeViewer(globalHTML, globalVariables);
+
+        
     }else {
         hintWindow(globalVariables, globalHTML, "<p>All recipes are loaded!</p>");
     }
