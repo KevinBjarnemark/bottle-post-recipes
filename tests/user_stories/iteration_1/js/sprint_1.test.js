@@ -1,4 +1,4 @@
-import { getRecipePage, filterVeganRecipes } from '../../../../static/js/feed/update_dom.js';
+import { getRecipePage } from '../../../../static/js/feed/update_dom.js';
 import { toggleVeganMode } from '../../../../static/js/feed/utilities.js';
 import { veganModeColor } from '../../../../static/js/helpers.js';
 import { MOCKRECIPEDATA, getFeedGlobalVariablesMockData, 
@@ -56,7 +56,7 @@ describe('Vegan mode button', () => {
 
     test("Swiches vegan mode, color and text accurately", async () => {
         // Expect vegan mode to be true initially
-        expect(globalVariables.veganMode).toBe(true);
+        expect(globalVariables.user.veganMode).toBe(true);
         // Toggle off, check color and text 
         await toggleVeganMode(globalHTML, globalVariables);
         expect(globalHTML.veganIcon.style.color).toBe(veganModeColor(false));

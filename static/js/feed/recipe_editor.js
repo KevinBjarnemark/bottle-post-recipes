@@ -19,6 +19,10 @@ const publishRecipe = async (globalVariables, recipeId) => {
         try {
             // Create the form data constructor
             const formData = new FormData();
+
+            // Include recipeId to handle edits
+            formData.append("recipe_id", recipeId);
+
             // These entries should be stringified
             const stringifyEntries = [
                 "dietary_attributes", 
@@ -35,25 +39,23 @@ const publishRecipe = async (globalVariables, recipeId) => {
                 } 
             });
 
-            if (recipeId === "NEW RECIPE"){
-                // Send destructed form data
-                const response = await fetch('/submit_recipe/', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    body: formData,
-                });
+            // Send destructed form data
+            const response = await fetch('/submit_recipe/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: formData,
+            });
 
-                if (response.ok) {
-                    // Show success message and redirect to home
-                    alert('Recipe successfully created!');
-                    window.location.href = '/';
-                } else {
-                    // TODO handle backend errors
-                    const data = await response.json();
-                    console.error(data);
-                }
+            if (response.ok) {
+                // Show success message and redirect to home
+                alert('Recipe successfully created!');
+                window.location.href = '/';
+            } else {
+                // TODO handle backend errors
+                const data = await response.json();
+                console.error(data);
             }
           
         } catch (error) {
@@ -213,7 +215,7 @@ const buildIngredients = (globalHTML, globalVariables, ingredientsPreFill) => {
  * previously generated content.
  * 
  */
-const handleClose = (globalHTML, globalVariables) => {
+const handleClose = (globalHTML) => {
     // Hide
     globalHTML.recipeEditor.container.style.visibility = "hidden";
 };
@@ -327,7 +329,6 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
         // Update the form data on keyup
         element.addEventListener("keyup", function(e) {
             globalVariables.formData[entry] = e.target.value;
-            console.log(globalVariables.formData)
         });
     });
 
@@ -351,8 +352,6 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
             const entrySnake = toSnakeCase(entry)
             const entryData = recipe[globalHtmlEntrySnake][0][entrySnake];
 
-            console.log(entryData)
-
             // Clear previous value (form data and input)
             element.value = "";
             globalVariables.formData[globalHtmlEntrySnake][entrySnake] = "";
@@ -370,7 +369,6 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
             element.addEventListener("change", function(e) {
                 // Set form data and convert to a number
                 globalVariables.formData[globalHtmlEntrySnake][entrySnake] = +e.target.value;
-                console.log(globalVariables.formData)
             });
         });
     };
@@ -411,7 +409,7 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
         globalVariables,
         "click", 
         `recipe-editor-close-button`, 
-        () => {handleClose(globalHTML, globalVariables)}
+        () => {handleClose(globalHTML)}
     );
 
     // Add and store image preview listener

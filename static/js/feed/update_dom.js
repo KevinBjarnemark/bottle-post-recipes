@@ -48,7 +48,7 @@ export const cleanUpFeed = (globalHTML, globalVariables) => {
 export const filterVeganRecipes = (globalVariables) => {
     globalVariables.recipes.forEach(i => {
         const recipeItem = document.getElementById(`recipe-item-${i.id}`);
-        if (globalVariables.veganMode){
+        if (globalVariables.user.veganMode){
             if (!i.vegan){
                 recipeItem.style.display = "none";
                 }else {
@@ -104,6 +104,8 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
 
         // Append new recipes to the recipe feed
         limitedFetchedRecipes.forEach(recipe => {
+            const userIsAuthor = recipe?.user_id === globalVariables
+                .user.userId;
             // Create a container for each recipe
             const recipeContainer = document.createElement('section');
             recipeContainer.className = 'recipe-item-container recipe-item';
@@ -146,12 +148,17 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                                     : 
                                     ''}
                             </button>
-                            <button
-                                id="recipe-edit-button-${recipe.id}"
-                                class="d-flex align-items-start justify-content-center 
-                                    pt-3 interactive-turn">
-                                <i class="fa-solid text-white fs-5 fa-edit"></i>
-                            </button>
+                            ${// Render edit button if the resipe blongs to the author
+                                userIsAuthor ?
+                                `
+                                <button
+                                    id="recipe-edit-button-${recipe.id}"
+                                    class="d-flex align-items-start justify-content-center 
+                                        pt-3 interactive-turn">
+                                    <i class="fa-solid text-white fs-5 fa-edit"></i>
+                                </button>
+                                `
+                            : ""}
                         </div>
                     </div>
                     <button class="absolute-flex recipe-item-bottle-post-count-container interactive-turn">
@@ -190,14 +197,17 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
             globalVariables.recipes.push(recipe);
 
             // Add and store event listener for the recip editor button
-            addStoredEventListener(
-                globalVariables, 
-                "click", 
-                `recipe-edit-button-${recipe.id}`, 
-                () => {
-                    recipeEditor(globalHTML, globalVariables, recipe.id);
-                }
-            );
+            if (userIsAuthor) {
+                addStoredEventListener(
+                    globalVariables, 
+                    "click", 
+                    `recipe-edit-button-${recipe.id}`, 
+                    () => {
+                        recipeEditor(globalHTML, globalVariables, recipe.id);
+                    }
+                );
+            }
+
         });
         // Show recipes based on vegan mode
         filterVeganRecipes(globalVariables);

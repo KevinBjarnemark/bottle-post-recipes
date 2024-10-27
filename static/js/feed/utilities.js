@@ -45,16 +45,18 @@ export const toggleVeganMode = async (globalHTML, globalVariables) => {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCookie('csrftoken')
         },
-        body: JSON.stringify({ vegan_mode: !globalVariables.veganMode })
+        body: JSON.stringify({ vegan_mode: !globalVariables.user.veganMode })
     });
     
     if (request.status === 200) {
         // Toggle vegan mode variable
-        globalVariables.veganMode = !globalVariables.veganMode; 
+        globalVariables.user.veganMode = !globalVariables.user.veganMode; 
         // Change color
-        globalHTML.veganIcon.style.color = veganModeColor(globalVariables.veganMode);
+        globalHTML.veganIcon.style.color = veganModeColor(
+            globalVariables.user.veganMode
+        );
         // Hint window message
-        const hintWindowHtml = globalVariables.veganMode ? 
+        const hintWindowHtml = globalVariables.user.veganMode ? 
         `
         <p>
             Vegan mode is 

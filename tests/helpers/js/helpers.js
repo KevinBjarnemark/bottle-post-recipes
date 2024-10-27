@@ -9,6 +9,7 @@ export const MOCKRECIPEDATA = {
     recipes: [
         {
             id: 1,
+            user_id: 0,
             title: "Vegan Recipe",
             description: "Test description",
             instructions: "Test instructions",
@@ -32,6 +33,7 @@ export const MOCKRECIPEDATA = {
         },
         {// Note, no comment
             id: 2,
+            user_id: 0,
             recipe_type: "vegetarian",
             vegan: false,
             title: "Vegetarian Recipe",
@@ -51,6 +53,7 @@ export const MOCKRECIPEDATA = {
         },
         {
             id: 3,
+            user_id: 0,
             recipe_type: "fish",
             vegan: false,
             title: "Fish Recipe",
@@ -76,6 +79,7 @@ export const MOCKRECIPEDATA = {
         },
         {
             id: 4,
+            user_id: 0,
             recipe_type: "meat",
             vegan: false,
             title: "Meat Recipe",
@@ -154,8 +158,11 @@ export const getFeedGlobalHtmlMockData = () => {
 export const getFeedGlobalVariablesMockData = () => {
     return {
             page: 1,
-            veganMode: true,
-            username: "Test user",
+            user: {
+                veganMode: true,
+                username: "Test user",
+                userId: 0,
+            },
             hintWindowTimer: null,
             recipes: [],
             currentComment: "", 

@@ -82,7 +82,7 @@ const handlePublishComment = async (globalVariables, recipeId, commentFormData) 
 
             // Create the new comment element
             const newCommentHTML = htmlComment(
-                globalVariables.username,
+                globalVariables.user.username,
                 new Date().toLocaleString(), // Simulated
                 globalVariables.currentComment,
             );

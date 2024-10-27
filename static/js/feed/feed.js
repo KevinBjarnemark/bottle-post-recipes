@@ -96,8 +96,11 @@ document.addEventListener("DOMContentLoaded", function() {
     // Global states
     let globalVariables = {
         page: 1, // The recipe group loaded represented as 'page'
-        veganMode: initialData.userProfileData.vegan_mode,
-        username: initialData.userProfileData.username,
+        user: {
+            veganMode: initialData.userProfileData.vegan_mode,
+            username: initialData.userProfileData.username,
+            userId: initialData.userProfileData.user_id,
+        },
         // Hint window timer
         hintWindowTimer: null,
         recipes: [],
@@ -161,7 +164,7 @@ const generateHTML = (globalHTML, globalVariables) => {
  */
 const setInitialStates = async (globalHTML, globalVariables) => {
     // Set vegan mode button color
-    globalHTML.veganIcon.style.color = veganModeColor(globalVariables.veganMode);
+    globalHTML.veganIcon.style.color = veganModeColor(globalVariables.user.veganMode);
     // Load the first recipe group
     await getRecipePage(1, globalHTML, globalVariables);
 };

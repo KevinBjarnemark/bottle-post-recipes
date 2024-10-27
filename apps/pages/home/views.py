@@ -16,6 +16,7 @@ def load_user_profile(request):
     if request.user.is_authenticated:
         profile = Profile.objects.get(user=request.user)
         user_profile = {
+            'user_id': profile.user.id,
             'username': profile.user.username,
             'vegan_mode': profile.vegan_mode,
         }
@@ -75,6 +76,7 @@ def load_recipes(request):
     data = [
         {
             'id': recipe.id,
+            'user_id': recipe.user.id,
             'title': recipe.title,
             'description': recipe.description,
             'instructions': recipe.instructions,
