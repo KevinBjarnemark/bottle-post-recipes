@@ -66,6 +66,38 @@ const publishRecipe = async (globalVariables, recipeId) => {
     await init();
 };
 
+/**
+ * Deletes a recipe by its ID.
+ * 
+ * @param {String} recipeId 
+ */
+const deleteRecipe = async (recipeId) => {
+    const init = async () => {
+        try {
+            // Send a DELETE request to the backend
+            const response = await fetch(`/delete_recipe/?recipe_id=${recipeId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+            });
+
+            if (response.ok) {
+                alert('Recipe successfully deleted!');
+                window.location.href = '/';
+            } else {
+                const data = await response.json();
+                console.error('Error deleting recipe:', data);
+            }
+        
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    init();
+};
+
 const buildDietaryAttributes = (globalHTML, globalVariables, attributesPreFill) => {
     // Clear previous elements
     globalHTML.recipeEditor.dietaryAttributes.innerHTML = "";
@@ -305,8 +337,7 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
             globalHTML.recipeEditor
                 .deleteRecipeClickCount.innerText = `${convertToNumber - 1}`;
             if (convertToNumber - 1 === 0) {
-                // TODO
-                console.log("ADD DELETE FUNCTION HERE");
+                deleteRecipe(recipeId);
             }
         }
     );

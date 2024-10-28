@@ -9,6 +9,41 @@ from constants import NON_VEGAN_ATTRIBUTES
 
 
 @csrf_exempt
+def delete_recipe(request):
+    if request.method == 'DELETE':
+        try:
+            # Retrieve recipe_id and validate ownership
+            recipe_id = request.GET.get('recipe_id')
+            if not recipe_id:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Recipe ID is required for deletion.'
+                })
+
+            # Get the recipe and ensure the current user is the owner
+            recipe = Recipe.objects.get(id=recipe_id)
+            if recipe.user != request.user:
+                return HttpResponseForbidden(
+                    "You do not have permission to delete this recipe."
+                )
+
+            # Delete the recipe
+            recipe.delete()
+            return JsonResponse(
+                {'success': True, 'message': 'Recipe deleted successfully.'}
+            )
+
+        except Recipe.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': 'Recipe not found.'
+            })
+        except Exception as e:
+            print("Error:", e)
+            return JsonResponse({'success': False, 'error': str(e)})
+
+
+@csrf_exempt
 def submit_recipe(request):
     """Creates or updates a recipe based on presence of recipe_id."""
 
