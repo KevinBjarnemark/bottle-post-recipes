@@ -79,16 +79,6 @@ export const filterVeganRecipes = (globalVariables) => {
  * @param {Object}   globalVariables
  */
 export const renderRecipes = (data, globalHTML, globalVariables) => {
-    /* 
-        Fix testing issue 
-        For some reason JEST tests identify this as 
-        something other than an array despite it 
-        is already decalred as such.
-    */
-    if (!Array.isArray(globalVariables.recipes)) {
-        globalVariables.recipes = [];
-    }
-
     let recipesToRender = data.batch;
     const recipeAmount = globalVariables.recipes.length;
     const totalRecipes = data.total_recipes;
@@ -112,6 +102,7 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
             recipeContainer.id = `recipe-item-${recipe.id}`;
 
             // Recipe item
+            const imageButtonId = `recipe-image-button-${recipe.id}`;
             recipeContainer.innerHTML = `
                 <h1 class="hidden-heading">${recipe.title}</h1>
                 <div class="flex-column">
@@ -131,7 +122,7 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                     <div class="flex-row">
                         <div class="flex-column">
                             <button
-                                id="recipe-image-button-${recipe.id}" 
+                                id="${imageButtonId}"
                                 class="flex-center interactive-turn">
                                 <img 
                                     class="recipe-image"
@@ -196,7 +187,7 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
             // Push to global variable
             globalVariables.recipes.push(recipe);
 
-            // Add and store event listener for the recip editor button
+            // Add and store event listener for the recipe editor button
             if (userIsAuthor) {
                 addStoredEventListener(
                     globalVariables, 
@@ -208,33 +199,25 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                 );
             }
 
+            // Add and store event listener for the recipe image
+            addStoredEventListener(
+                globalVariables, 
+                "click", 
+                imageButtonId, 
+                () => {
+                    recipeViewer(globalHTML, globalVariables, recipe.id);
+                }
+            );
+
         });
         // Show recipes based on vegan mode
         filterVeganRecipes(globalVariables);
-        // Build the recipe viewer component
-        recipeViewer(globalHTML, globalVariables);
-
-        
     }else {
         hintWindow(globalVariables, globalHTML, "<p>All recipes are loaded!</p>");
     }
 };
 
 export const getRecipePage = async (page, globalHTML, globalVariables) => {
-    // Test fix, for some reason, tests can't read initial values
-    if (globalVariables.filterObject === undefined){
-        globalVariables.filterObject = {
-            q: "",
-            searchAreas: [],
-            recipeTypes: {
-                vegan: true,
-                vegetarian: true,
-                fish: true,
-                meat: true,
-            }
-        };
-    }
-
     let additionalParametersObject = {
         q: globalVariables.filterObject.q,
         search_areas: "",

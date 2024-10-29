@@ -58,16 +58,6 @@ export const trimText = (text, slice) => {
  * should reference.
  */
 export const addStoredEventListener = (globalVariables, eventString, id, listenerFunction) => {
-    /* 
-        Testing issue fix 
-        For some reason JEST tests identify this as 
-        something other than an object despite it 
-        is already decalred as such.
-    */
-    if (!globalVariables.eventListeners) {
-        globalVariables.eventListeners = {};
-    }
-
     const element = document.getElementById(id);
     // Remove existing event listener, if any
     if (globalVariables.eventListeners[id]) {

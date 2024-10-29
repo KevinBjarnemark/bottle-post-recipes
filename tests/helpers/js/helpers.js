@@ -108,16 +108,22 @@ total_recipes: 4,
 batch: 6,
 };
 
-export const getFeedGlobalHtmlMockData = () => {
+export const getFeedGlobalHtmlMockDataB = () => {
+    // NOTE! THIS FUNCTION ONLY SUPPORTS SINGLE NESTED ITEMS
     const elements = {
+        accountButton: {
+            myRecipes: { tag: 'button', id: 'account-button-my-recipes' },
+        },
         // Feed
         feed: { tag: 'div', id: 'feed' },
         feedContainer: { tag: 'div', id: 'feed-container' },
-        feedContainer: { tag: 'div', id: 'feed-container' },
+        topText: { tag: 'h1', id: 'feed-top-text' },
         loadRecipesButton: { tag: 'button', id: 'load-recipes-button' },
+        bottlePostNotificationButton: { tag: 'button', id: 'bottle-post-notification-button' },
         // Sidebar
-        feedContainer: { tag: 'div', id: 'feed-sidebar-buttons-container' },
+        feedSidebarButtonsContainer: { tag: 'div', id: 'feed-sidebar-buttons-container' },
         sidebarSearchButton: { tag: 'button', id: 'sidebar-search-button' },
+        createRecipeButton: { tag: 'button', id: 'create-recipe-button' },
         // Search
         searchContainer: { tag: 'div', id: 'search-container' },
         searchInput: { tag: 'input', id: 'search-input' },
@@ -132,25 +138,188 @@ export const getFeedGlobalHtmlMockData = () => {
         veganButton: { tag: 'button', id: 'vegan-mode-button' },
         veganIcon: { tag: 'i', id: 'vegan-mode-icon' },
         // Hint window
-        hintWindow: { tag: 'div', id: 'hint-window' },
-        hintWindowText: { tag: 'div', id: 'hint-window-text' },
+        hintWindow: { tag: 'section', id: 'hint-window' },
+        hintWindowText: { tag: 'p', id: 'hint-window-text' },
         // Recipe viewer
-        recipeViewerContainer: { tag: 'section', id: 'recipe-viewer-container' },
-        recipeViewer: { tag: 'div', id: 'recipe-viewer' },
-        recipeViewerGenerated: { tag: 'div', id: 'recipe-viewer-generated' },
+        recipeViewer: {
+            container: { tag: 'section', id: 'recipe-viewer-container' },
+            info: { tag: 'section', id: 'recipe-viewer-info' },
+            title: { tag: 'h2', id: 'recipe-viewer-title' },
+            image: { tag: 'img', id: 'recipe-viewer-image' },
+            description: { tag: 'p', id: 'recipe-viewer-description' },
+            instructions: { tag: 'p', id: 'recipe-viewer-instructions' },
+            ingredients: { tag: 'ul', id: 'recipe-viewer-ingredients' },
+            dietaryAttributes: { tag: 'div', id: 'recipe-viewer-dietary-attributes' },
+            comments: { tag: 'div', id: 'recipe-viewer-comments' },
+            commentInput: { tag: 'textarea', id: 'recipe-viewer-comment-input' },
+        },
+        // Recipe editor
+        recipeEditor: {
+            container: { tag: 'section', id: 'recipe-editor-container' },
+            deleteButtonContainer: { tag: 'section', id: 'recipe-editor-delete-button-container' },
+            deleteRecipeClickCount: { tag: 'span', id: 'recipe-editor-delete-button-click-count' },
+            deleteButton: { tag: 'button', id: 'recipe-editor-delete-button' },
+            mainTitle: { tag: 'span', id: 'recipe-editor-main-title' },
+            mainInfo: { tag: 'div', id: 'recipe-editor-main-info' },
+            imagePreviewContainer: { tag: 'div', id: 'recipe-editor-image-preview-container' },
+            /* textInputs: {
+                title: { tag: 'input', id: 'recipe-editor-title' },
+                description: { tag: 'textarea', id: 'recipe-editor-description' },
+                instructions: { tag: 'textarea', id: 'aaaaaaaaaaaaa' },
+                tags: { tag: 'input', id: 'recipe-editor-tags' },
+            },
+            ingredient: {
+                quantity: { tag: 'input', id: 'recipe-editor-ingredient-quantity' },
+                name: { tag: 'input', id: 'recipe-editor-ingredient-name' },
+                addButton: { tag: 'button', id: 'aaaaaaaaaaaaa' },
+            }, */
+            ingredients: { tag: 'ul', id: 'recipe-editor-added-ingredients' },
+            dietaryAttributes: { tag: 'div', id: 'recipe-editor-dietary-attributes' },
+        },
     };
 
     // Create and append the elements to the document body
     const globalHTML = {};
-    Object.entries(elements).forEach(([key, { tag, id }]) => {
-        const element = document.createElement(tag);
-        // Assign ID
-        element.id = id;
-        // Append to DOM
-        document.body.appendChild(element);
-        // Build the globalHTML that will be returned
-        globalHTML[key] = element;
+
+    // Single nested keys
+    const nestedKeys = [
+        "recipeViewer",
+        "recipeEditor",
+        "accountButton",
+    ];
+    /*  
+        1. Send all HTML to the DOM with special handling for nested elements.  
+        2. Build the globalHTML object
+    */
+    Object.entries(elements).forEach(([key, value]) => {
+        switch(true) {
+            default: {
+                const element = document.createElement(value.tag);
+                element.id = value.id;
+                document.body.appendChild(element);
+                globalHTML[key] = element;
+            };
+            // Support for single nested items
+            case nestedKeys.includes(key): {
+                Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+                    // Create nestedentry if it doesn't exist
+                    if (globalHTML[key]?.[nestedKey] === undefined) {
+                        globalHTML[key] = {};
+                    }
+                    const nestedElement = document.createElement(nestedValue.tag);
+                    nestedElement.id = nestedValue.id;
+                    document.body.appendChild(nestedElement);
+                    globalHTML[key][nestedKey] = nestedElement;
+                })
+            }
+        }
     });
+
+    return globalHTML;
+};
+
+
+export const getFeedGlobalHtmlMockData = () => {
+    // NOTE! THIS FUNCTION ONLY SUPPORTS SINGLE NESTED ITEMS
+    const elements = {
+        accountButton: {
+            myRecipes: { tag: 'button', id: 'account-button-my-recipes' },
+        },
+        // Feed
+        feed: { tag: 'div', id: 'feed' },
+        feedContainer: { tag: 'div', id: 'feed-container' },
+        topText: { tag: 'h1', id: 'feed-top-text' },
+        loadRecipesButton: { tag: 'button', id: 'load-recipes-button' },
+        bottlePostNotificationButton: { tag: 'button', id: 'bottle-post-notification-button' },
+        // Sidebar
+        feedSidebarButtonsContainer: { tag: 'div', id: 'feed-sidebar-buttons-container' },
+        sidebarSearchButton: { tag: 'button', id: 'sidebar-search-button' },
+        createRecipeButton: { tag: 'button', id: 'create-recipe-button' },
+        // Search
+        searchContainer: { tag: 'div', id: 'search-container' },
+        searchInput: { tag: 'input', id: 'search-input' },
+        searchAreas: { tag: 'div', id: 'search-areas' },
+        searchButton: { tag: 'button', id: 'search-button' },
+        /// Filter
+        sidebarFilterButton: { tag: 'button', id: 'sidebar-filter-button' },
+        filterContainer: { tag: 'div', id: 'filter-container' },
+        filters: { tag: 'div', id: 'filters' },
+        filterButton: { tag: 'button', id: 'filter-button' },
+        // Vegan button
+        veganButton: { tag: 'button', id: 'vegan-mode-button' },
+        veganIcon: { tag: 'i', id: 'vegan-mode-icon' },
+        // Hint window
+        hintWindow: { tag: 'section', id: 'hint-window' },
+        hintWindowText: { tag: 'p', id: 'hint-window-text' },
+        // Recipe viewer
+        recipeViewer: {
+            container: { tag: 'section', id: 'recipe-viewer-container' },
+            info: { tag: 'section', id: 'recipe-viewer-info' },
+            title: { tag: 'h2', id: 'recipe-viewer-title' },
+            image: { tag: 'img', id: 'recipe-viewer-image' },
+            description: { tag: 'p', id: 'recipe-viewer-description' },
+            instructions: { tag: 'p', id: 'recipe-viewer-instructions' },
+            ingredients: { tag: 'ul', id: 'recipe-viewer-ingredients' },
+            dietaryAttributes: { tag: 'div', id: 'recipe-viewer-dietary-attributes' },
+            comments: { tag: 'div', id: 'recipe-viewer-comments' },
+            commentInput: { tag: 'textarea', id: 'recipe-viewer-comment-input' },
+        },
+        // Recipe editor
+        recipeEditor: {
+            container: { tag: 'section', id: 'recipe-editor-container' },
+            deleteButtonContainer: { tag: 'section', id: 'recipe-editor-delete-button-container' },
+            deleteRecipeClickCount: { tag: 'span', id: 'recipe-editor-delete-button-click-count' },
+            deleteButton: { tag: 'button', id: 'recipe-editor-delete-button' },
+            mainTitle: { tag: 'span', id: 'recipe-editor-main-title' },
+            mainInfo: { tag: 'div', id: 'recipe-editor-main-info' },
+            imagePreviewContainer: { tag: 'div', id: 'recipe-editor-image-preview-container' },
+            /* textInputs: {
+                title: { tag: 'input', id: 'recipe-editor-title' },
+                description: { tag: 'textarea', id: 'recipe-editor-description' },
+                instructions: { tag: 'textarea', id: 'aaaaaaaaaaaaa' },
+                tags: { tag: 'input', id: 'recipe-editor-tags' },
+            },
+            ingredient: {
+                quantity: { tag: 'input', id: 'recipe-editor-ingredient-quantity' },
+                name: { tag: 'input', id: 'recipe-editor-ingredient-name' },
+                addButton: { tag: 'button', id: 'aaaaaaaaaaaaa' },
+            }, */
+            ingredients: { tag: 'ul', id: 'recipe-editor-added-ingredients' },
+            dietaryAttributes: { tag: 'div', id: 'recipe-editor-dietary-attributes' },
+        },
+    };
+
+    // Create and append the elements to the document body
+    const globalHTML = {};
+
+    // Single nested keys
+    const nestedKeys = [
+        "recipeViewer",
+        "recipeEditor",
+        "accountButton",
+    ];
+    /*  
+        1. Send all HTML to the DOM with special handling for nested elements.  
+        2. Build the globalHTML object
+    */
+        Object.entries(elements).forEach(([key, value]) => {
+            if (nestedKeys.includes(key)) {
+                // Handle nested elements
+                globalHTML[key] = {}; // Ensure this is an object for nested elements
+                Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+                    const nestedElement = document.createElement(nestedValue.tag);
+                    nestedElement.id = nestedValue.id;
+                    document.body.appendChild(nestedElement);
+                    globalHTML[key][nestedKey] = nestedElement;
+                });
+            } else {
+                // Handle non-nested elements
+                const element = document.createElement(value.tag);
+                element.id = value.id;
+                document.body.appendChild(element);
+                globalHTML[key] = element;
+            }
+        });
 
     return globalHTML;
 };
@@ -176,6 +345,7 @@ export const getFeedGlobalVariablesMockData = () => {
                         fish: true,
                         meat: true,
                     },
+                    userId: 0,
                 },
             eventListeners: {},
         };

@@ -3,7 +3,8 @@ import { getFeedGlobalVariablesMockData,
     getFeedGlobalHtmlMockData, MOCKRECIPEDATA } from '../../../helpers/js/helpers.js';
 import { capitalizeFirstLetter } from '../../../../static/js/helpers.js';
 import { toggleFilters } from '../../../../static/js/feed/utilities.js';
-import { getRecipePage } from '../../../../static/js/feed/update_dom.js';
+import { recipeViewer } from '../../../../static/js/feed/recipe_viewer.js';
+import { initPage } from '../../../../static/js/feed/feed.js';
 import {expect, test} from '@jest/globals';
 import '@testing-library/jest-dom'
 
@@ -66,12 +67,13 @@ describe("Recipe viewer", () => {
 
     test("Loads the recipe viewer on click and verifies rendering to the DOM", 
             async () => {
-        await getRecipePage(1, globalHTML, globalVariables);
+        await initPage(globalHTML, globalVariables);
         // Check that recipes were appended to the DOM
         expect(globalHTML.feed.childElementCount).toBe(4);
 
         // Recursevly verify each recipe
-        MOCKRECIPEDATA.recipes.forEach(recipe => {
+        MOCKRECIPEDATA.recipes.forEach(async recipe => {
+            await new Promise(resolve => setTimeout(resolve, 50));
             // Check the presence of the recipe in the DOM
             expect(globalHTML.feed).toHaveTextContent(recipe.title);
             // Get and click on the image button (to load the recipe viewer)
@@ -80,8 +82,9 @@ describe("Recipe viewer", () => {
             );
             expect(imageButton).toBeInTheDocument();
             imageButton.click();
+            
             // Verify key components 
-            const parentElement = globalHTML.recipeViewerGenerated;
+            const parentElement = globalHTML.recipeViewer.container;
             expect(parentElement).toBeInTheDocument();
             expect(parentElement).toHaveTextContent(recipe.title);
             expect(parentElement).toHaveTextContent(recipe.description);

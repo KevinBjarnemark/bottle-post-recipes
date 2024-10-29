@@ -1,17 +1,8 @@
-import { addStoredEventListener, getCookie } from "../helpers.js";
+import { 
+    addStoredEventListener, 
+    getCookie 
+} from "../helpers.js";
 
-
-/**
- * Closes the recipe viewer component and clears 
- * previously generated content.
- * 
- */
-const handleClose = (globalHTML, globalVariables) => {
-    // Clean up and hide
-    globalVariables.currentComment = "";
-    globalHTML.recipeViewerGenerated.innerHTML = "";
-    globalHTML.recipeViewerContainer.style.visibility = "hidden";
-};
 
 /**
  * Creates a reusable comment html string.
@@ -21,7 +12,7 @@ const handleClose = (globalHTML, globalVariables) => {
  * @param {String}   text Comment text
  * @returns {String} A comment HTML string 
  */
-const htmlComment = (username, date, text) => {
+export const htmlComment = (username, date, text) => {
     return (
         `<div class="comment-item">
             <div>
@@ -37,15 +28,17 @@ const htmlComment = (username, date, text) => {
     )
 };
 
+
 /**
  * Updates the currently written comment to a global variable
  * and adds that value to the form data.
  * 
  */
-const handleCommentTextarea = (e, globalVariables, commentFormData) => {
+export const handleCommentTextarea = (e, globalVariables, commentFormData) => {
     globalVariables.currentComment = e.target.value;
     commentFormData.append("comment", e.target.value);
 };
+
 
 /**
  * Writes the comment to db, and simulates a comment 
@@ -59,7 +52,7 @@ const handleCommentTextarea = (e, globalVariables, commentFormData) => {
  * 
  * @param {String} recipeId
  */
-const handlePublishComment = async (globalVariables, recipeId, commentFormData) => {
+export const handlePublishComment = async (globalVariables, globalHTML, recipeId, commentFormData) => {
     try {
         // Add recipe_id to the FormData
         commentFormData.append("recipe_id", recipeId);
@@ -76,9 +69,8 @@ const handlePublishComment = async (globalVariables, recipeId, commentFormData) 
         
         if (result.success) {
             // Target the first div inside the comment section
-            const commentSection = document.querySelector(
-                `#comment-input-${recipeId}`
-            ).parentElement.querySelector('div');
+            const commentSection = globalHTML.recipeViewer.comments
+                .parentElement.querySelector('div');
 
             // Create the new comment element
             const newCommentHTML = htmlComment(
@@ -90,7 +82,7 @@ const handlePublishComment = async (globalVariables, recipeId, commentFormData) 
             commentSection.insertAdjacentHTML('afterbegin', newCommentHTML);
 
             // Clear textarea and form data
-            document.getElementById(`comment-input-${recipeId}`).value = "";
+            globalHTML.recipeViewer.commentInput.value = "";
             commentFormData.delete("comment");
             commentFormData.delete("recipe_id");
         } else {
@@ -102,158 +94,189 @@ const handlePublishComment = async (globalVariables, recipeId, commentFormData) 
 };
 
 /**
+ * Renders the dietary attributes.
+ * 
+ * NOTE! This may be invisible if there are no dietary 
+ * attributes enabled in the recipe.
+ * 
+ * @param {Object}  element The parent dietary attributes HTML element
+ * @param {Object}  dietaryAttributesArray The array of dietary attributes
+ */
+export const buildDietaryAttributes = (element, dietaryAttributesArray) => {
+    let dietaryAttributes = "";
+    if (dietaryAttributesArray.length > 0) {
+        let dietaryAttributesItems = "";
+        dietaryAttributesArray.forEach(attribute => {
+            dietaryAttributesItems += `
+            <div class="highlighted-word">
+                ${attribute}
+            </div>
+            `;
+        });
+        dietaryAttributes += `
+            <h5>
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                This recipe contains 
+            </h5>
+            <div class="d-flex flex-wrap flex-row">
+                ${dietaryAttributesItems}
+            </div>
+        `;
+    }
+
+    // Replace previous attributes with new ones (or none) 
+    element.innerHTML = dietaryAttributes;
+};
+
+/**
+ * Adds <li> ingredient elements to a selected <ul>
+ * element.
+ * 
+ * 
+ * @param {bool}  element HTML element 
+ * @param {str}   ingredients Array of objects. {quantity: "", name: ""}
+ */
+export const buildIngredients = (element, ingredients) => {
+    // Render ingredients
+    let ingredientElements = ""; 
+    ingredients.forEach(ingredient => {
+        ingredientElements +=
+            `
+                <li class="text-nowrap">
+                    <span class="highlighted-word">
+                        ${ingredient.quantity}
+                    </span> 
+                    ${ingredient.name}
+                </li>
+            `;
+    });
+
+    // Replace previous content with this recipe's ingredients
+    element.innerHTML = ingredientElements;
+}
+
+/**
+ * Closes the recipe Viewer component and clears 
+ * previously generated content.
+ * 
+ */
+const handleClose = (globalHTML, globalVariables) => {
+    // Clean and hide
+    globalHTML.recipeViewer.container.style.visibility = "hidden";
+    globalVariables.currentComment = "";
+};
+
+/**
  * Displays each recipe with detailed information such as 
  * ingredients, dietary attributes, and more.
  * 
- * Manages the contents of the recipe-viewer-generated element 
- * with global event listeners customized customized for each 
- * loaded recipe.
+ * If a 'reviewer' opens it some extra functionality are also 
+ * added. A bottle post button and a delete button.   
+ * 
  * 
  */
-export const recipeViewer = (globalHTML, globalVariables) => {
+export const recipeViewer = (globalHTML, globalVariables, recipeId, review=false) => {
+    // Find the recipe to load
+    const recipe = globalVariables.recipes.find(i => i.id === recipeId);
+
+    // Info text
+    if (review){
+        globalHTML.recipeViewer.info.innerHTML = `
+            <i class="fa-solid fa-circle-info fs-4 pb-2"></i>
+            <div  class="flex-column w-100">
+                <em>How it works</em>
+                <p>
+                    You've been selected by our system randomly to review this recipe.
+                    If you find value in this recipe, or if you think others will, you're 
+                    allowed to put it back into the ocean! 
+                    <i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>
+                    This will impact the reach of this recipe immensly.
+                </p>
+            </div>
+    `;
+    }else {
+        globalHTML.recipeViewer.info.innerHTML = "";
+    }
+
+    // Title
+    globalHTML.recipeViewer.title.innerText = recipe.title;
+
+    // Image
+    if (recipe.image){
+        globalHTML.recipeViewer.image.src = recipe.image;
+    }else {
+        globalHTML.recipeViewer.image.src = "/images/icons/missing.webp";
+    }
+    // Description
+    globalHTML.recipeViewer.description.innerText = recipe.description;
+    // instructions
+    globalHTML.recipeViewer.instructions.innerText = recipe.instructions;
+
+    /* Dietary attributes NOTE! This will be invisible if no dietary attributes are 
+    attached to the recipe */
+    buildDietaryAttributes(
+        globalHTML.recipeViewer.dietaryAttributes, 
+        recipe.dietary_attributes
+    );
+
+    // Ingredients
+    buildIngredients(
+        globalHTML.recipeViewer.ingredients, 
+        recipe.ingredients
+    );
+
     // Comments form data
     const commentFormData = new FormData();
-
-    // Prepare click-triggered listeners that generate the respective recipe
-    globalVariables.recipes.forEach(recipe => {
-        // Define listener function
-        const listener = () => {
-            // Make the component visible
-            globalHTML.recipeViewerContainer.style.visibility = "visible";
-
-            /* Dietary attributes 
-            Note, This will be invisible if no dietary attributes are 
-            attached to the recipe */
-            let dietaryAttributes = "";
-            if (recipe['dietary_attributes'].length > 0) {
-                let dietaryAttributesItems = "";
-                recipe['dietary_attributes'].forEach(attribute => {
-                    dietaryAttributesItems += `
-                    <div class="highlighted-word">
-                        ${attribute}
-                    </div>
-                    `;
-                });
-                dietaryAttributes += `<h5>
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                    This recipe contains 
-                    
-                </h5>
-                <div class="d-flex flex-wrap flex-row">
-                    ${dietaryAttributesItems}
-                </div>
-                `;
-                }
-
-                // List all ingredients as an unordered list
-                let ingredients = "";
-                Object.entries(recipe['ingredients']).forEach(([, ingredient]) => {
-                    ingredients += `<li class="text-nowrap">
-                        <span class="highlighted-word">${ingredient.quantity}</span> 
-                        ${ingredient.name}
-                    </li>
-                    `;
-                });
-
-                // Generate comments section
-                let comments = "";
-                if (recipe['comments'].length > 0) {
-                    // Sort by date
-                    recipe['comments'].sort((a, b) => new Date(
-                        b.created_at) - new Date(a.created_at));
-                    // Build comments
-                    recipe['comments'].forEach(comment => {
-                        const createdComment = htmlComment(
-                            comment.user,
-                            comment.created_at,
-                            comment.text,
-                        );
-                        comments += createdComment;
-                    });
-                }
-
-                globalHTML.recipeViewerGenerated.innerHTML = `<h2>${recipe.title}</h2>
-                    <section>
-                        <img
-                            src="${recipe.image ? 
-                                recipe.image : '/static/images/icons/missing.webp'}" 
-                            alt="${recipe.title}">
-                    </section>
-
-                    <section>
-                        <h5>Description</h5>
-                        <p>${recipe.description}</p>
-                    </section>
-
-                    <section>
-                        <h5>Instructions</h5>
-                        <p class="pre-line">${recipe.instructions}</p>
-                    </section> 
-
-                    <section>
-                        ${dietaryAttributes}
-                    </section>
-
-                    <section>
-                        <h5>Ingredients</h5>
-                        <ul>
-                            ${ingredients}
-                        </ul>
-                    </section>
-
-                    <section>
-                        <h5>Comments <span class="text-orange">(BETA)</span></h5>
-                        <p>If your comment disappears, refresh the browser!</p>
-                        <div class="flex-column comment-section w-100">
-                            <div class="flex-column w-100">${comments}</div>
-                            <textarea 
-                                class="flex-column comment-input border-radius-soft"
-                                id="comment-input-${recipe.id}" 
-                                placeholder="Write a comment..."></textarea>
-                            <button 
-                                id="publish-comment-button-${recipe.id}"  
-                                class="standard-button w-25">
-                                Publish comment
-                            </button>
-                        </div>
-                    </section>
-                    <button
-                        id="recipe-viewer-close-button-${recipe.id}" 
-                        class="close-button-fixed">
-                        X
-                    </button>
-                `;
-
-            // Add and store comment comment textarea listener
-            addStoredEventListener(
-                globalVariables,
-                "input", 
-                `comment-input-${recipe.id}`, 
-                (e) => {handleCommentTextarea(e, globalVariables, commentFormData)}
+    // Comment section
+    let comments = "";
+    if (recipe['comments'].length > 0) {
+        // Sort by date
+        recipe['comments'].sort((a, b) => new Date(
+            b.created_at) - new Date(a.created_at));
+        // Build comments
+        recipe['comments'].forEach(comment => {
+            const createdComment = htmlComment(
+                comment.user,
+                comment.created_at,
+                comment.text,
             );
+            comments += createdComment;
+        });
+    }
+    globalHTML.recipeViewer.comments.innerHTML = comments;
 
-            // Add and store publish comment listener
-            addStoredEventListener(
-                globalVariables,
-                "click", 
-                `publish-comment-button-${recipe.id}`, 
-                () => handlePublishComment(globalVariables, recipe.id, commentFormData)
-            );
-            // Add and store close button listener
-            addStoredEventListener(
-                globalVariables,
-                "click", 
-                `recipe-viewer-close-button-${recipe.id}`, 
-                () => {handleClose(globalHTML, globalVariables)}
-            );
-        };
 
-        // Add and store recipe image button listener
-        addStoredEventListener(
-            globalVariables, 
-            "click", 
-            `recipe-image-button-${recipe.id}`, 
-            listener
-        );
-    })
+    // Add and store comment comment textarea listener
+    addStoredEventListener(
+        globalVariables,
+        "input",
+        `recipe-viewer-comment-input`, 
+        (e) => {handleCommentTextarea(e, globalVariables, commentFormData)}
+    );
+
+    // Add and store publish comment listener
+    addStoredEventListener(
+        globalVariables,
+        "click", 
+        `recipe-viewer-publish-comment-button`, 
+        () => {
+            handlePublishComment(
+                globalVariables, 
+                globalHTML, 
+                recipe.id, 
+                commentFormData
+            );
+        }
+    );
+
+    // Add and store close button listener
+    addStoredEventListener(
+        globalVariables,
+        "click", 
+        `recipe-viewer-close-button`, 
+        () => {handleClose(globalHTML, globalVariables)}
+    );
+
+    // Finally, Make the component visible
+    globalHTML.recipeViewer.container.style.visibility = "visible";
 };

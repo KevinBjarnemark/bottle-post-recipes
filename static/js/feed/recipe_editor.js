@@ -256,8 +256,8 @@ const handleClose = (globalHTML) => {
  * Displays each recipe with detailed information such as 
  * ingredients, dietary attributes, and more.
  * 
- * Manages the contents of the recipe-editor-generated element 
- * with global event listeners customized customized for each 
+ * Manages the contents of the recipe editor with global 
+ * event listeners customized customized for each 
  * loaded recipe.
  * 
  */
@@ -418,10 +418,9 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
     // Set form data initially
     globalVariables.formData.image = recipe.image;
 
-    /* Dietary attributes NOTE! This will be invisible if no dietary attributes are 
-    attached to the recipe */
+    // Dietary attributes
     buildDietaryAttributes(globalHTML, globalVariables, recipe.dietary_attributes);
-
+    
     // Ingredients
     buildIngredients(globalHTML, globalVariables, recipe.ingredients)
 

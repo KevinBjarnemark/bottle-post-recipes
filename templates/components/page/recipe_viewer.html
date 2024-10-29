@@ -1,328 +1,95 @@
+{% load static %}
 
 <section 
-    id="recipe-editor-container" 
-    class="flex-fixed recipe-item-pop-up-container backdrop-blur">
+    id="recipe-viewer-container" 
+    class="flex-fixed pop-up-container backdrop-blur">
     <div
-        id="recipe-editor" 
+        id="recipe-viewer" 
         class="flex-column recipe-pop-up border-radius-soft">
 
             <div class="recipe-item-pop-up-generated">
-                <!-- Main title -->
-                <h2 class="pb-3">
-                    <span class="text-orange text-decoration-underline">
-                        Edit recipe
-                    </span>
-                    <i class="fa-solid fa-gear"></i>
+                <!-- Info section -->
+                <section id="recipe-viewer-info" class="pop-up-section mt-2 w-75">
+                    <!-- Conditionally rendrered info content -->
+                </section>
+
+                <h2 id="recipe-viewer-title" class="pb-3">
+                    <!-- Recipe title (rendered) -->
                 </h2>
 
-                 <!-- Info section -->
-                <section class="pop-up-section mt-2 w-75">
-                    <!-- How it works -->
-                    <i class="fa-solid fa-circle-info fs-4 pb-2"></i>
-                    <p>
-                        In this window, you can edit your already published recipe. 
-                        This won't affect your ocean status or previous engagements 
-                        such as likes and comments.
-                    </p>
-                </section>
-
-                <!-- Recipe title -->
-                <section class="pop-up-section">
-                    <h4 class="mb-2 text-decoration-underline">Title</h4>
-                    <p>Write a short title of your recipe.</p>
-                    <input 
-                        id="recipe-editor-title"
-                        class="flex-center dark-text-input mt-1 w-50"
-                        style="text-align: center"
-                        type="text" 
-                        name="Title" 
-                    />
-                </section>
-
-                <!-- Recipe Image --> 
-                <section class="pop-up-section">
-                    <h4 class="mb-2 text-decoration-underline">Image</h4>
-                    <p>
-                        Click on the button below to upload an image of 
-                        your recipe.
-                    </p>
-                    <input 
-                        id="recipe-editor-image-upload"
-                        class="dark-input mt-1" 
-                        type="file" 
-                        name="Image"
-                        hidden
-                    />
-                    <label 
-                        for="recipe-editor-image-upload" 
-                        class="dark-file-input mb-2">
-                        Select File
-                    </label>
-                    <div 
-                        id="recipe-editor-image-preview-container" 
-                        class="flex-center w-100">
-                        <img 
-                            src="/static/images/icons/missing.webp" 
-                            alt="Recipe image"
-                        />
-                    </div>
+                <!-- Recipe Image -->
+                <section 
+                    
+                    class="pop-up-section">
+                    <!-- Rendered image, avoid setting a user-
+                     defined alt! -->
+                    <img 
+                        id="recipe-viewer-image" 
+                        src="{% static '/images/icons/missing.webp' %}"
+                        alt="Recipe image">
                 </section>
 
                 <!-- Recipe description -->
-                <section  class="pop-up-section">
-                    <h4 class="mb-2 text-decoration-underline">Description</h4>
-                    <p>
-                        A somewhat longer description of your recipe.
-                    </p>
-                    <textarea 
-                        id="recipe-editor-description"
-                        class="flex-center dark-textarea-input mt-1 w-75" 
-                        style="height: 150px"
-                        name="Description"></textarea>
+                <section class="pop-up-section">
+                    <h4 class="mb-2">Description</h4>
+                    <p id="recipe-viewer-description"></p>
                 </section>
 
                 <!-- Recipe instructions -->
                 <section  class="pop-up-section">
-                    <h4 class="mb-2 text-decoration-underline">
+                    <h4 class="mb-2">
                         Instructions
                     </h4>
-                    <p>
-                        Instruct other users on how to cook/prepare your recipe.
-                    </p>
-                    <textarea 
-                        id="recipe-editor-instructions"
-                        class="flex-center dark-textarea-input mt-1 w-75" 
-                        style="height: 150px"
-                        name="Description"></textarea>
+                    <p id="recipe-viewer-instructions"></p>
                 </section>
 
-                <!-- Dietary attributes -->
-                <section class="pop-up-section w-75">
-                    <h4 class="text-decoration-underline">My recipe contains:</h4>
-                    <p>
-                        Your recipe will be hidden in vegan mode if you enable 
-                        any of the highlighted ingredients. Tick the ones that 
-                        are included in your recipe. 
-                    </p>
-                    <div id="recipe-editor-dietary-attributes">
-                        <!-- JS generated attributes -->
-                    </div>
-                </section>
-
-                <!-- Add ingredient component -->
+                <!-- Ingredients -->
                 <section class="pop-up-section">
-                    <h4 class="text-decoration-underline mb-3">
-                        Add ingredients
-                    </h4>
-                    <div class="flex-center w-100">
-                        <div>
-                            <label for="recipe-editor-ingredient-quantity">
-                                Quantity
-                            </label>
-                            <input 
-                                id="recipe-editor-ingredient-quantity"
-                                class="flex-center dark-text-input mt-1"
-                                style="width: 88%"
-                                type="text" 
-                                placeholder="300g"
-                                name="ingredient-quantity"
-                            />
-                        </div>
-                        <div>
-                            <label for="recipe-editor-ingredient-name">Ingredient name</label>
-                            <input 
-                                id="recipe-editor-ingredient-name"
-                                class="flex-center dark-text-input mt-1"
-                                style="width: 88%"
-                                type="text" 
-                                placeholder="Carrots"
-                                name="ingredient-name"
-                            />
-                        </div>
-                    </div>
-                    <button 
-                        id="recipe-editor-ingredient-add-button"
-                        class="d-flex add-ingredient-button mt-3"
-                        type="button">
-                        Add ingredient
-                    </button>
-                    <i class="fa-solid fa-arrow-down pt-2 pb-2"></i>
-                    <!-- Added ingredients -->
+                    <h4 class="mb-3">Ingredients</h4>
                     <ul
-                        id="recipe-editor-added-ingredients" 
+                        id="recipe-viewer-ingredients" 
                         class="flex-column justify-content-start">
                             <!-- Generated js content -->
                     </ul>
                 </section>
 
-                <!-- Info note -->
-                <div class="flex-column align-items-center w-75 mb-3 mt-1">
-                    <i class="fa-solid fa-circle-info text-orange fs-4 pb-2"></i>
-                    <p>
-                        The fields below will not be displayed in the app just 
-                        yet, but they will be saved in our system.
-                    </p>
-                </div>
-
-                <!-- Recipe tags -->
-                <section class="pop-up-section">
-                    <h4 class="mb-2 text-decoration-underline">Tags</h4>
-                    <p>Comma-separated tags</p>
-                    <input 
-                        id="recipe-editor-tags"
-                        class="flex-center dark-text-input mt-1 w-50"
-                        placeholder="eg. breakfast, light, fresh"
-                        type="text" 
-                        name="Tags" 
-                    />
-                </section>
-
-                <!-- Preparation time -->
-                <section class="pop-up-section">
-                    <h4 class="text-decoration-underline mb-3">
-                        Preparation time
-                    </h4>
-                    <div class="flex-center w-100">
-                        <div>
-                            <label for="recipe-editor-preparation-time-days">
-                                Days
-                            </label>
-                            <input 
-                                id="recipe-editor-preparation-time-days"
-                                class="flex-center dark-text-input mt-1"
-                                style="width: 88%"
-                                type="number" 
-                                value="0"
-                                name="preparation-time-days"
-                            />
-                        </div>
-                        <div>
-                            <label for="recipe-editor-preparation-time-hours">
-                                hours
-                            </label>
-                            <input 
-                                id="recipe-editor-preparation-time-hours"
-                                class="flex-center dark-text-input mt-1"
-                                style="width: 88%"
-                                type="number" 
-                                value="0"
-                                name="preparation-time-hours"
-                            />
-                        </div>
-                        <div>
-                            <label for="recipe-editor-preparation-time-minutes">
-                                minutes
-                            </label>
-                            <input 
-                                id="recipe-editor-preparation-time-minutes"
-                                class="flex-center dark-text-input mt-1"
-                                style="width: 88%"
-                                type="number" 
-                                value="0"
-                                name="preparation-time-minutes"
-                            />
-                        </div>
+                <!-- Dietary attributes -->
+                <section class="pop-up-section w-75">
+                    <div id="recipe-viewer-dietary-attributes">
+                        <!-- JS generated attributes -->
                     </div>
                 </section>
 
-                <!-- Cooking time -->
-                <section class="pop-up-section">
-                    <h4 class="text-decoration-underline mb-3">
-                        Cooking time
-                    </h4>
-                    <div class="flex-center w-100">
-                        <div>
-                            <label for="recipe-editor-cooking-time-days">
-                                Days
-                            </label>
-                            <input 
-                                id="recipe-editor-cooking-time-days"
-                                class="flex-center dark-text-input mt-1"
-                                style="width: 88%"
-                                type="number" 
-                                value="0"
-                                name="cooking-time-days"
-                            />
+                <!-- Comment section -->
+                <section>
+                    <h5>
+                        Comments 
+                        <span class="text-orange">(BETA)</span>
+                    </h5>
+                    <p>If your comment disappears, refresh the browser!</p>
+                    <div class="flex-column comment-section w-100">
+                        <div id="recipe-viewer-comments" class="flex-column w-100">
+                            <!-- JS generated comments -->
                         </div>
-                        <div>
-                            <label for="recipe-editor-cooking-time-hours">
-                                hours
-                            </label>
-                            <input 
-                                id="recipe-editor-cooking-time-hours"
-                                class="flex-center dark-text-input mt-1"
-                                style="width: 88%"
-                                type="number" 
-                                value="0"
-                                name="cooking-time-hours"
-                            />
-                        </div>
-                        <div>
-                            <label for="recipe-editor-cooking-time-minutes">
-                                minutes
-                            </label>
-                            <input 
-                                id="recipe-editor-cooking-time-minutes"
-                                class="flex-center dark-text-input mt-1"
-                                style="width: 88%"
-                                type="number" 
-                                value="0"
-                                name="cooking-time-minutes"
-                            />
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Estimated price -->
-                <section class="pop-up-section">
-                    <h4 class="text-decoration-underline mb-3">
-                        Estimated price
-                    </h4>
-                    <div class="flex-center w-100">
-                        <div>
-                            <label for="recipe-editor-estimated-price-from">
-                                <i class="fa-solid fa-dollar-sign"></i> From
-                            </label>
-                            <input 
-                                id="recipe-editor-estimated-price-from"
-                                class="flex-center dark-text-input mt-1"
-                                style="width: 88%"
-                                type="number" 
-                                value="0"
-                                name="estimated-price"
-                            />
-                        </div>
-                        <div>
-                            <label for="recipe-editor-estimated-price-to">
-                                <i class="fa-solid fa-dollar-sign"></i> To
-                            </label>
-                            <input 
-                                id="recipe-editor-estimated-price-to"
-                                class="flex-center dark-text-input mt-1"
-                                style="width: 88%"
-                                type="number" 
-                                value="0"
-                                name="estimated-price"
-                            />
-                        </div>
+                        <!-- Comment textarea input -->
+                        <textarea 
+                            class="flex-column comment-input border-radius-soft"
+                            id="recipe-viewer-comment-input" 
+                            placeholder="Write a comment..."></textarea>
+                        <button 
+                            id="recipe-viewer-publish-comment-button"  
+                            class="standard-button w-25">
+                            Publish comment
+                        </button>
                     </div>
                 </section>
 
                 <!-- Close button -->
                 <button
-                    id="recipe-editor-close-button" 
+                    id="recipe-viewer-close-button" 
                     class="close-button-fixed">
                     X
                 </button>
-
-                <!-- Submit -->
-                 <div class="flex-center w-100 pb-5 pt-5">
-                    <button 
-                        id="recipe-editor-submit-button"
-                        class="submit-button w-50" type="submit">
-                        Post recipe
-                    </button>
-                 </div>
             </div>
 
     </div>

@@ -1,4 +1,4 @@
-import { getRecipePage } from '../../../../static/js/feed/update_dom.js';
+import { initPage } from '../../../../static/js/feed/feed.js';
 import { toggleVeganMode } from '../../../../static/js/feed/utilities.js';
 import { veganModeColor } from '../../../../static/js/helpers.js';
 import { MOCKRECIPEDATA, getFeedGlobalVariablesMockData, 
@@ -38,11 +38,12 @@ describe('Render recipes', () => {
     });
 
     test("renders recipes and appends to the DOM", async () => {
-        await getRecipePage(1, globalHTML, globalVariables);
+        await initPage(globalHTML, globalVariables);
         // Check that recipes were appended to the DOM
         expect(globalHTML.feed.childElementCount).toBe(4);
         // Check the presence of all recipes in the DOM
-        MOCKRECIPEDATA.recipes.forEach(recipe => {
+        MOCKRECIPEDATA.recipes.forEach(async recipe => {
+            await new Promise(resolve => setTimeout(resolve, 50));
             expect(globalHTML.feed).toHaveTextContent(recipe.title);
         });
     });

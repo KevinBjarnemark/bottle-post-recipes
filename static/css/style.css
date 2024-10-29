@@ -373,18 +373,6 @@ body {
     visibility: hidden; /* Hidden by default */
 }
 
-.recipe-item-pop-up-container {
-    visibility: visible; /* Hidden by default */
-    z-index: 10;
-    top: 0;
-    left: 0;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100vh;
-    background-color: #25282983;
-}
-
 .recipe-pop-up {
     position: relative;
     padding-top: 40px;

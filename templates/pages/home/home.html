@@ -24,19 +24,7 @@
             <!-- Recipe feed -->
             <div class="feed" id="feed"><!-- Generated content --></div>
             <!-- Recipe viewer component -->
-            <section 
-                id="recipe-viewer-container" 
-                class="flex-fixed recipe-item-pop-up-container backdrop-blur">
-                <div 
-                    id="recipe-viewer" 
-                    class="flex-column recipe-pop-up border-radius-soft">
-                    <div 
-                        id="recipe-viewer-generated"
-                        class="recipe-item-pop-up-generated">
-                        <!-- JS Generated -->
-                    </div>
-                </div>
-            </section>
+            {% include 'components/page/recipe_viewer.html' %}
             <!-- Recipe editor component -->
             {% include 'components/page/recipe_editor.html' %}
         </div>
