@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
         loadRecipesButton: document.getElementById('load-recipes-button'),
         // Recipe viewer
         recipeViewer: {
+            reviewSection: document.getElementById("recipe-review-section"),
             container: document.getElementById("recipe-viewer-container"),
             info: document.getElementById("recipe-viewer-info"),
             title: document.getElementById("recipe-viewer-title"),

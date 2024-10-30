@@ -253,6 +253,7 @@ export const getFeedGlobalHtmlMockData = () => {
         hintWindowText: { tag: 'p', id: 'hint-window-text' },
         // Recipe viewer
         recipeViewer: {
+            reviewSection: { tag: 'section', id: 'recipe-review-section' },
             container: { tag: 'section', id: 'recipe-viewer-container' },
             info: { tag: 'section', id: 'recipe-viewer-info' },
             title: { tag: 'h2', id: 'recipe-viewer-title' },

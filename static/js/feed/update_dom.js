@@ -175,7 +175,9 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                                 ${recipe.comments ? recipe.comments.length : 0}
                             </span>
                         </button>
-                        <button class="incremental-icon-button">
+                        <button 
+                            id="recipe-item-like-button-${recipe.id}" 
+                            class="incremental-icon-button">
                             <i class="fa-solid fa-heart text-white interactive-turn"></i>
                             <span class="text-white">${recipe.likes}</span>
                         </button>
@@ -228,6 +230,39 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                         globalVariables, 
                         globalHTML, 
                         htmlString,
+                    );
+                }
+            );
+
+            // Add and store event listener for the like button
+            addStoredEventListener(
+                globalVariables, 
+                "click", 
+                `recipe-item-like-button-${recipe.id}`, 
+                () => {
+                    const htmlString = 
+                        `<p>
+                            This feature is coming soon!
+                            <i class="fa-solid fa-heart text-red"></i>
+                        </p>
+                        `;
+                    hintWindow(
+                        globalVariables, 
+                        globalHTML, 
+                        htmlString,
+                    );
+                }
+            );
+
+            // Add and store event listener for the comment button
+            addStoredEventListener(
+                globalVariables, 
+                "click", 
+                `comment-button-${recipe.id}`, 
+                () => {
+                    recipeViewer(globalHTML, globalVariables, recipe.id);
+                    globalHTML.recipeViewer.comments.scrollIntoView(
+                        { behavior: "smooth", block: "start" }
                     );
                 }
             );

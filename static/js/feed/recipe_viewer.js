@@ -209,9 +209,31 @@ const handleClose = (globalHTML, globalVariables) => {
 export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
     // Find the recipe to load
     const recipe = globalVariables.recipes.find(i => i.id === recipeId);
+    const thisIsAReview = globalVariables?.user?.review_recipe_id === recipe.id;
 
     // Info text
-    if (globalVariables.user.review_recipe_id === recipe.id){
+    if (thisIsAReview){
+        globalHTML.recipeViewer.reviewSection.style.display = "block";
+
+        // Add and store bottle post review delete button
+        addStoredEventListener(
+            globalVariables,
+            "click",
+            `bottle-post-review-delete-button`, 
+            () => {
+                submitBottlePostReview("DELETE")
+            }
+        );
+
+        // Add and store bottle post review 'boost' button
+        addStoredEventListener(
+            globalVariables,
+            "click",
+            `bottle-post-review-boost-button`, 
+            () => {submitBottlePostReview("BOTTLE_POST")}
+        );
+
+
         globalHTML.recipeViewer.info.innerHTML = `
             <i class="fa-solid fa-circle-info fs-4 pb-2"></i>
             <h3 class="mb-2 mt-4 text-orange text-decoration-underline">
@@ -295,6 +317,7 @@ export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
                 </div>
             </div>
     `;
+
     }else {
         globalHTML.recipeViewer.info.innerHTML = "";
     }
@@ -346,23 +369,6 @@ export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
     }
     globalHTML.recipeViewer.comments.innerHTML = comments;
 
-
-    // Add and store bottle post review delete button
-    addStoredEventListener(
-        globalVariables,
-        "click",
-        `bottle-post-review-delete-button`, 
-        () => {submitBottlePostReview("DELETE")}
-    );
-
-    // Add and store bottle post review 'boost' button
-    addStoredEventListener(
-        globalVariables,
-        "click",
-        `bottle-post-review-boost-button`, 
-        () => {submitBottlePostReview("BOTTLE_POST")}
-    );
-
     // Add and store comment comment textarea listener
     addStoredEventListener(
         globalVariables,
@@ -396,4 +402,8 @@ export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
 
     // Finally, Make the component visible
     globalHTML.recipeViewer.container.style.visibility = "visible";
+    // Scroll to the top component
+    globalHTML.recipeViewer.info.scrollIntoView(
+        { behavior: "smooth", block: "start" }
+    );
 };

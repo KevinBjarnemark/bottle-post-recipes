@@ -321,6 +321,10 @@ body {
     font-weight: 400;
 }
 
+#recipe-review-section {
+    display: none; /* Hidden by default */
+}
+
 /* Hint window */
 #bottle-post-notification-button {
     z-index: 1;
@@ -443,6 +447,18 @@ body {
 
 /* Target images */
 #recipe-viewer-image {
+    display: flex;
+    position: relative;
+    background-color: #282a2b; /* Fallback color */
+    width: 75%;
+    object-fit: contain;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 5px solid #2c2f30;
+    border-radius: 5px;
+}
+
+#recipe-editor-image-preview-container img {
     display: flex;
     position: relative;
     background-color: #282a2b; /* Fallback color */
