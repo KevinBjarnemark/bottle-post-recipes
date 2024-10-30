@@ -1,7 +1,7 @@
 import { htmlSidebarFilters, htmlSidebarSearchAreas } from './generate_html.js';
 import { configureListeners } from './listeners.js';
-import { getRecipePage, cleanUpFeed } from './update_dom.js';
-import { veganModeColor, addStoredEventListener } from '../helpers.js';
+import { getRecipePage, cleanUpFeed, hintWindow } from './update_dom.js';
+import { veganModeColor } from '../helpers.js';
 import { recipeEditor } from '../feed/recipe_editor.js';
 import { DEFAULT_FILTER_OBJECT } from '../constants.js';
 
@@ -199,6 +199,16 @@ export const handleBottlePostNotifications = async (globalHTML, globalVariables)
                     .user.review_recipe_id;
                 cleanUpFeed(globalHTML, globalVariables);
                 await getRecipePage(1, globalHTML, globalVariables);
+                // Alert vegan-mode users that the recipe might be hidden
+                if (globalVariables.user.veganMode){
+                    // Hint window message
+                    const hintWindowHtml = `
+                        <p>
+                            You might need to disbale vegan mode to see anything on this page! 
+                        </p>
+                    `;
+                    hintWindow(globalVariables, globalHTML, hintWindowHtml);
+                }
             });
         }
     };

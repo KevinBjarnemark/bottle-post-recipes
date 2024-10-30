@@ -142,6 +142,10 @@ bottle icon and the red counter */
     font-weight: 800;
 }
 
+.text-blue {
+    color: #39cdf5;
+}
+
 /* Description */
 .recipe-item-description-container {
     text-align: left;

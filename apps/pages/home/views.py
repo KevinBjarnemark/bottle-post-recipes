@@ -7,6 +7,49 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 import random
+from django.utils import timezone
+
+
+def submit_bottle_post_review(request):
+    # Handle delete action
+    if request.method == 'DELETE' and request.user.is_authenticated:
+        try:
+            # Get user profile
+            profile = Profile.objects.get(user=request.user)
+            # Check if the user has an assigned review_recipe_id
+            recipe_id_exists = (
+                profile.review_recipe_id == 0 or profile.review_recipe_id
+            )
+            if not recipe_id_exists:
+                return JsonResponse({
+                    'success': False,
+                    'error': (
+                        'You do not have permission to delete this recipe.'
+                    )
+                })
+            if profile.can_review() and recipe_id_exists:
+                # Get the recipe by id
+                recipe = Recipe.objects.get(id=profile.review_recipe_id)
+                # Delete the recipe if the user is allowed
+                recipe.in_ocean = False
+                recipe.save()
+                # Update last_reviewed_at_value
+                profile.last_reviewed_at = timezone.now()
+                profile.save()
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Recipe deleted successfully.'
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'error': (
+                        'You do not have permission to delete this recipe.'
+                    )
+                })
+        except Exception as e:
+            print("Error:", e)
+            return JsonResponse({'success': False, 'error': str(e)})
 
 
 def load_user_profile(request):

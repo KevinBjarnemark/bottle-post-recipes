@@ -135,12 +135,14 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                             </button>
                         </div>
                         <div class="flex-column recipe-item-sidebar-right">
-                            <button class="d-flex align-items-start justify-content-center 
+                            <button 
+                                id="ocean-status-button-${recipe.id}"
+                                class="d-flex align-items-start justify-content-center 
                                 pt-5 mt-2 interactive-turn">
                                 ${recipe.in_ocean ? 
-                                    '<i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>' 
+                                    '<i class="fa-solid fa-water recipe-item-in-ocean-icon pt-2"></i>' 
                                     : 
-                                    ''}
+                                    '<i class="fa-solid fa-x text-red fs-4 pt-2"></i>'}
                             </button>
                             ${// Render edit button if the resipe blongs to the author
                                 userIsAuthor ?
@@ -201,6 +203,34 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                     }
                 );
             }
+
+            // Add and store event listener for the ocean status button
+            addStoredEventListener(
+                globalVariables, 
+                "click", 
+                `ocean-status-button-${recipe.id}`, 
+                () => {
+                    const htmlString = 
+                        recipe.in_ocean ? 
+                            `<p>
+                                This recipe is in the ocean 
+                                <i class="fa-solid fa-water text-blue"></i>
+                            </p>
+                            `
+                        : 
+                            `
+                                <p>
+                                    This recipe is not in the ocean 
+                                    <i class="fa-solid fa-x text-red"></i>
+                                </p>
+                        `; 
+                    hintWindow(
+                        globalVariables, 
+                        globalHTML, 
+                        htmlString,
+                    );
+                }
+            );
 
             // Add and store event listener for the recipe image
             addStoredEventListener(

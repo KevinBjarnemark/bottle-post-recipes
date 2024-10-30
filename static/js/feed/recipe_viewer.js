@@ -30,6 +30,39 @@ export const htmlComment = (username, date, text) => {
 
 
 /**
+ * Handles bottle post reviews, integrated with the back end.
+ * 
+ * @param {String} recipeId 
+ */
+const submitBottlePostReview = async (action) => {
+    const init = async () => {
+        if (action === "DELETE") {
+            try {
+                // Send a DELETE request to the backend
+                const response = await fetch(`/submit_bottle_post_review/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                });
+    
+                if (response.ok) {
+                    alert('Recipe successfully deleted from ocean!');
+                    window.location.href = '/';
+                } else {
+                    const data = await response.json();
+                    console.error('Error deleting recipe from ocean:', data);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    };
+
+    init();
+};
+
+/**
  * Updates the currently written comment to a global variable
  * and adds that value to the form data.
  * 
@@ -252,7 +285,10 @@ export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
                     </div>
                     <i class="fa-solid fa-arrow-right"></i>
                     <div class="flex-center" style="width: 120px">
-                        <button class="flex-center delete-from-ocean-button interactive-turn">
+                        <button 
+                            id="bottle-post-review-delete-button" 
+                            class="flex-center delete-from-ocean-button 
+                                interactive-turn">
                             <i class="fa-solid fa-x fs-3"></i>
                         </button>
                     </div>
@@ -310,6 +346,14 @@ export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
     }
     globalHTML.recipeViewer.comments.innerHTML = comments;
 
+
+    // Add and store comment comment textarea listener
+    addStoredEventListener(
+        globalVariables,
+        "click",
+        `bottle-post-review-delete-button`, 
+        () => {submitBottlePostReview("DELETE")}
+    );
 
     // Add and store comment comment textarea listener
     addStoredEventListener(
