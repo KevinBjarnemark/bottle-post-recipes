@@ -179,9 +179,6 @@ export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
     // Find the recipe to load
     const recipe = globalVariables.recipes.find(i => i.id === recipeId);
 
-    console.log("--------->")
-    console.log(recipe)
-
     // Info text
     if (globalVariables.user.review_recipe_id === recipe.id){
         globalHTML.recipeViewer.info.innerHTML = `

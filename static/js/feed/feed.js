@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // A managed comment state for the recipe viewer component
         currentComment: "", 
         // Sidebar filter settings
-        filterObject: DEFAULT_FILTER_OBJECT,
+        filterObject: {...DEFAULT_FILTER_OBJECT},
         // Stored event listeners that might be removed at some point
         eventListeners: {},
 
@@ -166,6 +166,8 @@ export const initPage = async (globalHTML, globalVariables) => {
     // Show my recipes button
     globalHTML.accountButton.myRecipes.style.display = "block";
     globalHTML.accountButton.myRecipes.addEventListener('click', async function(e) {
+        // Reset filter
+        globalVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
         // Set user id as a filter
         globalVariables.filterObject.userId = globalVariables.user.userId;
         // Clean up feed and load page 1
@@ -191,7 +193,7 @@ export const handleBottlePostNotifications = async (globalHTML, globalVariables)
             globalHTML.bottlePostNotificationButton
                 .addEventListener("click", async () => {
                 // Reset filter
-                globalVariables.filterObject = DEFAULT_FILTER_OBJECT;
+                globalVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
                 // Add recipe_id filter
                 globalVariables.filterObject.recipe_id = globalVariables
                     .user.review_recipe_id;
