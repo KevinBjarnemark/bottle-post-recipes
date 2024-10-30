@@ -36,26 +36,24 @@ export const htmlComment = (username, date, text) => {
  */
 const submitBottlePostReview = async (action) => {
     const init = async () => {
-        if (action === "DELETE") {
-            try {
-                // Send a DELETE request to the backend
-                const response = await fetch(`/submit_bottle_post_review/`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                });
-    
-                if (response.ok) {
-                    alert('Recipe successfully deleted from ocean!');
-                    window.location.href = '/';
-                } else {
-                    const data = await response.json();
-                    console.error('Error deleting recipe from ocean:', data);
-                }
-            } catch (error) {
-                console.error('Error:', error);
+        try {
+            // Send a DELETE request to the backend
+            const response = await fetch(`/submit_bottle_post_review/?action=${action}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+            });
+
+            if (response.ok) {
+                alert('Recipe bottle post review executed successfully.');
+                window.location.href = '/';
+            } else {
+                const data = await response.json();
+                console.error('Error when submitting bottle post review:', data);
             }
+        } catch (error) {
+            console.error('Error:', error);
         }
     };
 
@@ -268,7 +266,9 @@ export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
                     <i class="fa-solid fa-arrow-right"></i>
 
                     <div class="flex-center" style="width: 120px">
-                        <button class="flex-center bottle-post-button interactive-turn">
+                        <button 
+                            id="bottle-post-review-boost-button"
+                            class="flex-center bottle-post-button interactive-turn">
                             <img
                                 src="/static/images/global/logo_black.webp" 
                                 alt="Bottle post icon" 
@@ -347,12 +347,20 @@ export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
     globalHTML.recipeViewer.comments.innerHTML = comments;
 
 
-    // Add and store comment comment textarea listener
+    // Add and store bottle post review delete button
     addStoredEventListener(
         globalVariables,
         "click",
         `bottle-post-review-delete-button`, 
         () => {submitBottlePostReview("DELETE")}
+    );
+
+    // Add and store bottle post review 'boost' button
+    addStoredEventListener(
+        globalVariables,
+        "click",
+        `bottle-post-review-boost-button`, 
+        () => {submitBottlePostReview("BOTTLE_POST")}
     );
 
     // Add and store comment comment textarea listener

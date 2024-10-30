@@ -11,8 +11,10 @@ from django.utils import timezone
 
 
 def submit_bottle_post_review(request):
-    # Handle delete action
-    if request.method == 'DELETE' and request.user.is_authenticated:
+    """Handles bottle post reviews"""
+
+    if request.method == 'POST' and request.user.is_authenticated:
+        action = request.GET.get('action')
         try:
             # Get user profile
             profile = Profile.objects.get(user=request.user)
@@ -30,21 +32,26 @@ def submit_bottle_post_review(request):
             if profile.can_review() and recipe_id_exists:
                 # Get the recipe by id
                 recipe = Recipe.objects.get(id=profile.review_recipe_id)
-                # Delete the recipe if the user is allowed
-                recipe.in_ocean = False
-                recipe.save()
+                if action == "DELETE":
+                    # Remove the recipe from ocean if the user is allowed
+                    recipe.in_ocean = False
+                    recipe.save()
+                elif action == "BOTTLE_POST":
+                    # Increment bottle_posted_count
+                    recipe.bottle_posted_count = recipe.bottle_posted_count + 1
+                    recipe.save()
                 # Update last_reviewed_at_value
                 profile.last_reviewed_at = timezone.now()
                 profile.save()
                 return JsonResponse({
                     'success': True,
-                    'message': 'Recipe deleted successfully.'
+                    'message': 'Bottle post review was successful.'
                 })
             else:
                 return JsonResponse({
                     'success': False,
                     'error': (
-                        'You do not have permission to delete this recipe.'
+                        'You do not have permission to review this recipe.'
                     )
                 })
         except Exception as e:
