@@ -1,4 +1,20 @@
 
+export const DEFAULT_FILTER_OBJECT = 
+    {
+        // Search query (string)
+        q: "", 
+        // Include search areas (array of strings)
+        searchAreas: [],
+        recipeTypes: {
+            vegan: true,
+            vegetarian: true,
+            fish: true,
+            meat: true,
+        },
+        userId: "",
+        recipe_id: "",
+    };
+
 export const DIETARYATTRIBUTES_ALL = [
     "alcohol", 
     "dairy", 

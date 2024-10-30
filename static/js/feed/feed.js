@@ -1,8 +1,9 @@
 import { htmlSidebarFilters, htmlSidebarSearchAreas } from './generate_html.js';
 import { configureListeners } from './listeners.js';
 import { getRecipePage, cleanUpFeed } from './update_dom.js';
-import { veganModeColor } from '../helpers.js';
+import { veganModeColor, addStoredEventListener } from '../helpers.js';
 import { recipeEditor } from '../feed/recipe_editor.js';
+import { DEFAULT_FILTER_OBJECT } from '../constants.js';
 
 document.addEventListener("DOMContentLoaded", function() {
     // Data loaded from db
@@ -119,6 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
             veganMode: initialData.userProfileData.vegan_mode,
             username: initialData.userProfileData.username,
             userId: initialData.userProfileData.user_id,
+            review_recipe_id: initialData.userProfileData.review_recipe_id,
         },
         // Hint window timer
         hintWindowTimer: null,
@@ -126,20 +128,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // A managed comment state for the recipe viewer component
         currentComment: "", 
         // Sidebar filter settings
-        filterObject: 
-            {
-                // Search query (string)
-                q: "", 
-                // Include search areas (array of strings)
-                searchAreas: [], 
-                recipeTypes: {
-                    vegan: true,
-                    vegetarian: true,
-                    fish: true,
-                    meat: true,
-                },
-                userId: "",
-            },
+        filterObject: DEFAULT_FILTER_OBJECT,
         // Stored event listeners that might be removed at some point
         eventListeners: {},
 
@@ -185,20 +174,31 @@ export const initPage = async (globalHTML, globalVariables) => {
         globalHTML.topText.innerText = "Showing only your recipes";
     });
 
-    // Handle bottle post notifications
-    handleBottlePostNotifications(globalHTML);
+    handleBottlePostNotifications(globalHTML, globalVariables);
 };
 
-export const handleBottlePostNotifications = async (globalHTML) => {
+export const handleBottlePostNotifications = async (globalHTML, globalVariables) => {
     const init = async () => {
-        const buttonElement = globalHTML.bottlePostNotificationButton;
-
-        // Add event listener
-        buttonElement.addEventListener('click', function() {
-            recipeEditor(globalHTML, globalVariables, "NEW RECIPE");
-        });
-
-
+        /* Make the bottle post review button appear after a slight delay
+        if the user is allowed to review. */
+        if (globalVariables.user.review_recipe_id !== null){
+            globalHTML.bottlePostNotificationButton.style.display = "block";
+            // Pop-up effect with a slight delay
+            setTimeout(() => {
+                globalHTML.bottlePostNotificationButton.style.transform = "scale(1)";
+            }, 2500);
+            
+            globalHTML.bottlePostNotificationButton
+                .addEventListener("click", async () => {
+                // Reset filter
+                globalVariables.filterObject = DEFAULT_FILTER_OBJECT;
+                // Add recipe_id filter
+                globalVariables.filterObject.recipe_id = globalVariables
+                    .user.review_recipe_id;
+                cleanUpFeed(globalHTML, globalVariables);
+                await getRecipePage(1, globalHTML, globalVariables);
+            });
+        }
     };
     await init();
 };

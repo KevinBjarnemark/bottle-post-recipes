@@ -175,23 +175,91 @@ const handleClose = (globalHTML, globalVariables) => {
  * 
  * 
  */
-export const recipeViewer = (globalHTML, globalVariables, recipeId, review=false) => {
+export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
     // Find the recipe to load
     const recipe = globalVariables.recipes.find(i => i.id === recipeId);
 
+    console.log("--------->")
+    console.log(recipe)
+
     // Info text
-    if (review){
+    if (globalVariables.user.review_recipe_id === recipe.id){
         globalHTML.recipeViewer.info.innerHTML = `
             <i class="fa-solid fa-circle-info fs-4 pb-2"></i>
-            <div  class="flex-column w-100">
-                <em>How it works</em>
+            <h3 class="mb-2 mt-4 text-orange text-decoration-underline">
+                 Review 
+            </h3>
+                    
+            <div class="flex-column mb-1">
+                <h5>How it works</h5>
                 <p>
-                    You've been selected by our system randomly to review this recipe.
-                    If you find value in this recipe, or if you think others will, you're 
+                    You've been randomly selected by our system to review this recipe!
+                    If you find value in it, or if you think others will, you're 
                     allowed to put it back into the ocean! 
                     <i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>
-                    This will impact the reach of this recipe immensly.
+                    However, if you don't, you have the power to delete it from the ocean 
+                    <i class="fa-solid fa-x text-red"></i>
+                    <br />
+                    <br />
+                    <em>BEWARE!</em> 
                 </p>
+                <ul>
+                    <li>
+                        When you delete a recipe from the ocean it will be 
+                        deleted <em class="text-red">forever</em>.
+                    </li>
+                    <li>
+                        When you bottle post a recipe, other users will 
+                        be able to continue pass it around until it gets deleted.
+                    </li>
+                    <li>
+                        The more 'bottle posts' a recipe has, the higher it will rank 
+                        and become visible to other users. 
+                    </li>
+                    <li>
+                        If you delete it from the ocean, it will still exist in the feed, 
+                        but no one will be able to bottle post it.
+                    </li>
+                </ul>
+                <p class="pb-5 pt-2">
+                    Your action will impact our alogritm 
+                    <span class="text-decoration-underline">massively</span>. 
+                    <br />
+                    <br />
+                    The power is in your hands <i class="fa-solid fa-hands"></i>.
+                </p>
+                <div class="flex-row align-items-center justify-content-start w-100 mb-4 mt-2">
+                    <div class="flex-start" style="width: 250px">
+                        <em>Bottle post</em> 
+                        <br />
+                        Return recipe to ocean
+                        <i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>
+                    </div>
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                    <div class="flex-center" style="width: 120px">
+                        <button class="flex-center bottle-post-button interactive-turn">
+                            <img
+                                src="/static/images/global/logo_black.webp" 
+                                alt="Bottle post icon" 
+                                style="background-color: transparent;" />
+                        </button>
+                    </div>
+                </div>
+                <div class="flex-row align-items-center justify-content-start w-100 mb-4 mt-2">
+                    <div class="flex-start" style="width: 250px">
+                        <em>Remove</em> 
+                        <br />
+                        Remove recipe from ocean
+                        <i class="fa-solid fa-x text-red"></i>
+                    </div>
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <div class="flex-center" style="width: 120px">
+                        <button class="flex-center delete-from-ocean-button interactive-turn">
+                            <i class="fa-solid fa-x fs-3"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
     `;
     }else {

@@ -151,3 +151,19 @@ bottle icon and the red counter */
     max-height: 50px;
     padding: 0 20px;
 }
+
+.allowed-review-glow {
+    box-shadow: 0 0 10px 10px #f8ac60;
+    animation-name: allowed-review-glow-animation;
+    animation-duration: 1.8s; 
+    animation-iteration-count: infinite; 
+    animation-timing-function: linear;
+}
+
+@keyframes allowed-review-glow-animation {
+    0% {box-shadow: 0 0 8px 8px #ffffff;}
+    25% {box-shadow: 0 0 15px 8px #ffbc78;}
+    50% {box-shadow: 0 0 20px 10px #ffbc78;}
+    75% {box-shadow: 0 0 15px 8px #ffbc78;}
+    100% {box-shadow: 0 0 8px 8px #ffffff;}
+}

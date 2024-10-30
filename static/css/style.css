@@ -324,12 +324,14 @@ body {
 /* Hint window */
 #bottle-post-notification-button {
     z-index: 1;
-    /* display: none; */ /* Hidden by default */
+    display: none; /* Hidden by default */
     position: fixed;
     bottom: 0;
     right: 0;
     width: 33vw;
     height: 130px;
+    transform: scale(0);
+    transition: transform 0.2s;
     background-color: #d3dbdf;
     border: 4px solid #3f4346;
     border-radius: 7px;
@@ -373,6 +375,51 @@ body {
     visibility: hidden; /* Hidden by default */
 }
 
+.bottle-post-button {
+    width: 80px;
+    height: 80px;
+    top: 190px;
+    left: 47px;
+    background-color: #E0E3E5;
+    box-shadow: 0 0 8px 5px #c2cbcf;
+    border: 3px solid #839197;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.bottle-post-button:hover {
+    box-shadow: 0 0 8px 5px #83f186;
+}
+
+.delete-from-ocean-button {
+    width: 80px;
+    height: 80px;
+    top: 190px;
+    left: 47px;
+    background-color: #ff5d5d;
+    box-shadow: 0 0 8px 5px #c2cbcf;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.delete-from-ocean-button:hover {
+    box-shadow: 0 0 8px 5px #ff7373;
+}
+
+.text-red {
+    color: #ff5d5d;
+}
+
+.bottle-post-button img {
+    width: 70%;
+    object-fit: contain;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border: 0;
+}
+
 .recipe-pop-up {
     position: relative;
     padding-top: 40px;
@@ -395,7 +442,7 @@ body {
 }
 
 /* Target images */
-.recipe-item-pop-up-generated img {
+#recipe-viewer-image {
     display: flex;
     position: relative;
     background-color: #282a2b; /* Fallback color */

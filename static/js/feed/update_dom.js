@@ -106,7 +106,10 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
             recipeContainer.innerHTML = `
                 <h1 class="hidden-heading">${recipe.title}</h1>
                 <div class="flex-column">
-                    <div class="recipe-item-background backdrop-blur"></div>
+                    <div class="${recipe.id === globalVariables.user.review_recipe_id ?
+                        'recipe-item-background backdrop-blur allowed-review-glow' : 
+                        'recipe-item-background backdrop-blur'}">
+                    </div>
                     <h4 class="recipe-item-title backdrop-blur">
                         ${trimText(recipe.title, 20)}
                     </h4>
@@ -156,7 +159,7 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                         <div class="absolute-flex recipe-item-bottle-post-red-count">
                             ${recipe.bottle_posted_count}
                         </div>
-                        <img 
+                        <img
                             src="/static/images/global/logo_black.webp" 
                             alt="Bottle post icon" 
                             style="background-color: transparent;" />
@@ -224,6 +227,7 @@ export const getRecipePage = async (page, globalHTML, globalVariables) => {
         recipe_types_exclude: "",
         // Only show recipes created by a certain user
         user_id: globalVariables.filterObject.userId,
+        recipe_id: globalVariables.filterObject.recipe_id,
     };
 
     /* Convert the included search areas array to a 

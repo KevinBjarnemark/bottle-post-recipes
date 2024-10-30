@@ -346,6 +346,7 @@ export const getFeedGlobalVariablesMockData = () => {
                         meat: true,
                     },
                     userId: 0,
+                    recipe_id: "",
                 },
             eventListeners: {},
         };
