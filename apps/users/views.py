@@ -50,7 +50,8 @@ def load_user_profile(request):
         # Get a random recipe if the user is allowed to review
         if profile.can_review():
             # Get all recipe ids
-            recipe_ids = Recipe.objects.values_list('id', flat=True)
+            recipe_ids = Recipe.objects.filter(
+                in_ocean=True).values_list('id', flat=True)
             # User's review_recipe_id is None
             is_none = profile.review_recipe_id is None
             # User has an assigned review_recipe_id, but the recipe
