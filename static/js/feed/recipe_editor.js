@@ -6,6 +6,7 @@ import {DIETARYATTRIBUTES_ALL,
     DIETARYATTRIBUTES_NON_VEGAN,
     RECIPE_EMPTY,
 } from '../constants.js';
+import {setLoading} from '../app.js';
 
 
 /**
@@ -15,6 +16,7 @@ import {DIETARYATTRIBUTES_ALL,
  * @param {String}   recipeId 
  */
 const publishRecipe = async (globalVariables, recipeId) => {
+    setLoading(true);
     const init = async () => {
         try {
             // Create the form data constructor
@@ -61,6 +63,8 @@ const publishRecipe = async (globalVariables, recipeId) => {
         } catch (error) {
             // TODO client errors
             console.error('Error:', error);
+        } finally {
+            setLoading(false);
         }
     };
     await init();
@@ -72,6 +76,7 @@ const publishRecipe = async (globalVariables, recipeId) => {
  * @param {String} recipeId 
  */
 const deleteRecipe = async (recipeId) => {
+    setLoading(true);
     const init = async () => {
         try {
             // Send a DELETE request to the backend
@@ -92,6 +97,8 @@ const deleteRecipe = async (recipeId) => {
         
         } catch (error) {
             console.error('Error:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -262,208 +269,214 @@ const handleClose = (globalHTML) => {
  * 
  */
 export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
-    /* Render either an empty recipe to publish or a 
-    prefilled recipe to edit */ 
-    let recipe = {};
-    if (recipeId === "NEW RECIPE") {
-        recipe = RECIPE_EMPTY;
-    }else {
-        // Find the recipe to load
-        recipe = globalVariables.recipes.find(i => i.id === recipeId);
-    }
-
-    // Title
-    if (recipeId === "NEW RECIPE"){
-        globalHTML.recipeEditor.mainTitle.innerText = "Create recipe"; 
-    }else {
-        globalHTML.recipeEditor.mainTitle.innerText = "Edit Recipe"; 
-    }
-
-    // Info text
-    if (recipeId === "NEW RECIPE"){
-        globalHTML.recipeEditor.mainInfo.innerHTML = `
-        <em>How it works</em>
-        <p>
-            When you publish a recipe it will enter the 
-            'ocean' <i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>
-            Randomly selected users will then be able to either, boost your recipe
-            <em>or remove it from the ocean.</em> If users find value in your recipe, 
-            they may boost it by putting it back into the ocean. 
-            <br />
-            <br />
-            The more times your recipe gets passed around in the community, 
-            the higher it will rank! In other words, your reach is determined by 
-            the <em>quality of your recipes</em> rather than your ability to 
-            network.
-        </p>
-        <em>Rules</em>
-        <p>
-            You cannot spam recipes into the ocean, and must wait <em>24 hours</em>
-            before publishing another one.
-        </p>
-    `; 
-    }else {
-        globalHTML.recipeEditor.mainInfo.innerHTML = `
-        <p>
-            In this window, you can edit your already published recipe. 
-            This won't affect your ocean status or previous engagements 
-            such as likes and comments.
-        </p>
-    `;
-    }
-    if (recipeId !== "NEW RECIPE"){
-        // Show the delete recipe button
-        globalHTML.recipeEditor.deleteButtonContainer.
-            style.display = "block";
-        // Reset click count
-        globalHTML.recipeEditor.deleteRecipeClickCount
-            .innerText = "10";
-
-    }else {
-        // Hide the delete recipe button
-        globalHTML.recipeEditor.deleteButtonContainer
-            .style.display = "none";
-    }
-
-    // Add and store close button listener
-    addStoredEventListener(
-        globalVariables,
-        "click", 
-        globalHTML.recipeEditor.deleteButton.id, 
-        () => {
-            const convertToNumber = parseInt(globalHTML.recipeEditor
-                .deleteRecipeClickCount.innerText);
-            // Decrement number
-            globalHTML.recipeEditor
-                .deleteRecipeClickCount.innerText = `${convertToNumber - 1}`;
-            if (convertToNumber - 1 === 0) {
-                deleteRecipe(recipeId);
-            }
-        }
-    );
-
-    // Text inputs (pre filling and listeners) 
-    const textInputs = globalHTML.recipeEditor.textInputs;
-    Object.entries(textInputs).forEach(([entry, element]) => {
-        // Clear previous value (form data and input)
-        element.value = "";
-        globalVariables.formData[entry] = "";
-
-        // Pre-fill values respectively
-        if (recipe[entry]){
-            element.value = recipe[entry];
-            globalVariables.formData[entry] = recipe[entry];
+        try {
+        /* Render either an empty recipe to publish or a 
+        prefilled recipe to edit */ 
+        let recipe = {};
+        if (recipeId === "NEW RECIPE") {
+            recipe = RECIPE_EMPTY;
         }else {
-            element.value = "";
-            globalVariables.formData[entry] = "";
+            // Find the recipe to load
+            recipe = globalVariables.recipes.find(i => i.id === recipeId);
         }
-        // Update the form data on keyup
-        element.addEventListener("keyup", function(e) {
-            globalVariables.formData[entry] = e.target.value;
-        });
-    });
 
-    /* Combined number inputs (pre filling and listeners) 
-    using a helper function */
-    /**
-     * Helps with setting up multiple combined number inputs to avoid 
-     * repetition.
-     * 
-     * @param {str}   globalHtmlEntry The entry that points to the 
-     * combined entry in the globalHTML
-     * @param {str}   recipeEntry The entry that points to the 
-     * combined entry in the recipe object
-     */
-    const heleperCombinedNumber = (globalHtmlEntry) => {
-        const globalHtmlEntrySnake = toSnakeCase(globalHtmlEntry);
-        // Preparation time (pre filling and listeners) 
-        const collection = globalHTML.recipeEditor
-            .combinedNumberInputs[globalHtmlEntry];
-        Object.entries(collection).forEach(([entry, element]) => {
-            const entrySnake = toSnakeCase(entry)
-            const entryData = recipe[globalHtmlEntrySnake][0][entrySnake];
+        // Title
+        if (recipeId === "NEW RECIPE"){
+            globalHTML.recipeEditor.mainTitle.innerText = "Create recipe"; 
+        }else {
+            globalHTML.recipeEditor.mainTitle.innerText = "Edit Recipe"; 
+        }
 
+        // Info text
+        if (recipeId === "NEW RECIPE"){
+            globalHTML.recipeEditor.mainInfo.innerHTML = `
+            <em>How it works</em>
+            <p>
+                When you publish a recipe it will enter the 
+                'ocean' <i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>
+                Randomly selected users will then be able to either, boost your recipe
+                <em>or remove it from the ocean.</em> If users find value in your recipe, 
+                they may boost it by putting it back into the ocean. 
+                <br />
+                <br />
+                The more times your recipe gets passed around in the community, 
+                the higher it will rank! In other words, your reach is determined by 
+                the <em>quality of your recipes</em> rather than your ability to 
+                network.
+            </p>
+            <em>Rules</em>
+            <p>
+                You cannot spam recipes into the ocean, and must wait <em>24 hours</em>
+                before publishing another one.
+            </p>
+        `; 
+        }else {
+            globalHTML.recipeEditor.mainInfo.innerHTML = `
+            <p>
+                In this window, you can edit your already published recipe. 
+                This won't affect your ocean status or previous engagements 
+                such as likes and comments.
+            </p>
+        `;
+        }
+        if (recipeId !== "NEW RECIPE"){
+            // Show the delete recipe button
+            globalHTML.recipeEditor.deleteButtonContainer.
+                style.display = "block";
+            // Reset click count
+            globalHTML.recipeEditor.deleteRecipeClickCount
+                .innerText = "10";
+
+        }else {
+            // Hide the delete recipe button
+            globalHTML.recipeEditor.deleteButtonContainer
+                .style.display = "none";
+        }
+
+        // Add and store close button listener
+        addStoredEventListener(
+            globalVariables,
+            "click", 
+            globalHTML.recipeEditor.deleteButton.id, 
+            () => {
+                const convertToNumber = parseInt(globalHTML.recipeEditor
+                    .deleteRecipeClickCount.innerText);
+                // Decrement number
+                globalHTML.recipeEditor
+                    .deleteRecipeClickCount.innerText = `${convertToNumber - 1}`;
+                if (convertToNumber - 1 === 0) {
+                    deleteRecipe(recipeId);
+                }
+            }
+        );
+
+        // Text inputs (pre filling and listeners) 
+        const textInputs = globalHTML.recipeEditor.textInputs;
+        Object.entries(textInputs).forEach(([entry, element]) => {
             // Clear previous value (form data and input)
             element.value = "";
-            globalVariables.formData[globalHtmlEntrySnake][entrySnake] = "";
+            globalVariables.formData[entry] = "";
 
-            // Pre-fill values respectively and add form data
-            if (entryData){
-                element.value = entryData;
-                globalVariables.formData[globalHtmlEntrySnake][entrySnake] = entryData;
-
+            // Pre-fill values respectively
+            if (recipe[entry]){
+                element.value = recipe[entry];
+                globalVariables.formData[entry] = recipe[entry];
             }else {
-                element.value = 0;
-                globalVariables.formData[globalHtmlEntrySnake][entrySnake] = 0;
+                element.value = "";
+                globalVariables.formData[entry] = "";
             }
             // Update the form data on keyup
-            element.addEventListener("change", function(e) {
-                // Set form data and convert to a number
-                globalVariables.formData[globalHtmlEntrySnake][entrySnake] = +e.target.value;
+            element.addEventListener("keyup", function(e) {
+                globalVariables.formData[entry] = e.target.value;
             });
         });
-    };
-    heleperCombinedNumber("preparationTime");
-    heleperCombinedNumber("cookingTime");
-    heleperCombinedNumber("estimatedPrice");
 
-    // Image
-    globalHTML.recipeEditor.imagePreviewContainer
-        .innerHTML = `
-            <img 
-                src=${recipe.image ? recipe.image : '/static/images/icons/missing.webp'} 
-                alt="Recipe image" 
-            />
-        `;
-    // Set form data initially
-    globalVariables.formData.image = recipe.image;
+        /* Combined number inputs (pre filling and listeners) 
+        using a helper function */
+        /**
+         * Helps with setting up multiple combined number inputs to avoid 
+         * repetition.
+         * 
+         * @param {str}   globalHtmlEntry The entry that points to the 
+         * combined entry in the globalHTML
+         * @param {str}   recipeEntry The entry that points to the 
+         * combined entry in the recipe object
+         */
+        const heleperCombinedNumber = (globalHtmlEntry) => {
+            const globalHtmlEntrySnake = toSnakeCase(globalHtmlEntry);
+            // Preparation time (pre filling and listeners) 
+            const collection = globalHTML.recipeEditor
+                .combinedNumberInputs[globalHtmlEntry];
+            Object.entries(collection).forEach(([entry, element]) => {
+                const entrySnake = toSnakeCase(entry)
+                const entryData = recipe[globalHtmlEntrySnake][0][entrySnake];
 
-    // Dietary attributes
-    buildDietaryAttributes(globalHTML, globalVariables, recipe.dietary_attributes);
-    
-    // Ingredients
-    buildIngredients(globalHTML, globalVariables, recipe.ingredients)
+                // Clear previous value (form data and input)
+                element.value = "";
+                globalVariables.formData[globalHtmlEntrySnake][entrySnake] = "";
 
-    // Add and store submit button
-    addStoredEventListener(
-        globalVariables,
-        "click", 
-        `recipe-editor-submit-button`, 
-        () => {
-            publishRecipe(globalVariables, recipeId);
-        }
-    );
+                // Pre-fill values respectively and add form data
+                if (entryData){
+                    element.value = entryData;
+                    globalVariables.formData[globalHtmlEntrySnake][entrySnake] = entryData;
 
-    // Add and store close button listener
-    addStoredEventListener(
-        globalVariables,
-        "click", 
-        `recipe-editor-close-button`, 
-        () => {handleClose(globalHTML)}
-    );
+                }else {
+                    element.value = 0;
+                    globalVariables.formData[globalHtmlEntrySnake][entrySnake] = 0;
+                }
+                // Update the form data on keyup
+                element.addEventListener("change", function(e) {
+                    // Set form data and convert to a number
+                    globalVariables.formData[globalHtmlEntrySnake][entrySnake] = +e.target.value;
+                });
+            });
+        };
+        heleperCombinedNumber("preparationTime");
+        heleperCombinedNumber("cookingTime");
+        heleperCombinedNumber("estimatedPrice");
 
-    // Add and store image preview listener
-    addStoredEventListener(
-        globalVariables,
-        "change",
-        `recipe-editor-image-upload`, // Doesn't need to be unique
-        (e) => {
-            const file = e.target.files[0];
-                globalVariables.formData.image = file;
-                const imagePreviewUrl = URL.createObjectURL(file);
-                const previewImage = document.createElement('img');
-                previewImage.src = imagePreviewUrl;
-                previewImage.alt = recipe.title;
-                globalHTML.recipeEditor.imagePreviewContainer
-                    .innerHTML = `
-                        <img 
-                            src=${imagePreviewUrl} 
-                            alt="${recipe.title}" 
-                        />
-                    `;
+        // Image
+        globalHTML.recipeEditor.imagePreviewContainer
+            .innerHTML = `
+                <img 
+                    src=${recipe.image ? recipe.image : '/static/images/icons/missing.webp'} 
+                    alt="Recipe image" 
+                />
+            `;
+        // Set form data initially
+        globalVariables.formData.image = recipe.image;
+
+        // Dietary attributes
+        buildDietaryAttributes(globalHTML, globalVariables, recipe.dietary_attributes);
+        
+        // Ingredients
+        buildIngredients(globalHTML, globalVariables, recipe.ingredients)
+
+        // Add and store submit button
+        addStoredEventListener(
+            globalVariables,
+            "click", 
+            `recipe-editor-submit-button`, 
+            () => {
+                publishRecipe(globalVariables, recipeId);
             }
-    );
+        );
 
-    // Finally, Make the component visible
-    globalHTML.recipeEditor.container.style.visibility = "visible";
+        // Add and store close button listener
+        addStoredEventListener(
+            globalVariables,
+            "click", 
+            `recipe-editor-close-button`, 
+            () => {handleClose(globalHTML)}
+        );
+
+        // Add and store image preview listener
+        addStoredEventListener(
+            globalVariables,
+            "change",
+            `recipe-editor-image-upload`, // Doesn't need to be unique
+            (e) => {
+                const file = e.target.files[0];
+                    globalVariables.formData.image = file;
+                    const imagePreviewUrl = URL.createObjectURL(file);
+                    const previewImage = document.createElement('img');
+                    previewImage.src = imagePreviewUrl;
+                    previewImage.alt = recipe.title;
+                    globalHTML.recipeEditor.imagePreviewContainer
+                        .innerHTML = `
+                            <img 
+                                src=${imagePreviewUrl} 
+                                alt="${recipe.title}" 
+                            />
+                        `;
+                }
+        );
+
+        // Finally, Make the component visible
+        globalHTML.recipeEditor.container.style.visibility = "visible";
+    } catch (error) {
+        console.log(error);
+    } finally {
+        setLoading(false);
+    }
 };

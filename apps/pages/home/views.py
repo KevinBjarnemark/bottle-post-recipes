@@ -96,7 +96,6 @@ def load_user_profile(request):
             'vegan_mode': profile.vegan_mode,
             'review_recipe_id': profile.review_recipe_id,
         }
-    print(user_profile)
     return user_profile
 
 

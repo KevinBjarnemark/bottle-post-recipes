@@ -1,14 +1,18 @@
 
-import { getFeedGlobalVariablesMockData, 
-    getFeedGlobalHtmlMockData, MOCKRECIPEDATA } from '../../../helpers/js/helpers.js';
+import { 
+    getFeedGlobalVariablesMockData, 
+    getFeedGlobalHtmlMockData, 
+    extraMocking, 
+    MOCKRECIPEDATA 
+} from '../../../helpers/js/helpers.js';
 import { capitalizeFirstLetter } from '../../../../static/js/helpers.js';
 import { toggleFilters } from '../../../../static/js/feed/utilities.js';
-import { recipeViewer } from '../../../../static/js/feed/recipe_viewer.js';
 import { initPage } from '../../../../static/js/feed/feed.js';
 import {expect, test} from '@jest/globals';
 import '@testing-library/jest-dom'
 
 // Mock data
+extraMocking();
 let globalHTML = getFeedGlobalHtmlMockData();
 let globalVariables = getFeedGlobalVariablesMockData();
 
@@ -31,6 +35,7 @@ global.fetch = jest.fn((url) => {
 
 describe("toggles filters accurately", () => {
     beforeEach(() => {
+        extraMocking();
         globalHTML = getFeedGlobalHtmlMockData();
         globalVariables = getFeedGlobalVariablesMockData();
     });
@@ -61,6 +66,7 @@ describe("toggles filters accurately", () => {
 
 describe("Recipe viewer", () => {
     beforeEach(() => {
+        extraMocking();
         globalHTML = getFeedGlobalHtmlMockData();
         globalVariables = getFeedGlobalVariablesMockData();
     });

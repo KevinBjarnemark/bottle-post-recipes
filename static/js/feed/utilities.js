@@ -1,5 +1,6 @@
 import { getCookie, capitalizeFirstLetter, veganModeColor } from '../helpers.js';
 import { filterVeganRecipes, hintWindow } from './update_dom.js';
+import { setLoading } from '../app.js';
 
 /**
  * 1. Toggles the container and its content (with CSS)
@@ -39,6 +40,7 @@ export const toggleSidebarSettings = (globalHTML, icon, containerEntry, buttonEn
  * 
  */
 export const toggleVeganMode = async (globalHTML, globalVariables) => {
+    setLoading(true);
     const request = await fetch('/toggle_vegan_mode/', {
         method: 'POST',
         headers: {
@@ -83,6 +85,7 @@ export const toggleVeganMode = async (globalHTML, globalVariables) => {
     } else {
         console.error('Failed to toggle vegan mode');
     }
+    setLoading(false);
 };
 
 /**

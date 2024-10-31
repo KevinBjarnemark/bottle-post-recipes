@@ -2,6 +2,7 @@ import {
     addStoredEventListener, 
     getCookie 
 } from "../helpers.js";
+import { setLoading } from "../app.js";
 
 
 /**
@@ -35,6 +36,7 @@ export const htmlComment = (username, date, text) => {
  * @param {String} recipeId 
  */
 const submitBottlePostReview = async (action) => {
+    setLoading(true);
     const init = async () => {
         try {
             // Send a DELETE request to the backend
@@ -54,6 +56,8 @@ const submitBottlePostReview = async (action) => {
             }
         } catch (error) {
             console.error('Error:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -84,6 +88,7 @@ export const handleCommentTextarea = (e, globalVariables, commentFormData) => {
  * @param {String} recipeId
  */
 export const handlePublishComment = async (globalVariables, globalHTML, recipeId, commentFormData) => {
+    setLoading(true);
     try {
         // Add recipe_id to the FormData
         commentFormData.append("recipe_id", recipeId);
@@ -121,6 +126,8 @@ export const handlePublishComment = async (globalVariables, globalHTML, recipeId
         }
     } catch (error) {
         console.error('Error publishing comment:', error);
+    } finally {
+        setLoading(false);
     }
 };
 
@@ -207,203 +214,125 @@ const handleClose = (globalHTML, globalVariables) => {
  * 
  */
 export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
-    // Find the recipe to load
-    const recipe = globalVariables.recipes.find(i => i.id === recipeId);
-    const thisIsAReview = globalVariables?.user?.review_recipe_id === recipe.id;
+    try {
+        // Find the recipe to load
+        const recipe = globalVariables.recipes.find(i => i.id === recipeId);
+        const thisIsAReview = globalVariables?.user?.review_recipe_id === recipe.id;
 
-    // Info text
-    if (thisIsAReview){
-        globalHTML.recipeViewer.reviewSection.style.display = "block";
+        // Info text
+        if (thisIsAReview){
+            globalHTML.recipeViewer.reviewSection.style.display = "block";
 
-        // Add and store bottle post review delete button
+            // Add and store bottle post review delete button
+            addStoredEventListener(
+                globalVariables,
+                "click",
+                `bottle-post-review-delete-button`, 
+                () => {
+                    submitBottlePostReview("DELETE");
+                }
+            );
+
+            // Add and store bottle post review 'boost' button
+            addStoredEventListener(
+                globalVariables,
+                "click",
+                `bottle-post-review-boost-button`, 
+                () => {
+                    submitBottlePostReview("BOTTLE_POST");
+                }
+            );
+        }else {
+            globalHTML.recipeViewer.info.innerHTML = "";
+        }
+
+        // Title
+        globalHTML.recipeViewer.title.innerText = recipe.title;
+
+        // Image
+        if (recipe.image){
+            globalHTML.recipeViewer.image.src = recipe.image;
+        }else {
+            globalHTML.recipeViewer.image.src = "/images/icons/missing.webp";
+        }
+        // Description
+        globalHTML.recipeViewer.description.innerText = recipe.description;
+        // instructions
+        globalHTML.recipeViewer.instructions.innerText = recipe.instructions;
+
+        /* Dietary attributes NOTE! This will be invisible if no dietary attributes are 
+        attached to the recipe */
+        buildDietaryAttributes(
+            globalHTML.recipeViewer.dietaryAttributes, 
+            recipe.dietary_attributes
+        );
+
+        // Ingredients
+        buildIngredients(
+            globalHTML.recipeViewer.ingredients, 
+            recipe.ingredients
+        );
+
+        // Comments form data
+        const commentFormData = new FormData();
+        // Comment section
+        let comments = "";
+        if (recipe['comments'].length > 0) {
+            // Sort by date
+            recipe['comments'].sort((a, b) => new Date(
+                b.created_at) - new Date(a.created_at));
+            // Build comments
+            recipe['comments'].forEach(comment => {
+                const createdComment = htmlComment(
+                    comment.user,
+                    comment.created_at,
+                    comment.text,
+                );
+                comments += createdComment;
+            });
+        }
+        globalHTML.recipeViewer.comments.innerHTML = comments;
+
+        // Add and store comment comment textarea listener
         addStoredEventListener(
             globalVariables,
-            "click",
-            `bottle-post-review-delete-button`, 
+            "input",
+            `recipe-viewer-comment-input`, 
+            (e) => {handleCommentTextarea(e, globalVariables, commentFormData)}
+        );
+
+        // Add and store publish comment listener
+        addStoredEventListener(
+            globalVariables,
+            "click", 
+            `recipe-viewer-publish-comment-button`, 
             () => {
-                submitBottlePostReview("DELETE")
+                handlePublishComment(
+                    globalVariables, 
+                    globalHTML, 
+                    recipe.id, 
+                    commentFormData
+                );
             }
         );
 
-        // Add and store bottle post review 'boost' button
+        // Add and store close button listener
         addStoredEventListener(
             globalVariables,
-            "click",
-            `bottle-post-review-boost-button`, 
-            () => {submitBottlePostReview("BOTTLE_POST")}
+            "click", 
+            `recipe-viewer-close-button`, 
+            () => {handleClose(globalHTML, globalVariables)}
         );
 
-
-        globalHTML.recipeViewer.info.innerHTML = `
-            <i class="fa-solid fa-circle-info fs-4 pb-2"></i>
-            <h3 class="mb-2 mt-4 text-orange text-decoration-underline">
-                 Review 
-            </h3>
-                    
-            <div class="flex-column mb-1">
-                <h5>How it works</h5>
-                <p>
-                    You've been randomly selected by our system to review this recipe!
-                    If you find value in it, or if you think others will, you're 
-                    allowed to put it back into the ocean! 
-                    <i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>
-                    However, if you don't, you have the power to delete it from the ocean 
-                    <i class="fa-solid fa-x text-red"></i>
-                    <br />
-                    <br />
-                    <em>BEWARE!</em> 
-                </p>
-                <ul>
-                    <li>
-                        When you delete a recipe from the ocean it will be 
-                        deleted <em class="text-red">forever</em>.
-                    </li>
-                    <li>
-                        When you bottle post a recipe, other users will 
-                        be able to continue pass it around until it gets deleted.
-                    </li>
-                    <li>
-                        The more 'bottle posts' a recipe has, the higher it will rank 
-                        and become visible to other users. 
-                    </li>
-                    <li>
-                        If you delete it from the ocean, it will still exist in the feed, 
-                        but no one will be able to bottle post it.
-                    </li>
-                </ul>
-                <p class="pb-5 pt-2">
-                    Your action will impact our alogritm 
-                    <span class="text-decoration-underline">massively</span>. 
-                    <br />
-                    <br />
-                    The power is in your hands <i class="fa-solid fa-hands"></i>.
-                </p>
-                <div class="flex-row align-items-center justify-content-start w-100 mb-4 mt-2">
-                    <div class="flex-start" style="width: 250px">
-                        <em>Bottle post</em> 
-                        <br />
-                        Return recipe to ocean
-                        <i class="fa-solid fa-water recipe-item-in-ocean-icon"></i>
-                    </div>
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                    <div class="flex-center" style="width: 120px">
-                        <button 
-                            id="bottle-post-review-boost-button"
-                            class="flex-center bottle-post-button interactive-turn">
-                            <img
-                                src="/static/images/global/logo_black.webp" 
-                                alt="Bottle post icon" 
-                                style="background-color: transparent;" />
-                        </button>
-                    </div>
-                </div>
-                <div class="flex-row align-items-center justify-content-start w-100 mb-4 mt-2">
-                    <div class="flex-start" style="width: 250px">
-                        <em>Remove</em> 
-                        <br />
-                        Remove recipe from ocean
-                        <i class="fa-solid fa-x text-red"></i>
-                    </div>
-                    <i class="fa-solid fa-arrow-right"></i>
-                    <div class="flex-center" style="width: 120px">
-                        <button 
-                            id="bottle-post-review-delete-button" 
-                            class="flex-center delete-from-ocean-button 
-                                interactive-turn">
-                            <i class="fa-solid fa-x fs-3"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-    `;
-
-    }else {
-        globalHTML.recipeViewer.info.innerHTML = "";
+        // Finally, Make the component visible
+        globalHTML.recipeViewer.container.style.visibility = "visible";
+        // Scroll to the top component
+        globalHTML.recipeViewer.info.scrollIntoView(
+            { behavior: "smooth", block: "start" }
+        );
+    }catch (error) {
+        console.error(error);
+    } finally {
+        setLoading(false);
     }
-
-    // Title
-    globalHTML.recipeViewer.title.innerText = recipe.title;
-
-    // Image
-    if (recipe.image){
-        globalHTML.recipeViewer.image.src = recipe.image;
-    }else {
-        globalHTML.recipeViewer.image.src = "/images/icons/missing.webp";
-    }
-    // Description
-    globalHTML.recipeViewer.description.innerText = recipe.description;
-    // instructions
-    globalHTML.recipeViewer.instructions.innerText = recipe.instructions;
-
-    /* Dietary attributes NOTE! This will be invisible if no dietary attributes are 
-    attached to the recipe */
-    buildDietaryAttributes(
-        globalHTML.recipeViewer.dietaryAttributes, 
-        recipe.dietary_attributes
-    );
-
-    // Ingredients
-    buildIngredients(
-        globalHTML.recipeViewer.ingredients, 
-        recipe.ingredients
-    );
-
-    // Comments form data
-    const commentFormData = new FormData();
-    // Comment section
-    let comments = "";
-    if (recipe['comments'].length > 0) {
-        // Sort by date
-        recipe['comments'].sort((a, b) => new Date(
-            b.created_at) - new Date(a.created_at));
-        // Build comments
-        recipe['comments'].forEach(comment => {
-            const createdComment = htmlComment(
-                comment.user,
-                comment.created_at,
-                comment.text,
-            );
-            comments += createdComment;
-        });
-    }
-    globalHTML.recipeViewer.comments.innerHTML = comments;
-
-    // Add and store comment comment textarea listener
-    addStoredEventListener(
-        globalVariables,
-        "input",
-        `recipe-viewer-comment-input`, 
-        (e) => {handleCommentTextarea(e, globalVariables, commentFormData)}
-    );
-
-    // Add and store publish comment listener
-    addStoredEventListener(
-        globalVariables,
-        "click", 
-        `recipe-viewer-publish-comment-button`, 
-        () => {
-            handlePublishComment(
-                globalVariables, 
-                globalHTML, 
-                recipe.id, 
-                commentFormData
-            );
-        }
-    );
-
-    // Add and store close button listener
-    addStoredEventListener(
-        globalVariables,
-        "click", 
-        `recipe-viewer-close-button`, 
-        () => {handleClose(globalHTML, globalVariables)}
-    );
-
-    // Finally, Make the component visible
-    globalHTML.recipeViewer.container.style.visibility = "visible";
-    // Scroll to the top component
-    globalHTML.recipeViewer.info.scrollIntoView(
-        { behavior: "smooth", block: "start" }
-    );
 };

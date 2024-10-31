@@ -1,6 +1,7 @@
 import { trimText, addStoredEventListener } from "../helpers.js";
 import { recipeViewer } from "./recipe_viewer.js";
 import { recipeEditor } from "./recipe_editor.js";
+import { setLoading } from "../app.js";
 
 /**
  * Sets the innerHTML of hint_window.html component and clear it after 
@@ -286,59 +287,66 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
 };
 
 export const getRecipePage = async (page, globalHTML, globalVariables) => {
-    let additionalParametersObject = {
-        q: globalVariables.filterObject.q,
-        search_areas: "",
-        recipe_types_exclude: "",
-        // Only show recipes created by a certain user
-        user_id: globalVariables.filterObject.userId,
-        recipe_id: globalVariables.filterObject.recipe_id,
-    };
+    setLoading(true);
+        try {
+        let additionalParametersObject = {
+            q: globalVariables.filterObject.q,
+            search_areas: "",
+            recipe_types_exclude: "",
+            // Only show recipes created by a certain user
+            user_id: globalVariables.filterObject.userId,
+            recipe_id: globalVariables.filterObject.recipe_id,
+        };
 
-    /* Convert the included search areas array to a 
-    comma separated string */
-    const searchAreas = globalVariables.filterObject.searchAreas;
-    if (Array.isArray(searchAreas) && searchAreas.length > 0) {
-        // Initialize the entry
-        additionalParametersObject.search_areas = "";
-        // Create a comma separated string
-        searchAreas.forEach((i, index) => {
-            const addComma = index < searchAreas.length -1 ? "," : "";
-            additionalParametersObject.search_areas += i + addComma;
-        });
-        // Trim whitespaces
-        additionalParametersObject.search_areas.replace(/,\s*$/, "").trim();
-    }
-
-    // Convert dietary types to a comma separated string
-    // Filter only the 'false' ones to exclude
-    const recipeTypes = Object.entries(globalVariables.filterObject.recipeTypes)
-        .filter(([, value]) => !value); 
-        recipeTypes.forEach((i, index) => {
-        const addComma = index < recipeTypes.length - 1 ? "," : "";
-        additionalParametersObject.recipe_types_exclude += i[0] + addComma;
-    });
-
-    // Additional filters (concatenated string)
-    let additionalParameters = "";
-    Object.entries(additionalParametersObject).forEach(([key, value]) => {
-        // Only add declared parameters
-        if (value) {
-            additionalParameters += `&${key}=${value}`;
+        /* Convert the included search areas array to a 
+        comma separated string */
+        const searchAreas = globalVariables.filterObject.searchAreas;
+        if (Array.isArray(searchAreas) && searchAreas.length > 0) {
+            // Initialize the entry
+            additionalParametersObject.search_areas = "";
+            // Create a comma separated string
+            searchAreas.forEach((i, index) => {
+                const addComma = index < searchAreas.length -1 ? "," : "";
+                additionalParametersObject.search_areas += i + addComma;
+            });
+            // Trim whitespaces
+            additionalParametersObject.search_areas.replace(/,\s*$/, "").trim();
         }
-    });
 
-    // Fetch recipe 'group'
-    const response = await fetch(
-        `/load_recipes?page=${page}${additionalParameters}`
-    );
-    const data = await response.json();
+        // Convert dietary types to a comma separated string
+        // Filter only the 'false' ones to exclude
+        const recipeTypes = Object.entries(globalVariables.filterObject.recipeTypes)
+            .filter(([, value]) => !value); 
+            recipeTypes.forEach((i, index) => {
+            const addComma = index < recipeTypes.length - 1 ? "," : "";
+            additionalParametersObject.recipe_types_exclude += i[0] + addComma;
+        });
 
-    // Handle no recipes found and then render recipes
-    if (data.total_recipes === 0) {
-        hintWindow(globalVariables, globalHTML, "<p>Couldn't find any recipes.</p>");
-    }else {
-        // Append new recipes to the recipe feed
-        renderRecipes(data, globalHTML, globalVariables);
+        // Additional filters (concatenated string)
+        let additionalParameters = "";
+        Object.entries(additionalParametersObject).forEach(([key, value]) => {
+            // Only add declared parameters
+            if (value) {
+                additionalParameters += `&${key}=${value}`;
+            }
+        });
+
+        // Fetch recipe 'group'
+        const response = await fetch(
+            `/load_recipes?page=${page}${additionalParameters}`
+        );
+        const data = await response.json();
+
+        // Handle no recipes found and then render recipes
+        if (data.total_recipes === 0) {
+            hintWindow(globalVariables, globalHTML, "<p>Couldn't find any recipes.</p>");
+        }else {
+            // Append new recipes to the recipe feed
+            renderRecipes(data, globalHTML, globalVariables);
+        }
+    }catch (error) {
+        console.error(error)
+    } finally {
+        setLoading(false);
     }
 };

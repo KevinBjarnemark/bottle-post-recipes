@@ -2,11 +2,12 @@ import { initPage } from '../../../../static/js/feed/feed.js';
 import { toggleVeganMode } from '../../../../static/js/feed/utilities.js';
 import { veganModeColor } from '../../../../static/js/helpers.js';
 import { MOCKRECIPEDATA, getFeedGlobalVariablesMockData, 
-  getFeedGlobalHtmlMockData } from '../../../helpers/js/helpers.js';
+  getFeedGlobalHtmlMockData, extraMocking } from '../../../helpers/js/helpers.js';
 import {expect, test} from '@jest/globals';
 import '@testing-library/jest-dom'
 
 // Mock data
+extraMocking();
 let globalHTML = getFeedGlobalHtmlMockData();
 let globalVariables = getFeedGlobalVariablesMockData();
 
@@ -33,6 +34,7 @@ global.fetch = jest.fn((url) => {
 
 describe('Render recipes', () => {
     beforeEach(() => {
+        extraMocking();
         globalHTML = getFeedGlobalHtmlMockData();
         globalVariables = getFeedGlobalVariablesMockData();
     });
@@ -51,6 +53,7 @@ describe('Render recipes', () => {
 
 describe('Vegan mode button', () => {
     beforeEach(() => {
+        extraMocking();
         globalHTML = getFeedGlobalHtmlMockData();
         globalVariables = getFeedGlobalVariablesMockData();
     });

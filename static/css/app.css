@@ -1,0 +1,40 @@
+
+#loading-container {
+    display: none;
+    position: fixed;
+    flex-direction: column;
+    width: 30vw;
+    background-color: #242627;
+    bottom: 50px;
+    left: 50vw;
+
+    width: 80px;
+    height: 80px;
+    background-color: #E0E3E5;
+    box-shadow: 0 0 8px 5px #c2cbcf;
+    border: 3px solid #839197;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+}
+#loading-container img {
+    width: 70%;
+    object-fit: contain;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border: 0;
+    animation-name: loading-spinner-animation;
+    animation-duration: 0.5s; 
+    animation-iteration-count: infinite; 
+    animation-timing-function: linear;
+}
+#loading-container h3 {
+    position: absolute;
+    bottom: -45px;
+    color: white
+}
+@keyframes loading-spinner-animation {
+    0% {transform: rotate(0deg);}
+    50% {transform: rotate(180deg);}
+    100% {transform: rotate(360deg);}
+}
