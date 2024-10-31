@@ -1,7 +1,7 @@
 import { htmlSidebarFilters, htmlSidebarSearchAreas } from './generate_html.js';
 import { configureListeners } from './listeners.js';
 import { getRecipePage, cleanUpFeed, hintWindow } from './update_dom.js';
-import { veganModeColor } from '../helpers.js';
+import { veganModeColor, getCookie } from '../helpers.js';
 import { recipeEditor } from '../feed/recipe_editor.js';
 import { DEFAULT_FILTER_OBJECT } from '../constants.js';
 import { setLoading } from '../app.js';
@@ -158,6 +158,25 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+export const loadUserRecipes = async (globalHTML, globalVariables, userId, username) => {
+    const init = async () => {
+        // Reset filter
+        globalVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
+        // Set user id as a filter
+        globalVariables.filterObject.userId = userId;
+        // Clean up feed and load page 1
+        cleanUpFeed(globalHTML, globalVariables);
+        await getRecipePage(1, globalHTML, globalVariables);
+        if (userId === globalVariables.user.userId) {
+            globalHTML.topText.innerText = "Showing only your recipes";
+        }else {
+            globalHTML.topText.innerText = `Showing only recipes made by ${username}`;
+        }
+    };
+    
+    await init();
+};
+
 export const initPage = async (globalHTML, globalVariables) => {
     setLoading(true);
     try {
@@ -175,15 +194,13 @@ export const initPage = async (globalHTML, globalVariables) => {
 
         // Show my recipes button
         globalHTML.accountButton.myRecipes.style.display = "block";
-        globalHTML.accountButton.myRecipes.addEventListener('click', async function(e) {
-            // Reset filter
-            globalVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
-            // Set user id as a filter
-            globalVariables.filterObject.userId = globalVariables.user.userId;
-            // Clean up feed and load page 1
-            cleanUpFeed(globalHTML, globalVariables);
-            await getRecipePage(1, globalHTML, globalVariables);
-            globalHTML.topText.innerText = "Showing only your recipes";
+        globalHTML.accountButton.myRecipes.addEventListener(
+            'click', async () => {
+                await loadUserRecipes(
+                    globalHTML, 
+                    globalVariables, 
+                    globalVariables.user.userId
+                );
         });
 
         handleBottlePostNotifications(globalHTML, globalVariables);

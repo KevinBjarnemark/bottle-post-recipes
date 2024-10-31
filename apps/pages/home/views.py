@@ -5,13 +5,13 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponseForbidden
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
-import random
 from django.utils import timezone
 from .models import (
     DietaryAttribute, Recipe, Ingredient, Time,
     EstimatedPricePerMeal, Comment
 )
 from constants import NON_VEGAN_ATTRIBUTES
+from apps.users.views import load_user_profile
 
 
 def submit_bottle_post_review(request):
@@ -61,46 +61,6 @@ def submit_bottle_post_review(request):
         except Exception as e:
             print("Error:", e)
             return JsonResponse({'success': False, 'error': str(e)})
-
-
-def load_user_profile(request):
-    # Default profile
-    user_profile = {
-        'vegan_mode': False,
-        'review_recipe_id': None,
-    }
-    if request.user.is_authenticated:
-        profile = Profile.objects.get(user=request.user)
-        # Get a random recipe if the user is allowed to review
-        if profile.can_review():
-            # Get all recipe ids
-            recipe_ids = Recipe.objects.values_list('id', flat=True)
-            # User's review_recipe_id is None
-            is_none = profile.review_recipe_id is None
-            # User has an assigned review_recipe_id, but the recipe
-            # doesn't exist in the database anymore
-            exists_but_should_be_replaced = (
-                (profile.review_recipe_id == 0 or profile.review_recipe_id)
-                and profile.review_recipe_id not in recipe_ids
-            )
-            if is_none or exists_but_should_be_replaced:
-                # Add a review_recipe_id if it should be added/replaced
-                if recipe_ids:  # Ensure there are recipes available
-                    random_recipe_id = random.choice(recipe_ids)
-                    profile.review_recipe_id = random_recipe_id
-                    profile.save()
-        else:
-            # Make sure they are locked from reviewing
-            profile.review_recipe_id = None
-            profile.save()
-
-        user_profile = {
-            'user_id': profile.user.id,
-            'username': profile.user.username,
-            'vegan_mode': profile.vegan_mode,
-            'review_recipe_id': profile.review_recipe_id,
-        }
-    return user_profile
 
 
 def load_recipes(request):
@@ -167,6 +127,7 @@ def load_recipes(request):
         {
             'id': recipe.id,
             'user_id': recipe.user.id,
+            'username': recipe.user.username,
             'title': recipe.title,
             'description': recipe.description,
             'instructions': recipe.instructions,

@@ -2,6 +2,7 @@ import { trimText, addStoredEventListener } from "../helpers.js";
 import { recipeViewer } from "./recipe_viewer.js";
 import { recipeEditor } from "./recipe_editor.js";
 import { setLoading } from "../app.js";
+import { loadUserRecipes } from "../feed/feed.js";
 
 /**
  * Sets the innerHTML of hint_window.html component and clear it after 
@@ -114,8 +115,10 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                     <h4 class="recipe-item-title backdrop-blur">
                         ${trimText(recipe.title, 20)}
                     </h4>
-                    <button class="absolute-flex right-fib-1 top-fibb-1 
-                        profile-image-container interactive-turn">
+                    <button 
+                        id="recipe-item-profile-image-button-${recipe.id}"
+                        class="absolute-flex right-fib-1 top-fibb-1 
+                            profile-image-container interactive-turn">
                         <img 
                             class="profile-image"
                             src="${recipe.user_image ? 
@@ -194,6 +197,22 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
 
             // Push to global variable
             globalVariables.recipes.push(recipe);
+
+            
+            // Add and store event listener for the profile image button
+            addStoredEventListener(
+                globalVariables, 
+                "click", 
+                `recipe-item-profile-image-button-${recipe.id}`, 
+                async () => {
+                    await loadUserRecipes(
+                        globalHTML, 
+                        globalVariables, 
+                        recipe.user_id,
+                        recipe.username
+                    );
+                }
+            );
 
             // Add and store event listener for the recipe editor button
             if (userIsAuthor) {
