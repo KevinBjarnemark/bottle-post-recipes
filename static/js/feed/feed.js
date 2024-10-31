@@ -231,16 +231,6 @@ export const handleBottlePostNotifications = async (globalHTML, globalVariables)
                     .user.review_recipe_id;
                 cleanUpFeed(globalHTML, globalVariables);
                 await getRecipePage(1, globalHTML, globalVariables);
-                // Alert vegan-mode users that the recipe might be hidden
-                if (globalVariables.user.veganMode){
-                    // Hint window message
-                    const hintWindowHtml = `
-                        <p>
-                            You might need to disable vegan mode to see anything on this page! 
-                        </p>
-                    `;
-                    hintWindow(globalVariables, globalHTML, hintWindowHtml);
-                }
             });
         }
     };

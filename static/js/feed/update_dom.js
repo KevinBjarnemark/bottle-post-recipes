@@ -47,19 +47,41 @@ export const cleanUpFeed = (globalHTML, globalVariables) => {
  * message to the user. 
  * 
  */
-export const filterVeganRecipes = (globalVariables) => {
+export const filterVeganRecipes = (globalHTML, globalVariables) => {
+    let veganRecipeCount = 0;
+    let nonVeganRecipeCount = 0;
+
     globalVariables.recipes.forEach(i => {
         const recipeItem = document.getElementById(`recipe-item-${i.id}`);
         if (globalVariables.user.veganMode){
             if (!i.vegan){
                 recipeItem.style.display = "none";
-                }else {
+                nonVeganRecipeCount += 1;
+            }else {
                 recipeItem.style.display = "flex";
+                veganRecipeCount += 1;
             }
         }else {
             recipeItem.style.display = "flex";
+            veganRecipeCount += 1;
         }
     });
+
+    // If all recipes are hidden, display message
+    if (veganRecipeCount === 0 && nonVeganRecipeCount !== 0) {
+        hintWindow(
+            globalVariables, 
+            globalHTML, 
+            `<p>
+                You need to disable vegan mode to view 
+                the recipes on this page
+                <i class="fa-solid fa-carrot"></i>
+            </p>`,
+        );
+    }
+
+    // Reset, just in case
+    veganRecipeCount = 0;
 };
 
 /**
@@ -299,7 +321,7 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
 
         });
         // Show recipes based on vegan mode
-        filterVeganRecipes(globalVariables);
+        filterVeganRecipes(globalHTML, globalVariables);
     }else {
         hintWindow(globalVariables, globalHTML, "<p>All recipes are loaded!</p>");
     }
