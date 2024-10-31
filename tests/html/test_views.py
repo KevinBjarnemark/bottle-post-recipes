@@ -8,15 +8,9 @@ def test_homepage_loads(client):
     response = client.get(reverse('home'))
     assert response.status_code == 200
 
+
 # Check if the login page loads
 @pytest.mark.django_db
 def test_login_loads(client):
     response = client.get(reverse('login'))
-    assert response.status_code == 200
-
-
-# Check if the create_recipe page loads
-@pytest.mark.django_db
-def test_register_loads(client):
-    response = client.get(reverse('register'))
     assert response.status_code == 200

@@ -232,6 +232,16 @@ body {
     font-weight: 400;
 }
 
+.page-title {
+    font-weight: 500;
+    color: #bac3c6;
+    border-radius: 5px;
+    background-color: #383b3d;
+    box-shadow: 0 0 8px 8px #383b3d;
+    font-family: "Lilita One", sans-serif;
+    font-weight: 400;
+}
+
 /* Sidebar */
 .feed-sidebar {
     z-index: 1;

@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     'cloudinary',
     # Custom apps
     'apps.pages.home',
-    'apps.pages.create_recipe',
     'apps.users',
+    'apps.pages.about',
 ]
 
 MIDDLEWARE = [

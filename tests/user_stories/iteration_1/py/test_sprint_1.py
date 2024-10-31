@@ -1,6 +1,6 @@
 import pytest
 from django.urls import reverse
-from apps.pages.create_recipe.models import Recipe
+from apps.pages.home.models import Recipe
 from apps.users.models import User
 from tests.helpers.py.helpers import (
     MOCKRECIPEDATA,
