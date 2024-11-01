@@ -69,8 +69,8 @@ const submitBottlePostReview = async (action) => {
  * and adds that value to the form data.
  * 
  */
-export const handleCommentTextarea = (e, globalVariables, commentFormData) => {
-    globalVariables.currentComment = e.target.value;
+export const handleCommentTextarea = (e, feedVariables, commentFormData) => {
+    feedVariables.currentComment = e.target.value;
     commentFormData.append("comment", e.target.value);
 };
 
@@ -87,7 +87,7 @@ export const handleCommentTextarea = (e, globalVariables, commentFormData) => {
  * 
  * @param {String} recipeId
  */
-export const handlePublishComment = async (globalVariables, globalHTML, recipeId, commentFormData) => {
+export const handlePublishComment = async (feedVariables, feedHTML, recipeId, commentFormData) => {
     setLoading(true);
     try {
         // Add recipe_id to the FormData
@@ -105,20 +105,20 @@ export const handlePublishComment = async (globalVariables, globalHTML, recipeId
         
         if (result.success) {
             // Target the first div inside the comment section
-            const commentSection = globalHTML.recipeViewer.comments
+            const commentSection = feedHTML.recipeViewer.comments
                 .parentElement.querySelector('div');
 
             // Create the new comment element
             const newCommentHTML = htmlComment(
-                globalVariables.user.username,
+                feedVariables.user.username,
                 new Date().toLocaleString(), // Simulated
-                globalVariables.currentComment,
+                feedVariables.currentComment,
             );
             // Insert the at the top
             commentSection.insertAdjacentHTML('afterbegin', newCommentHTML);
 
             // Clear textarea and form data
-            globalHTML.recipeViewer.commentInput.value = "";
+            feedHTML.recipeViewer.commentInput.value = "";
             commentFormData.delete("comment");
             commentFormData.delete("recipe_id");
         } else {
@@ -198,10 +198,10 @@ export const buildIngredients = (element, ingredients) => {
  * previously generated content.
  * 
  */
-const handleClose = (globalHTML, globalVariables) => {
+const handleClose = (feedHTML, feedVariables) => {
     // Clean and hide
-    globalHTML.recipeViewer.container.style.visibility = "hidden";
-    globalVariables.currentComment = "";
+    feedHTML.recipeViewer.container.style.visibility = "hidden";
+    feedVariables.currentComment = "";
 };
 
 /**
@@ -213,19 +213,19 @@ const handleClose = (globalHTML, globalVariables) => {
  * 
  * 
  */
-export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
+export const recipeViewer = (feedHTML, feedVariables, recipeId) => {
     try {
         // Find the recipe to load
-        const recipe = globalVariables.recipes.find(i => i.id === recipeId);
-        const thisIsAReview = globalVariables?.user?.review_recipe_id === recipe.id;
+        const recipe = feedVariables.recipes.find(i => i.id === recipeId);
+        const thisIsAReview = feedVariables?.user?.review_recipe_id === recipe.id;
 
         // Info text
         if (thisIsAReview){
-            globalHTML.recipeViewer.reviewSection.style.display = "block";
+            feedHTML.recipeViewer.reviewSection.style.display = "block";
 
             // Add and store bottle post review delete button
             addStoredEventListener(
-                globalVariables,
+                feedVariables,
                 "click",
                 `bottle-post-review-delete-button`, 
                 () => {
@@ -235,7 +235,7 @@ export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
 
             // Add and store bottle post review 'boost' button
             addStoredEventListener(
-                globalVariables,
+                feedVariables,
                 "click",
                 `bottle-post-review-boost-button`, 
                 () => {
@@ -243,33 +243,33 @@ export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
                 }
             );
         }else {
-            globalHTML.recipeViewer.info.innerHTML = "";
+            feedHTML.recipeViewer.info.innerHTML = "";
         }
 
         // Title
-        globalHTML.recipeViewer.title.innerText = recipe.title;
+        feedHTML.recipeViewer.title.innerText = recipe.title;
 
         // Image
         if (recipe.image){
-            globalHTML.recipeViewer.image.src = recipe.image;
+            feedHTML.recipeViewer.image.src = recipe.image;
         }else {
-            globalHTML.recipeViewer.image.src = "/images/icons/missing.webp";
+            feedHTML.recipeViewer.image.src = "/images/icons/missing.webp";
         }
         // Description
-        globalHTML.recipeViewer.description.innerText = recipe.description;
+        feedHTML.recipeViewer.description.innerText = recipe.description;
         // instructions
-        globalHTML.recipeViewer.instructions.innerText = recipe.instructions;
+        feedHTML.recipeViewer.instructions.innerText = recipe.instructions;
 
         /* Dietary attributes NOTE! This will be invisible if no dietary attributes are 
         attached to the recipe */
         buildDietaryAttributes(
-            globalHTML.recipeViewer.dietaryAttributes, 
+            feedHTML.recipeViewer.dietaryAttributes, 
             recipe.dietary_attributes
         );
 
         // Ingredients
         buildIngredients(
-            globalHTML.recipeViewer.ingredients, 
+            feedHTML.recipeViewer.ingredients, 
             recipe.ingredients
         );
 
@@ -291,25 +291,25 @@ export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
                 comments += createdComment;
             });
         }
-        globalHTML.recipeViewer.comments.innerHTML = comments;
+        feedHTML.recipeViewer.comments.innerHTML = comments;
 
         // Add and store comment comment textarea listener
         addStoredEventListener(
-            globalVariables,
+            feedVariables,
             "input",
             `recipe-viewer-comment-input`, 
-            (e) => {handleCommentTextarea(e, globalVariables, commentFormData)}
+            (e) => {handleCommentTextarea(e, feedVariables, commentFormData)}
         );
 
         // Add and store publish comment listener
         addStoredEventListener(
-            globalVariables,
+            feedVariables,
             "click", 
             `recipe-viewer-publish-comment-button`, 
             () => {
                 handlePublishComment(
-                    globalVariables, 
-                    globalHTML, 
+                    feedVariables, 
+                    feedHTML, 
                     recipe.id, 
                     commentFormData
                 );
@@ -318,16 +318,16 @@ export const recipeViewer = (globalHTML, globalVariables, recipeId) => {
 
         // Add and store close button listener
         addStoredEventListener(
-            globalVariables,
+            feedVariables,
             "click", 
             `recipe-viewer-close-button`, 
-            () => {handleClose(globalHTML, globalVariables)}
+            () => {handleClose(feedHTML, feedVariables)}
         );
 
         // Finally, Make the component visible
-        globalHTML.recipeViewer.container.style.visibility = "visible";
+        feedHTML.recipeViewer.container.style.visibility = "visible";
         // Scroll to the top component
-        globalHTML.recipeViewer.info.scrollIntoView(
+        feedHTML.recipeViewer.info.scrollIntoView(
             { behavior: "smooth", block: "start" }
         );
     }catch (error) {

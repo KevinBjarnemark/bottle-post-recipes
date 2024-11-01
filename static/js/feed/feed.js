@@ -1,7 +1,7 @@
 import { htmlSidebarFilters, htmlSidebarSearchAreas } from './generate_html.js';
 import { configureListeners } from './listeners.js';
-import { getRecipePage, cleanUpFeed, hintWindow } from './update_dom.js';
-import { veganModeColor, getCookie } from '../helpers.js';
+import { getRecipePage, cleanUpFeed } from './update_dom.js';
+import { veganModeColor } from '../helpers.js';
 import { recipeEditor } from '../feed/recipe_editor.js';
 import { DEFAULT_FILTER_OBJECT } from '../constants.js';
 import { setLoading } from '../app.js';
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
             userProfileData: JSON.parse(document.getElementById('user-profile-data').textContent),
         };
         // Targeted HTML elements
-        const globalHTML = {
+        const feedHTML = {
             // Account button
             accountButton: {
                 // NOTE! This should be moved to a profile page in the future
@@ -46,9 +46,6 @@ document.addEventListener("DOMContentLoaded", function() {
             // Vegan button
             veganButton: document.getElementById('vegan-mode-button'),
             veganIcon: document.getElementById('vegan-mode-icon'),
-            // Hint window
-            hintWindow: document.getElementById('hint-window'),
-            hintWindowText: document.getElementById('hint-window-text'),
             loadRecipesButton: document.getElementById('load-recipes-button'),
             // Recipe viewer
             recipeViewer: {
@@ -118,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function() {
         };
 
         // Global states
-        let globalVariables = {
+        let feedVariables = {
             page: 1, // The recipe group loaded represented as 'page'
             user: {
                 veganMode: initialData.userProfileData.vegan_mode,
@@ -126,8 +123,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 userId: initialData.userProfileData.user_id,
                 review_recipe_id: initialData.userProfileData.review_recipe_id,
             },
-            // Hint window timer
-            hintWindowTimer: null,
             recipes: [],
             // A managed comment state for the recipe viewer component
             currentComment: "", 
@@ -150,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 estimated_price: {from: 0, to: 0},
             },
         };
-        initPage(globalHTML, globalVariables);
+        initPage(feedHTML, feedVariables);
     }catch (error) {
         console.log(error);
     } finally {
@@ -158,52 +153,52 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-export const loadUserRecipes = async (globalHTML, globalVariables, userId, username) => {
+export const loadUserRecipes = async (feedHTML, feedVariables, userId, username) => {
     const init = async () => {
         // Reset filter
-        globalVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
+        feedVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
         // Set user id as a filter
-        globalVariables.filterObject.userId = userId;
+        feedVariables.filterObject.userId = userId;
         // Clean up feed and load page 1
-        cleanUpFeed(globalHTML, globalVariables);
-        await getRecipePage(1, globalHTML, globalVariables);
-        if (userId === globalVariables.user.userId) {
-            globalHTML.topText.innerText = "Showing only your recipes";
+        cleanUpFeed(feedHTML, feedVariables);
+        await getRecipePage(1, feedHTML, feedVariables);
+        if (userId === feedVariables.user.userId) {
+            feedHTML.topText.innerText = "Showing only your recipes";
         }else {
-            globalHTML.topText.innerText = `Showing only recipes made by ${username}`;
+            feedHTML.topText.innerText = `Showing only recipes made by ${username}`;
         }
     };
     
     await init();
 };
 
-export const initPage = async (globalHTML, globalVariables) => {
+export const initPage = async (feedHTML, feedVariables) => {
     setLoading(true);
     try {
         // Set initial states
-        await setInitialStates(globalHTML, globalVariables);
+        await setInitialStates(feedHTML, feedVariables);
         // Generate HTML
-        generateHTML(globalHTML, globalVariables);
+        generateHTML(feedHTML, feedVariables);
         // Configure listeners
-        configureListeners(globalHTML, globalVariables);
+        configureListeners(feedHTML, feedVariables);
 
-        globalHTML.createRecipeButton.addEventListener('click', function(e) {
+        feedHTML.createRecipeButton.addEventListener('click', function(e) {
             e.preventDefault();
-            recipeEditor(globalHTML, globalVariables, "NEW RECIPE");
+            recipeEditor(feedHTML, feedVariables, "NEW RECIPE");
         });
 
         // Show my recipes button
-        globalHTML.accountButton.myRecipes.style.display = "block";
-        globalHTML.accountButton.myRecipes.addEventListener(
+        feedHTML.accountButton.myRecipes.style.display = "block";
+        feedHTML.accountButton.myRecipes.addEventListener(
             'click', async () => {
                 await loadUserRecipes(
-                    globalHTML, 
-                    globalVariables, 
-                    globalVariables.user.userId
+                    feedHTML, 
+                    feedVariables, 
+                    feedVariables.user.userId
                 );
         });
 
-        handleBottlePostNotifications(globalHTML, globalVariables);
+        handleBottlePostNotifications(feedHTML, feedVariables);
     }catch(error) {
         console.log(error);
     } finally {
@@ -211,47 +206,47 @@ export const initPage = async (globalHTML, globalVariables) => {
     }
 };
 
-export const handleBottlePostNotifications = async (globalHTML, globalVariables) => {
+export const handleBottlePostNotifications = async (feedHTML, feedVariables) => {
     const init = async () => {
         /* Make the bottle post review button appear after a slight delay
         if the user is allowed to review. */
-        if (globalVariables.user.review_recipe_id !== null){
-            globalHTML.bottlePostNotificationButton.style.display = "block";
+        if (feedVariables.user.review_recipe_id !== null){
+            feedHTML.bottlePostNotificationButton.style.display = "block";
             // Pop-up effect with a slight delay
             setTimeout(() => {
-                globalHTML.bottlePostNotificationButton.style.transform = "scale(1)";
+                feedHTML.bottlePostNotificationButton.style.transform = "scale(1)";
             }, 2500);
             
-            globalHTML.bottlePostNotificationButton
+            feedHTML.bottlePostNotificationButton
                 .addEventListener("click", async () => {
                 // Reset filter
-                globalVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
+                feedVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
                 // Add recipe_id filter
-                globalVariables.filterObject.recipe_id = globalVariables
+                feedVariables.filterObject.recipe_id = feedVariables
                     .user.review_recipe_id;
-                cleanUpFeed(globalHTML, globalVariables);
-                await getRecipePage(1, globalHTML, globalVariables);
+                cleanUpFeed(feedHTML, feedVariables);
+                await getRecipePage(1, feedHTML, feedVariables);
             });
         }
     };
     await init();
 };
 
-export const generateHTML = (globalHTML, globalVariables) => {
+export const generateHTML = (feedHTML, feedVariables) => {
     // Sidebar search areas checkboxes
-    htmlSidebarSearchAreas(globalHTML, globalVariables);
+    htmlSidebarSearchAreas(feedHTML, feedVariables);
     // Sidebar include filters (vegan, vegetarian, meat)
-    htmlSidebarFilters(globalHTML, globalVariables);
+    htmlSidebarFilters(feedHTML, feedVariables);
 };
 
 /**
  * Sets the initial states when the user arrives after a page load.
  * 
  */
-export const setInitialStates = async (globalHTML, globalVariables) => {
+export const setInitialStates = async (feedHTML, feedVariables) => {
     // Set vegan mode button color
-    globalHTML.veganIcon.style.color = veganModeColor(globalVariables.user.veganMode);
+    feedHTML.veganIcon.style.color = veganModeColor(feedVariables.user.veganMode);
     // Load the first recipe group
-    await getRecipePage(1, globalHTML, globalVariables);
+    await getRecipePage(1, feedHTML, feedVariables);
 };
 

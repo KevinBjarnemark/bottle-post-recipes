@@ -6,16 +6,16 @@ import {DIETARYATTRIBUTES_ALL,
     DIETARYATTRIBUTES_NON_VEGAN,
     RECIPE_EMPTY,
 } from '../constants.js';
-import {setLoading} from '../app.js';
+import {setLoading, confirmPassword} from '../app.js';
 
 
 /**
  * Submits the concatenated form to the backend
  * 
- * @param {Object}  globalVariables 
+ * @param {Object}  feedVariables 
  * @param {String}   recipeId 
  */
-const publishRecipe = async (globalVariables, recipeId) => {
+const publishRecipe = async (feedVariables, recipeId) => {
     setLoading(true);
     const init = async () => {
         try {
@@ -33,7 +33,7 @@ const publishRecipe = async (globalVariables, recipeId) => {
                 "cooking_time",
                 "estimated_price",
             ];
-            Object.entries(globalVariables.formData).forEach(([entry, value]) => {
+            Object.entries(feedVariables.formData).forEach(([entry, value]) => {
                 if (stringifyEntries.includes(entry)){
                     formData.append(entry, JSON.stringify(value));
                 }else {
@@ -75,16 +75,19 @@ const publishRecipe = async (globalVariables, recipeId) => {
  * 
  * @param {String} recipeId 
  */
-const deleteRecipe = async (recipeId) => {
+const deleteRecipeConfirmed = async (recipeId, password) => {
     setLoading(true);
     const init = async () => {
         try {
+
             // Send a DELETE request to the backend
             const response = await fetch(`/delete_recipe/?recipe_id=${recipeId}`, {
                 method: 'DELETE',
                 headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json',
                 },
+                body: JSON.stringify({ password: password }),
             });
 
             if (response.ok) {
@@ -105,9 +108,16 @@ const deleteRecipe = async (recipeId) => {
     init();
 };
 
-const buildDietaryAttributes = (globalHTML, globalVariables, attributesPreFill) => {
+const deleteRecipe = async (recipeId) => {
+    confirmPassword(
+        (password) => deleteRecipeConfirmed(recipeId, password),
+        "Please confirm your password to delete this recipe."
+    );
+};
+
+const buildDietaryAttributes = (feedHTML, feedVariables, attributesPreFill) => {
     // Clear previous elements
-    globalHTML.recipeEditor.dietaryAttributes.innerHTML = "";
+    feedHTML.recipeEditor.dietaryAttributes.innerHTML = "";
     let attributes = [];
     // Build the boolean items
     DIETARYATTRIBUTES_ALL.forEach(i => {
@@ -127,7 +137,7 @@ const buildDietaryAttributes = (globalHTML, globalVariables, attributesPreFill) 
         const checked = attributesPreFill.includes(i.label.toLowerCase());
         // Add form data, if true
         if (checked){
-            globalVariables.formData.dietary_attributes.push(i.field);
+            feedVariables.formData.dietary_attributes.push(i.field);
         }
         htmlString += 
         `<div class="flex-row pop-up-boolean-item align-items-start"
@@ -147,7 +157,7 @@ const buildDietaryAttributes = (globalHTML, globalVariables, attributesPreFill) 
         `;
     });
 
-    globalHTML.recipeEditor.dietaryAttributes.innerHTML = `
+    feedHTML.recipeEditor.dietaryAttributes.innerHTML = `
     <div class="flex-row mb-4" style="flex-wrap: wrap;">
         ${htmlString}
     </div>
@@ -157,7 +167,7 @@ const buildDietaryAttributes = (globalHTML, globalVariables, attributesPreFill) 
         // Set up listeners
         const element = document.getElementById(i.id);
         element.addEventListener("change", function(e) {
-            let dietaryAttributes = globalVariables.formData.dietary_attributes;
+            let dietaryAttributes = feedVariables.formData.dietary_attributes;
             if (e.target.checked) {
                 if (!dietaryAttributes.includes(i.field)){
                     dietaryAttributes.push(i.field);
@@ -167,7 +177,7 @@ const buildDietaryAttributes = (globalHTML, globalVariables, attributesPreFill) 
                     dietaryAttributes = dietaryAttributes.filter(attr => attr !== i.field);
                 }
             }
-            globalVariables.formData.dietary_attributes = dietaryAttributes;
+            feedVariables.formData.dietary_attributes = dietaryAttributes;
         });
     });
 };
@@ -177,11 +187,11 @@ const buildDietaryAttributes = (globalHTML, globalVariables, attributesPreFill) 
  * well as updating form data.
  * 
  * 
- * @param {Object}  globalHTML
- * @param {Object}  globalVariables
+ * @param {Object}  feedHTML
+ * @param {Object}  feedVariables
  * @param {Object}  ingredient {name, quantity}
  */
-const addIngredientToList = (globalHTML, globalVariables, ingredient) => {
+const addIngredientToList = (feedHTML, feedVariables, ingredient) => {
     // Create the ingredient element and assign classname
     const ingredientElement = document.createElement("div");
     ingredientElement.className = "pop-up-list-element-container";
@@ -192,8 +202,8 @@ const addIngredientToList = (globalHTML, globalVariables, ingredient) => {
     // Create event listener
     removeIngredientButton.addEventListener("click", function() {
         // Remove the ingredient from form data
-        globalVariables.formData.ingredients = 
-            globalVariables.formData.ingredients.filter(i => i !== ingredient);
+        feedVariables.formData.ingredients = 
+            feedVariables.formData.ingredients.filter(i => i !== ingredient);
         // Remove element (listener will also be removed in this action)
         ingredientElement.remove();
     });
@@ -206,39 +216,39 @@ const addIngredientToList = (globalHTML, globalVariables, ingredient) => {
         </li>
     `;
     ingredientElement.appendChild(removeIngredientButton);
-    globalHTML.recipeEditor.ingredients.appendChild(ingredientElement);
+    feedHTML.recipeEditor.ingredients.appendChild(ingredientElement);
 
     // Add the ingredient to the form data
-    globalVariables.formData.ingredients.push(ingredient);
+    feedVariables.formData.ingredients.push(ingredient);
 };
 
-const buildIngredients = (globalHTML, globalVariables, ingredientsPreFill) => {
+const buildIngredients = (feedHTML, feedVariables, ingredientsPreFill) => {
     // Clear previous values
-    globalVariables.formData.ingredients = [];
+    feedVariables.formData.ingredients = [];
 
     // Clear ingredients list
-    globalHTML.recipeEditor.ingredients.innerHTML = "";
+    feedHTML.recipeEditor.ingredients.innerHTML = "";
     // 'Prefill' ingredients by adding them
     ingredientsPreFill.forEach(ingredient => {
-        addIngredientToList(globalHTML, globalVariables, ingredient);
+        addIngredientToList(feedHTML, feedVariables, ingredient);
     })
 
     // Add and store add ingredient button listener
     addStoredEventListener(
-        globalVariables,
+        feedVariables,
         "click",
-        globalHTML.recipeEditor.ingredient.addButton.id, 
+        feedHTML.recipeEditor.ingredient.addButton.id, 
         () => {
             // Get the ingredient elements
-            let quantity = globalHTML.recipeEditor.ingredient
+            let quantity = feedHTML.recipeEditor.ingredient
                 .quantity;
-            let name = globalHTML.recipeEditor.ingredient
+            let name = feedHTML.recipeEditor.ingredient
                 .name;
 
             if (name.value && quantity.value) {
                 addIngredientToList(
-                    globalHTML, 
-                    globalVariables, 
+                    feedHTML, 
+                    feedVariables, 
                     {name: name.value, quantity: quantity.value}
                 );
                 quantity.value = '';
@@ -254,9 +264,9 @@ const buildIngredients = (globalHTML, globalVariables, ingredientsPreFill) => {
  * previously generated content.
  * 
  */
-const handleClose = (globalHTML) => {
+const handleClose = (feedHTML) => {
     // Hide
-    globalHTML.recipeEditor.container.style.visibility = "hidden";
+    feedHTML.recipeEditor.container.style.visibility = "hidden";
 };
 
 /**
@@ -268,7 +278,7 @@ const handleClose = (globalHTML) => {
  * loaded recipe.
  * 
  */
-export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
+export const recipeEditor = (feedHTML, feedVariables, recipeId) => {
         try {
         /* Render either an empty recipe to publish or a 
         prefilled recipe to edit */ 
@@ -277,19 +287,19 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
             recipe = RECIPE_EMPTY;
         }else {
             // Find the recipe to load
-            recipe = globalVariables.recipes.find(i => i.id === recipeId);
+            recipe = feedVariables.recipes.find(i => i.id === recipeId);
         }
 
         // Title
         if (recipeId === "NEW RECIPE"){
-            globalHTML.recipeEditor.mainTitle.innerText = "Create recipe"; 
+            feedHTML.recipeEditor.mainTitle.innerText = "Create recipe"; 
         }else {
-            globalHTML.recipeEditor.mainTitle.innerText = "Edit Recipe"; 
+            feedHTML.recipeEditor.mainTitle.innerText = "Edit Recipe"; 
         }
 
         // Info text
         if (recipeId === "NEW RECIPE"){
-            globalHTML.recipeEditor.mainInfo.innerHTML = `
+            feedHTML.recipeEditor.mainInfo.innerHTML = `
             <em>How it works</em>
             <p>
                 When you publish a recipe it will enter the 
@@ -311,7 +321,7 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
             </p>
         `; 
         }else {
-            globalHTML.recipeEditor.mainInfo.innerHTML = `
+            feedHTML.recipeEditor.mainInfo.innerHTML = `
             <p>
                 In this window, you can edit your already published recipe. 
                 This won't affect your ocean status or previous engagements 
@@ -321,53 +331,56 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
         }
         if (recipeId !== "NEW RECIPE"){
             // Show the delete recipe button
-            globalHTML.recipeEditor.deleteButtonContainer.
+            feedHTML.recipeEditor.deleteButtonContainer.
                 style.display = "block";
             // Reset click count
-            globalHTML.recipeEditor.deleteRecipeClickCount
-                .innerText = "10";
+            feedHTML.recipeEditor.deleteRecipeClickCount
+                .innerText = "5";
 
         }else {
             // Hide the delete recipe button
-            globalHTML.recipeEditor.deleteButtonContainer
+            feedHTML.recipeEditor.deleteButtonContainer
                 .style.display = "none";
         }
 
         // Add and store close button listener
         addStoredEventListener(
-            globalVariables,
+            feedVariables,
             "click", 
-            globalHTML.recipeEditor.deleteButton.id, 
+            feedHTML.recipeEditor.deleteButton.id, 
             () => {
-                const convertToNumber = parseInt(globalHTML.recipeEditor
-                    .deleteRecipeClickCount.innerText);
+                const convertToNumber = parseInt(feedHTML.recipeEditor
+                    .deleteRecipeClickCount.innerText
+                );
                 // Decrement number
-                globalHTML.recipeEditor
+                feedHTML.recipeEditor
                     .deleteRecipeClickCount.innerText = `${convertToNumber - 1}`;
                 if (convertToNumber - 1 === 0) {
+                    feedHTML.recipeEditor
+                    .deleteRecipeClickCount.innerText = 5
                     deleteRecipe(recipeId);
                 }
             }
         );
 
         // Text inputs (pre filling and listeners) 
-        const textInputs = globalHTML.recipeEditor.textInputs;
+        const textInputs = feedHTML.recipeEditor.textInputs;
         Object.entries(textInputs).forEach(([entry, element]) => {
             // Clear previous value (form data and input)
             element.value = "";
-            globalVariables.formData[entry] = "";
+            feedVariables.formData[entry] = "";
 
             // Pre-fill values respectively
             if (recipe[entry]){
                 element.value = recipe[entry];
-                globalVariables.formData[entry] = recipe[entry];
+                feedVariables.formData[entry] = recipe[entry];
             }else {
                 element.value = "";
-                globalVariables.formData[entry] = "";
+                feedVariables.formData[entry] = "";
             }
             // Update the form data on keyup
             element.addEventListener("keyup", function(e) {
-                globalVariables.formData[entry] = e.target.value;
+                feedVariables.formData[entry] = e.target.value;
             });
         });
 
@@ -377,37 +390,37 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
          * Helps with setting up multiple combined number inputs to avoid 
          * repetition.
          * 
-         * @param {str}   globalHtmlEntry The entry that points to the 
-         * combined entry in the globalHTML
+         * @param {str}   feedHtmlEntry The entry that points to the 
+         * combined entry in the feedHTML
          * @param {str}   recipeEntry The entry that points to the 
          * combined entry in the recipe object
          */
-        const heleperCombinedNumber = (globalHtmlEntry) => {
-            const globalHtmlEntrySnake = toSnakeCase(globalHtmlEntry);
+        const heleperCombinedNumber = (feedHtmlEntry) => {
+            const feedHtmlEntrySnake = toSnakeCase(feedHtmlEntry);
             // Preparation time (pre filling and listeners) 
-            const collection = globalHTML.recipeEditor
-                .combinedNumberInputs[globalHtmlEntry];
+            const collection = feedHTML.recipeEditor
+                .combinedNumberInputs[feedHtmlEntry];
             Object.entries(collection).forEach(([entry, element]) => {
                 const entrySnake = toSnakeCase(entry)
-                const entryData = recipe[globalHtmlEntrySnake][0][entrySnake];
+                const entryData = recipe[feedHtmlEntrySnake][0][entrySnake];
 
                 // Clear previous value (form data and input)
                 element.value = "";
-                globalVariables.formData[globalHtmlEntrySnake][entrySnake] = "";
+                feedVariables.formData[feedHtmlEntrySnake][entrySnake] = "";
 
                 // Pre-fill values respectively and add form data
                 if (entryData){
                     element.value = entryData;
-                    globalVariables.formData[globalHtmlEntrySnake][entrySnake] = entryData;
+                    feedVariables.formData[feedHtmlEntrySnake][entrySnake] = entryData;
 
                 }else {
                     element.value = 0;
-                    globalVariables.formData[globalHtmlEntrySnake][entrySnake] = 0;
+                    feedVariables.formData[feedHtmlEntrySnake][entrySnake] = 0;
                 }
                 // Update the form data on keyup
                 element.addEventListener("change", function(e) {
                     // Set form data and convert to a number
-                    globalVariables.formData[globalHtmlEntrySnake][entrySnake] = +e.target.value;
+                    feedVariables.formData[feedHtmlEntrySnake][entrySnake] = +e.target.value;
                 });
             });
         };
@@ -416,7 +429,7 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
         heleperCombinedNumber("estimatedPrice");
 
         // Image
-        globalHTML.recipeEditor.imagePreviewContainer
+        feedHTML.recipeEditor.imagePreviewContainer
             .innerHTML = `
                 <img 
                     src=${recipe.image ? recipe.image : '/static/images/icons/missing.webp'} 
@@ -424,45 +437,45 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
                 />
             `;
         // Set form data initially
-        globalVariables.formData.image = recipe.image;
+        feedVariables.formData.image = recipe.image;
 
         // Dietary attributes
-        buildDietaryAttributes(globalHTML, globalVariables, recipe.dietary_attributes);
+        buildDietaryAttributes(feedHTML, feedVariables, recipe.dietary_attributes);
         
         // Ingredients
-        buildIngredients(globalHTML, globalVariables, recipe.ingredients)
+        buildIngredients(feedHTML, feedVariables, recipe.ingredients)
 
         // Add and store submit button
         addStoredEventListener(
-            globalVariables,
+            feedVariables,
             "click", 
             `recipe-editor-submit-button`, 
             () => {
-                publishRecipe(globalVariables, recipeId);
+                publishRecipe(feedVariables, recipeId);
             }
         );
 
         // Add and store close button listener
         addStoredEventListener(
-            globalVariables,
+            feedVariables,
             "click", 
             `recipe-editor-close-button`, 
-            () => {handleClose(globalHTML)}
+            () => {handleClose(feedHTML)}
         );
 
         // Add and store image preview listener
         addStoredEventListener(
-            globalVariables,
+            feedVariables,
             "change",
             `recipe-editor-image-upload`, // Doesn't need to be unique
             (e) => {
                 const file = e.target.files[0];
-                    globalVariables.formData.image = file;
+                    feedVariables.formData.image = file;
                     const imagePreviewUrl = URL.createObjectURL(file);
                     const previewImage = document.createElement('img');
                     previewImage.src = imagePreviewUrl;
                     previewImage.alt = recipe.title;
-                    globalHTML.recipeEditor.imagePreviewContainer
+                    feedHTML.recipeEditor.imagePreviewContainer
                         .innerHTML = `
                             <img 
                                 src=${imagePreviewUrl} 
@@ -473,7 +486,7 @@ export const recipeEditor = (globalHTML, globalVariables, recipeId) => {
         );
 
         // Finally, Make the component visible
-        globalHTML.recipeEditor.container.style.visibility = "visible";
+        feedHTML.recipeEditor.container.style.visibility = "visible";
     } catch (error) {
         console.log(error);
     } finally {

@@ -12,6 +12,7 @@ from .models import (
 )
 from constants import NON_VEGAN_ATTRIBUTES
 from apps.users.views import load_user_profile
+from django.contrib.auth import authenticate
 
 
 def submit_bottle_post_review(request):
@@ -201,6 +202,28 @@ def delete_recipe(request):
         try:
             # Retrieve recipe_id and validate ownership
             recipe_id = request.GET.get('recipe_id')
+            data = json.loads(request.body)
+            password = data.get('password')
+
+            if not password:
+                return JsonResponse(
+                    {'error': 'Password is required'}, status=400
+                )
+
+            # Authorize user
+            user = request.user
+            if not user.is_authenticated:
+                return JsonResponse(
+                    {'error': 'User not authenticated'}, status=403
+                )
+
+            # Authenticate user with password
+            user = authenticate(username=user.username, password=password)
+            if user is None:
+                return JsonResponse(
+                    {'error': 'Incorrect password'}, status=403
+                )
+
             if not recipe_id:
                 return JsonResponse({
                     'success': False,

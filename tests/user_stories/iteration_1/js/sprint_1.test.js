@@ -1,15 +1,21 @@
 import { initPage } from '../../../../static/js/feed/feed.js';
 import { toggleVeganMode } from '../../../../static/js/feed/utilities.js';
 import { veganModeColor } from '../../../../static/js/helpers.js';
-import { MOCKRECIPEDATA, getFeedGlobalVariablesMockData, 
-  getFeedGlobalHtmlMockData, extraMocking } from '../../../helpers/js/helpers.js';
+import { 
+    MOCKRECIPEDATA, 
+    getFeedVariablesMockData, 
+    getFeedHtmlMockData, 
+    getAppHtmlMockData,
+    getAppVariablesMockData,
+} from '../../../helpers/js/helpers.js';
 import {expect, test} from '@jest/globals';
 import '@testing-library/jest-dom'
 
 // Mock data
-extraMocking();
-let globalHTML = getFeedGlobalHtmlMockData();
-let globalVariables = getFeedGlobalVariablesMockData();
+let feedHTML = getFeedHtmlMockData();
+let feedVariables = getFeedVariablesMockData();
+window.appHTML = getAppHtmlMockData();
+window.appVariables = getAppVariablesMockData();
 
 /* REMINDER! You cannot test filtering and quering
 with static MOCKRECIPEDATA data! These operations takes 
@@ -34,42 +40,44 @@ global.fetch = jest.fn((url) => {
 
 describe('Render recipes', () => {
     beforeEach(() => {
-        extraMocking();
-        globalHTML = getFeedGlobalHtmlMockData();
-        globalVariables = getFeedGlobalVariablesMockData();
+        feedHTML = getFeedHtmlMockData();
+        feedVariables = getFeedVariablesMockData();
+        window.appHTML = getAppHtmlMockData();
+        window.appVariables = getAppVariablesMockData();
     });
 
     test("renders recipes and appends to the DOM", async () => {
-        await initPage(globalHTML, globalVariables);
+        await initPage(feedHTML, feedVariables);
         // Check that recipes were appended to the DOM
-        expect(globalHTML.feed.childElementCount).toBe(4);
+        expect(feedHTML.feed.childElementCount).toBe(4);
         // Check the presence of all recipes in the DOM
         MOCKRECIPEDATA.recipes.forEach(async recipe => {
             await new Promise(resolve => setTimeout(resolve, 50));
-            expect(globalHTML.feed).toHaveTextContent(recipe.title);
+            expect(feedHTML.feed).toHaveTextContent(recipe.title);
         });
     });
 });
 
 describe('Vegan mode button', () => {
     beforeEach(() => {
-        extraMocking();
-        globalHTML = getFeedGlobalHtmlMockData();
-        globalVariables = getFeedGlobalVariablesMockData();
+        feedHTML = getFeedHtmlMockData();
+        feedVariables = getFeedVariablesMockData();
+        window.appHTML = getAppHtmlMockData();
+        window.appVariables = getAppVariablesMockData();
     });
 
     test("Swiches vegan mode, color and text accurately", async () => {
         // Expect vegan mode to be true initially
-        expect(globalVariables.user.veganMode).toBe(true);
+        expect(feedVariables.user.veganMode).toBe(true);
         // Toggle off, check color and text 
-        await toggleVeganMode(globalHTML, globalVariables);
-        expect(globalHTML.veganIcon.style.color).toBe(veganModeColor(false));
-        expect(globalHTML.hintWindowText).toHaveTextContent("OFF");
+        await toggleVeganMode(feedHTML, feedVariables);
+        expect(feedHTML.veganIcon.style.color).toBe(veganModeColor(false));
+        expect(window.appHTML.hintWindowText).toHaveTextContent("OFF");
         // Toggle off, check color and text
-        await toggleVeganMode(globalHTML, globalVariables);
-        expect(globalHTML.veganIcon.style.color).toBe(veganModeColor(true));
-        expect(globalHTML.hintWindowText).toHaveTextContent("ON");
-        expect(globalHTML.hintWindowText).toHaveTextContent(
+        await toggleVeganMode(feedHTML, feedVariables);
+        expect(feedHTML.veganIcon.style.color).toBe(veganModeColor(true));
+        expect(window.appHTML.hintWindowText).toHaveTextContent("ON");
+        expect(window.appHTML.hintWindowText).toHaveTextContent(
             "This overrides any other settings."
         );
     });

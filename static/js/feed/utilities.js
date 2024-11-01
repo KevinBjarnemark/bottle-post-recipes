@@ -1,6 +1,6 @@
 import { getCookie, capitalizeFirstLetter, veganModeColor } from '../helpers.js';
-import { filterVeganRecipes, hintWindow } from './update_dom.js';
-import { setLoading } from '../app.js';
+import { filterVeganRecipes } from './update_dom.js';
+import { setLoading, hintWindow } from '../app.js';
 
 /**
  * 1. Toggles the container and its content (with CSS)
@@ -9,26 +9,26 @@ import { setLoading } from '../app.js';
  * toggled
  *  
  * 
- * @param {Object}  globalHTML
+ * @param {Object}  feedHTML
  * @param {str}   icon Font awesome declaration eg. "magnifying-glass"
  * the container
- * @param {str}   containerEntry The entry (in globalHTML) pointing to 
+ * @param {str}   containerEntry The entry (in feedHTML) pointing to 
  * the container
- * @param {str}   buttonEntry The entry (in globalHTML) pointing to 
+ * @param {str}   buttonEntry The entry (in feedHTML) pointing to 
  * the button
  */
-export const toggleSidebarSettings = (globalHTML, icon, containerEntry, buttonEntry) => {
+export const toggleSidebarSettings = (feedHTML, icon, containerEntry, buttonEntry) => {
     // Display attribute
-    const previousAttribute = globalHTML[containerEntry].style.display;
+    const previousAttribute = feedHTML[containerEntry].style.display;
     // If it's previously hidden, show or vice versa
     if (!previousAttribute || previousAttribute === "none") {
-        globalHTML[containerEntry].style.display = "flex";
+        feedHTML[containerEntry].style.display = "flex";
         // Transform search icon to an X button
-        globalHTML[buttonEntry].innerHTML = 
+        feedHTML[buttonEntry].innerHTML = 
             "<i class='fa-solid fa-x' style='color: rgb(255, 93, 93)'></i>";
     }else {
-        globalHTML[containerEntry].style.display = "none";
-        globalHTML[buttonEntry].innerHTML = 
+        feedHTML[containerEntry].style.display = "none";
+        feedHTML[buttonEntry].innerHTML = 
             `<i class='fas fa-${icon}'></i>`;
     }
 };
@@ -39,7 +39,7 @@ export const toggleSidebarSettings = (globalHTML, icon, containerEntry, buttonEn
  * message to the user. 
  * 
  */
-export const toggleVeganMode = async (globalHTML, globalVariables) => {
+export const toggleVeganMode = async (feedHTML, feedVariables) => {
     setLoading(true);
     const request = await fetch('/toggle_vegan_mode/', {
         method: 'POST',
@@ -47,18 +47,18 @@ export const toggleVeganMode = async (globalHTML, globalVariables) => {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCookie('csrftoken')
         },
-        body: JSON.stringify({ vegan_mode: !globalVariables.user.veganMode })
+        body: JSON.stringify({ vegan_mode: !feedVariables.user.veganMode })
     });
     
     if (request.status === 200) {
         // Toggle vegan mode variable
-        globalVariables.user.veganMode = !globalVariables.user.veganMode; 
+        feedVariables.user.veganMode = !feedVariables.user.veganMode; 
         // Change color
-        globalHTML.veganIcon.style.color = veganModeColor(
-            globalVariables.user.veganMode
+        feedHTML.veganIcon.style.color = veganModeColor(
+            feedVariables.user.veganMode
         );
         // Hint window message
-        const hintWindowHtml = globalVariables.user.veganMode ? 
+        const hintWindowHtml = feedVariables.user.veganMode ? 
         `
         <p>
             Vegan mode is 
@@ -79,9 +79,9 @@ export const toggleVeganMode = async (globalHTML, globalVariables) => {
             </span>
         </p>
         `;
-        hintWindow(globalVariables, globalHTML, hintWindowHtml);
+        hintWindow(hintWindowHtml);
 
-        filterVeganRecipes(globalHTML, globalVariables);
+        filterVeganRecipes(feedHTML, feedVariables);
     } else {
         console.error('Failed to toggle vegan mode');
     }
@@ -92,12 +92,12 @@ export const toggleVeganMode = async (globalHTML, globalVariables) => {
  * Toggles the filter buttons 
  * 
  */
-export const toggleFilters = (globalHTML, globalVariables, filter) => {
+export const toggleFilters = (feedHTML, feedVariables, filter) => {
     // Toggle filter variable
-    globalVariables.filterObject.recipeTypes[filter] = 
-        !globalVariables.filterObject.recipeTypes[filter];
+    feedVariables.filterObject.recipeTypes[filter] = 
+        !feedVariables.filterObject.recipeTypes[filter];
 
-    const hintWindowHtml = globalVariables.filterObject.recipeTypes[filter] ? 
+    const hintWindowHtml = feedVariables.filterObject.recipeTypes[filter] ? 
     `
     <p>
         <em>${capitalizeFirstLetter(filter)}</em> recipes are 
@@ -117,7 +117,7 @@ export const toggleFilters = (globalHTML, globalVariables, filter) => {
         in your search.
     </p>
     `;
-    hintWindow(globalVariables, globalHTML, hintWindowHtml);
+    hintWindow(hintWindowHtml);
 };
 
 
@@ -125,12 +125,12 @@ export const toggleFilters = (globalHTML, globalVariables, filter) => {
  * Adds or removes an item from the search query include array
  * in sync with the event.target.checked.
  * 
- * @param {Object}  globalVariables
+ * @param {Object}  feedVariables
  * @param {Object}   checked event.target.checked
  * @param {str}   area eg. tags, description, ingredients
  */
-export const toggleSearchAreaItems = (globalVariables, checked, area) => {
-    const array = globalVariables.filterObject.searchAreas;
+export const toggleSearchAreaItems = (feedVariables, checked, area) => {
+    const array = feedVariables.filterObject.searchAreas;
     // Add (if it doesn't exist)
     if (checked) {
         if (!array.includes(area)) {
@@ -138,6 +138,6 @@ export const toggleSearchAreaItems = (globalVariables, checked, area) => {
         }
     }else {
         const newArray = array.filter(item => item !== area);
-        globalVariables.filterObject.searchAreas = newArray;
+        feedVariables.filterObject.searchAreas = newArray;
     }
 };

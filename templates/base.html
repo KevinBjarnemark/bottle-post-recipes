@@ -79,7 +79,10 @@
     <div class="z-index-1 relative-flex">
         <div class="background-texture"></div>
         {% block content %}{% endblock %}
-        <section id="loading-container">
+        <!-- Password confirmation window -->
+        {% include 'components/page/password_confirmation_pop_up.html' %}
+        <!-- Loading container -->
+        <section id="loading-container" style="z-index: 10;">
             <div class="flex-center">
                 <button class="flex-center">
                     <img

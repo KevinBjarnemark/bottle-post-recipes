@@ -50,25 +50,25 @@ export const trimText = (text, slice) => {
  * Used for event listeners that need to be properly
  * removed after they have already been added. 
  * 
- * @param {object}    globalVariables Specifically the 'eventListeners' entry
+ * @param {object}    feedVariables Specifically the 'eventListeners' entry
  * @param {str}       eventString eg. 'click', 'mouseup', etc.
  * @param {str}       id The HTML element's id, NOTE! This is used entry -->
- * globalVariables.eventListeners[id]
+ * feedVariables.eventListeners[id]
  * @param {Function}  listenerFunction The reference function that the eventlistener 
  * should reference.
  */
-export const addStoredEventListener = (globalVariables, eventString, id, listenerFunction) => {
+export const addStoredEventListener = (feedVariables, eventString, id, listenerFunction) => {
     const element = document.getElementById(id);
     // Remove existing event listener, if any
-    if (globalVariables.eventListeners[id]) {
+    if (feedVariables.eventListeners[id]) {
         element.removeEventListener(
             eventString,
-            globalVariables.eventListeners[id]
+            feedVariables.eventListeners[id]
         );
     }
     // Add and store listener
     element.addEventListener(eventString, listenerFunction);
-    globalVariables.eventListeners[id] = listenerFunction;
+    feedVariables.eventListeners[id] = listenerFunction;
 };
 
 /**

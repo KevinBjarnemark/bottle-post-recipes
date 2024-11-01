@@ -1,6 +1,6 @@
 import { toggleFilters, toggleSearchAreaItems } from "./utilities.js";
 
-export const htmlSidebarFilters = (globalHTML, globalVariables) => {
+export const htmlSidebarFilters = (feedHTML, feedVariables) => {
     const filters = [
         {
             title: "Vegan",
@@ -45,17 +45,17 @@ export const htmlSidebarFilters = (globalHTML, globalVariables) => {
         </div>`;
     });
 
-    globalHTML.filters.innerHTML = htmlString;
+    feedHTML.filters.innerHTML = htmlString;
 
     filters.forEach(i => {
         const element = document.getElementById(i.id);
         element.addEventListener('click', function() {
-            toggleFilters(globalHTML, globalVariables, i.title.toLowerCase());
+            toggleFilters(feedHTML, feedVariables, i.title.toLowerCase());
         });
     });
 };
 
-export const htmlSidebarSearchAreas = (globalHTML, globalVariables) => {
+export const htmlSidebarSearchAreas = (feedHTML, feedVariables) => {
     const filters = [
         {
             title: "Description",
@@ -95,14 +95,14 @@ export const htmlSidebarSearchAreas = (globalHTML, globalVariables) => {
         </div>`;
     });
 
-    globalHTML.searchAreas.innerHTML = htmlString;
+    feedHTML.searchAreas.innerHTML = htmlString;
 
     filters.forEach(i => {
         const element = document.getElementById(i.id);
         element.addEventListener('change', function(e) {
             // Extract the search area name
             const searchAreaName = i.id.split("-").pop();
-            toggleSearchAreaItems(globalVariables, e.target.checked, searchAreaName);
+            toggleSearchAreaItems(feedVariables, e.target.checked, searchAreaName);
         });
     });
 };

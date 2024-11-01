@@ -109,18 +109,62 @@ batch: 6,
 };
 
 /**
- * These just need  to exist in the DOM
+ * Creates/mocks HTML elements based on a pre-defined object. 
  * 
+ *  
+ * @param {Object}  elements NOTE! Only support single nested items. 
+ *  { tag: 'section', id: 'hint-window' },
+        hintWindowText: { tag: 'p', id: 'hint-window-text' },
+ * Example:
+ * {
+ *      HtmlElementA: {tag: 'section', id: "a"}, // OK
+ *      HtmlElementB: {
+ *          HtmlElementANested: {tag: 'div', id: "a-nested"}, // OK
+ *          HtmlElementBNested: {
+ *              notSupported: {tag: 'p', id: "not-supported"}, // NOT SUPPORTED!
+ *          },
+ *      }, 
+ * }
+ * @param {Array}   nestedKeys Array of strings. Should 
+ * contain the key names of the single nested items if any. 
+ * @returns {any}  The HTML elements assigned to the keys 
+ * declared in the elements parameter.
  */
-export const extraMocking = () => {
-    // Extra (these just need to exist in the DOM)
-    const loadingContainer = document.createElement("section");
-    loadingContainer.id = "loading-container";
-    document.body.appendChild(loadingContainer);
+const createAndDestructHtmlMockData = (elements, nestedKeys) => {
+    // Create and append the elements to the document body
+    const htmlObj = {};
+    /*  
+        1. Send all HTML to the DOM with special handling for nested elements.  
+        2. Build the html object
+    */
+        Object.entries(elements).forEach(([key, value]) => {
+            if (nestedKeys.includes(key)) {
+                // Handle nested elements
+                htmlObj[key] = {}; // Ensure this is an object for nested elements
+                Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+                    const nestedElement = document.createElement(nestedValue.tag);
+                    nestedElement.id = nestedValue.id;
+                    document.body.appendChild(nestedElement);
+                    htmlObj[key][nestedKey] = nestedElement;
+                });
+            } else {
+                // Handle non-nested elements
+                const element = document.createElement(value.tag);
+                element.id = value.id;
+                document.body.appendChild(element);
+                htmlObj[key] = element;
+            }
+        });
+
+    return htmlObj;
 };
 
-export const getFeedGlobalHtmlMockData = () => {
-    // NOTE! THIS FUNCTION ONLY SUPPORTS SINGLE NESTED ITEMS
+/**
+ * Mock the feedHTML in feed.js
+ * 
+ * @returns {any} A mocked feedHTML
+ */
+export const getFeedHtmlMockData = () => {
     const elements = {
         accountButton: {
             myRecipes: { tag: 'button', id: 'account-button-my-recipes' },
@@ -148,9 +192,6 @@ export const getFeedGlobalHtmlMockData = () => {
         // Vegan button
         veganButton: { tag: 'button', id: 'vegan-mode-button' },
         veganIcon: { tag: 'i', id: 'vegan-mode-icon' },
-        // Hint window
-        hintWindow: { tag: 'section', id: 'hint-window' },
-        hintWindowText: { tag: 'p', id: 'hint-window-text' },
         // Recipe viewer
         recipeViewer: {
             reviewSection: { tag: 'section', id: 'recipe-review-section' },
@@ -190,42 +231,18 @@ export const getFeedGlobalHtmlMockData = () => {
         },
     };
 
-    // Create and append the elements to the document body
-    const globalHTML = {};
-
-    // Single nested keys
+    // Nested keys
     const nestedKeys = [
         "recipeViewer",
         "recipeEditor",
         "accountButton",
     ];
-    /*  
-        1. Send all HTML to the DOM with special handling for nested elements.  
-        2. Build the globalHTML object
-    */
-        Object.entries(elements).forEach(([key, value]) => {
-            if (nestedKeys.includes(key)) {
-                // Handle nested elements
-                globalHTML[key] = {}; // Ensure this is an object for nested elements
-                Object.entries(value).forEach(([nestedKey, nestedValue]) => {
-                    const nestedElement = document.createElement(nestedValue.tag);
-                    nestedElement.id = nestedValue.id;
-                    document.body.appendChild(nestedElement);
-                    globalHTML[key][nestedKey] = nestedElement;
-                });
-            } else {
-                // Handle non-nested elements
-                const element = document.createElement(value.tag);
-                element.id = value.id;
-                document.body.appendChild(element);
-                globalHTML[key] = element;
-            }
-        });
 
-    return globalHTML;
+    const htmlObject = createAndDestructHtmlMockData(elements, nestedKeys);
+    return htmlObject;
 };
 
-export const getFeedGlobalVariablesMockData = () => {
+export const getFeedVariablesMockData = () => {
     return {
             page: 1,
             user: {
@@ -253,3 +270,30 @@ export const getFeedGlobalVariablesMockData = () => {
         };
 };
 
+/**
+ * Mock the feedHTML in feed.js
+ * 
+ * @returns {any} A mocked feedHTML
+ */
+export const getAppHtmlMockData = () => {
+    const elements = {
+        loadingContainer: { tag: 'section', id: 'account-button-my-recipes' },
+        hintWindow: { tag: 'section', id: 'hint-window' },
+        hintWindowText: { tag: 'p', id: 'hint-window-text' },
+    };
+
+    // Nested keys
+    const nestedKeys = [];
+
+    const htmlObject = createAndDestructHtmlMockData(elements, nestedKeys);
+    return htmlObject;
+};
+
+export const getAppVariablesMockData = () => {
+    return {
+        loadingItems: [],
+        confirmPassword: "", 
+        eventListeners: {},
+        hintWindowTimer: null,
+    };
+};

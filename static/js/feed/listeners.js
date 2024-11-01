@@ -8,79 +8,79 @@ import { getRecipePage, cleanUpFeed } from './update_dom.js';
 /**
  * Configure sidebar listeners such as search settings
  * 
- * @param {Object}  globalHTML
- * @param {Object}   globalVariables
+ * @param {Object}  feedHTML
+ * @param {Object}   feedVariables
  */
-const sidebarListeners = (globalHTML, globalVariables) => {
+const sidebarListeners = (feedHTML, feedVariables) => {
     // Settings obejct
     const sidebarButtonsObject = [
         {
-            containerEntry: "searchContainer", // globalHTML
-            buttonEntry: "sidebarSearchButton", // globalHTML
+            containerEntry: "searchContainer", // feedHTML
+            buttonEntry: "sidebarSearchButton", // feedHTML
             icon: "magnifying-glass"
         },
         {
-            containerEntry: "filterContainer", // globalHTML
-            buttonEntry: "sidebarFilterButton", // globalHTML
+            containerEntry: "filterContainer", // feedHTML
+            buttonEntry: "sidebarFilterButton", // feedHTML
             icon: "filter"
         },
     ];
     
     // Setting containers and buttons
     sidebarButtonsObject.forEach(i => {
-        globalHTML[i.buttonEntry].addEventListener("click", async () => {
+        feedHTML[i.buttonEntry].addEventListener("click", async () => {
             // Close other open setting containers
             sidebarButtonsObject.forEach(iNested => {
-                const containerIsOpen = globalHTML[iNested.containerEntry].
+                const containerIsOpen = feedHTML[iNested.containerEntry].
                     style.display === "flex";
                 if (containerIsOpen && iNested.containerEntry !== i.containerEntry) {
                     toggleSidebarSettings(
-                        globalHTML, 
+                        feedHTML, 
                         iNested.icon, 
                         iNested.containerEntry, 
                         iNested.buttonEntry
                     );
                 }
             });
-            toggleSidebarSettings(globalHTML, i.icon, i.containerEntry, i.buttonEntry);
+            toggleSidebarSettings(feedHTML, i.icon, i.containerEntry, i.buttonEntry);
         });
     });
 
     // Search input
-    globalHTML.searchInput.addEventListener("keyup", async function(event) {
-        globalVariables.filterObject.q = event.target.value;
+    feedHTML.searchInput.addEventListener("keyup", async function(event) {
+        feedVariables.filterObject.q = event.target.value;
     });
 
     // Search button
-    globalHTML.searchButton.addEventListener("click", async () => {
-        cleanUpFeed(globalHTML, globalVariables);
-        await getRecipePage(1, globalHTML, globalVariables);
+    feedHTML.searchButton.addEventListener("click", async () => {
+        cleanUpFeed(feedHTML, feedVariables);
+        await getRecipePage(1, feedHTML, feedVariables);
     });
 
     // Filter button
-    globalHTML.filterButton.addEventListener("click", async () => {
-        cleanUpFeed(globalHTML, globalVariables);
-        await getRecipePage(1, globalHTML, globalVariables);
+    feedHTML.filterButton.addEventListener("click", async () => {
+        cleanUpFeed(feedHTML, feedVariables);
+        await getRecipePage(1, feedHTML, feedVariables);
     });
 };
 
 /**
  * Configures the listeners that should be active on page load
  * 
- * @param {Object}  globalHTML
- * @param {Object}   globalVariables
+ * @param {Object}  feedHTML
+ * @param {Object}   feedVariables
  */
-export const configureListeners = (globalHTML, globalVariables) => {
+export const configureListeners = (feedHTML, feedVariables) => {
     // Toggle vegan mode button
-    globalHTML.veganButton.addEventListener("click", async () => {
-        await toggleVeganMode(globalHTML, globalVariables);
+    feedHTML.veganButton.addEventListener("click", async () => {
+        await toggleVeganMode(feedHTML, feedVariables);
     });
 
     // Load recipes in groups
-    globalHTML.loadRecipesButton.addEventListener("click", async () => {
-        globalVariables.page++; // Increment page number
-        await getRecipePage(globalVariables.page, globalHTML, globalVariables);
+    feedHTML.loadRecipesButton.addEventListener("click", async () => {
+        feedVariables.page++; // Increment page number
+        await getRecipePage(feedVariables.page, feedHTML, feedVariables);
     });
 
-    sidebarListeners(globalHTML, globalVariables);
+    sidebarListeners(feedHTML, feedVariables);
 };

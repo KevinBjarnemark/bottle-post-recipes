@@ -1,44 +1,18 @@
 import { trimText, addStoredEventListener } from "../helpers.js";
 import { recipeViewer } from "./recipe_viewer.js";
 import { recipeEditor } from "./recipe_editor.js";
-import { setLoading } from "../app.js";
-import { loadUserRecipes } from "../feed/feed.js";
-
-/**
- * Sets the innerHTML of hint_window.html component and clear it after 
- * 5 seconds.
- * 
- * @param {Object}  globalVariables
- * @param {Object}  globalHTML
- * @param {String}  html The html string to insert in the hint window
- */
-export const hintWindow = (globalVariables, globalHTML, html) => {
-    // Clear any previously set timers
-    if (globalVariables.hintWindowTimer) {
-        clearTimeout(globalVariables.hintWindowTimer);
-    }
-    // Display user message
-    globalHTML.hintWindow.style.display = 'block';
-    globalHTML.hintWindow.style.transform = 'scale(1)';
-    globalHTML.hintWindowText.innerHTML = html;
-
-    globalVariables.hintWindowTimer = setTimeout(() => {
-    // Display user message
-        globalHTML.hintWindow.style.display = 'none';
-        globalHTML.hintWindow.style.transform = 'scale(0)';
-        globalHTML.hintWindowText.innerHTML = "";
-    }, 5000);
-};
+import { setLoading, hintWindow } from "../app.js";
+import { loadUserRecipes } from "../feed/feed.js"; 
 
 /**
  * Removes all recipes 
  * 
- * @param {Object}  globalHTML 
- * @param {Object}   globalVariables
+ * @param {Object}  feedHTML 
+ * @param {Object}   feedVariables
  */
-export const cleanUpFeed = (globalHTML, globalVariables) => {
-    globalHTML.feed.innerHTML = '';
-    globalVariables.recipes = [];
+export const cleanUpFeed = (feedHTML, feedVariables) => {
+    feedHTML.feed.innerHTML = '';
+    feedVariables.recipes = [];
 };
 
 /**
@@ -47,13 +21,13 @@ export const cleanUpFeed = (globalHTML, globalVariables) => {
  * message to the user. 
  * 
  */
-export const filterVeganRecipes = (globalHTML, globalVariables) => {
+export const filterVeganRecipes = (feedHTML, feedVariables) => {
     let veganRecipeCount = 0;
     let nonVeganRecipeCount = 0;
 
-    globalVariables.recipes.forEach(i => {
+    feedVariables.recipes.forEach(i => {
         const recipeItem = document.getElementById(`recipe-item-${i.id}`);
-        if (globalVariables.user.veganMode){
+        if (feedVariables.user.veganMode){
             if (!i.vegan){
                 recipeItem.style.display = "none";
                 nonVeganRecipeCount += 1;
@@ -70,8 +44,6 @@ export const filterVeganRecipes = (globalHTML, globalVariables) => {
     // If all recipes are hidden, display message
     if (veganRecipeCount === 0 && nonVeganRecipeCount !== 0) {
         hintWindow(
-            globalVariables, 
-            globalHTML, 
             `<p>
                 You need to disable vegan mode to view 
                 the recipes on this page
@@ -99,12 +71,12 @@ export const filterVeganRecipes = (globalHTML, globalVariables) => {
  * afterwards
  * 
  * @param {Object}   data Data from backend {recipes, total_recipes, batch}
- * @param {Object}   globalHTML
- * @param {Object}   globalVariables
+ * @param {Object}   feedHTML
+ * @param {Object}   feedVariables
  */
-export const renderRecipes = (data, globalHTML, globalVariables) => {
+export const renderRecipes = (data, feedHTML, feedVariables) => {
     let recipesToRender = data.batch;
-    const recipeAmount = globalVariables.recipes.length;
+    const recipeAmount = feedVariables.recipes.length;
     const totalRecipes = data.total_recipes;
     /* If it's the last recipe group, only calculate how 
     many items to render */
@@ -118,7 +90,7 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
 
         // Append new recipes to the recipe feed
         limitedFetchedRecipes.forEach(recipe => {
-            const userIsAuthor = recipe?.user_id === globalVariables
+            const userIsAuthor = recipe?.user_id === feedVariables
                 .user.userId;
             // Create a container for each recipe
             const recipeContainer = document.createElement('section');
@@ -130,7 +102,7 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
             recipeContainer.innerHTML = `
                 <h1 class="hidden-heading">${recipe.title}</h1>
                 <div class="flex-column">
-                    <div class="${recipe.id === globalVariables.user.review_recipe_id ?
+                    <div class="${recipe.id === feedVariables.user.review_recipe_id ?
                         'recipe-item-background backdrop-blur allowed-review-glow' : 
                         'recipe-item-background backdrop-blur'}">
                     </div>
@@ -215,21 +187,21 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
             `;
         
             // Append the recipe container to the feed
-            globalHTML.feed.appendChild(recipeContainer);
+            feedHTML.feed.appendChild(recipeContainer);
 
             // Push to global variable
-            globalVariables.recipes.push(recipe);
+            feedVariables.recipes.push(recipe);
 
             
             // Add and store event listener for the profile image button
             addStoredEventListener(
-                globalVariables, 
+                feedVariables, 
                 "click", 
                 `recipe-item-profile-image-button-${recipe.id}`, 
                 async () => {
                     await loadUserRecipes(
-                        globalHTML, 
-                        globalVariables, 
+                        feedHTML, 
+                        feedVariables, 
                         recipe.user_id,
                         recipe.username
                     );
@@ -239,18 +211,18 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
             // Add and store event listener for the recipe editor button
             if (userIsAuthor) {
                 addStoredEventListener(
-                    globalVariables, 
+                    feedVariables, 
                     "click", 
                     `recipe-edit-button-${recipe.id}`, 
                     () => {
-                        recipeEditor(globalHTML, globalVariables, recipe.id);
+                        recipeEditor(feedHTML, feedVariables, recipe.id);
                     }
                 );
             }
 
             // Add and store event listener for the ocean status button
             addStoredEventListener(
-                globalVariables, 
+                feedVariables, 
                 "click", 
                 `ocean-status-button-${recipe.id}`, 
                 () => {
@@ -268,17 +240,13 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                                     <i class="fa-solid fa-x text-red"></i>
                                 </p>
                         `; 
-                    hintWindow(
-                        globalVariables, 
-                        globalHTML, 
-                        htmlString,
-                    );
+                    hintWindow(htmlString);
                 }
             );
 
             // Add and store event listener for the like button
             addStoredEventListener(
-                globalVariables, 
+                feedVariables, 
                 "click", 
                 `recipe-item-like-button-${recipe.id}`, 
                 () => {
@@ -288,22 +256,18 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
                             <i class="fa-solid fa-heart text-red"></i>
                         </p>
                         `;
-                    hintWindow(
-                        globalVariables, 
-                        globalHTML, 
-                        htmlString,
-                    );
+                    hintWindow(htmlString);
                 }
             );
 
             // Add and store event listener for the comment button
             addStoredEventListener(
-                globalVariables, 
+                feedVariables, 
                 "click", 
                 `comment-button-${recipe.id}`, 
                 () => {
-                    recipeViewer(globalHTML, globalVariables, recipe.id);
-                    globalHTML.recipeViewer.comments.scrollIntoView(
+                    recipeViewer(feedHTML, feedVariables, recipe.id);
+                    feedHTML.recipeViewer.comments.scrollIntoView(
                         { behavior: "smooth", block: "start" }
                     );
                 }
@@ -311,37 +275,37 @@ export const renderRecipes = (data, globalHTML, globalVariables) => {
 
             // Add and store event listener for the recipe image
             addStoredEventListener(
-                globalVariables, 
+                feedVariables, 
                 "click", 
                 imageButtonId, 
                 () => {
-                    recipeViewer(globalHTML, globalVariables, recipe.id);
+                    recipeViewer(feedHTML, feedVariables, recipe.id);
                 }
             );
 
         });
         // Show recipes based on vegan mode
-        filterVeganRecipes(globalHTML, globalVariables);
+        filterVeganRecipes(feedHTML, feedVariables);
     }else {
-        hintWindow(globalVariables, globalHTML, "<p>All recipes are loaded!</p>");
+        hintWindow("<p>All recipes are loaded!</p>");
     }
 };
 
-export const getRecipePage = async (page, globalHTML, globalVariables) => {
+export const getRecipePage = async (page, feedHTML, feedVariables) => {
     setLoading(true);
         try {
         let additionalParametersObject = {
-            q: globalVariables.filterObject.q,
+            q: feedVariables.filterObject.q,
             search_areas: "",
             recipe_types_exclude: "",
             // Only show recipes created by a certain user
-            user_id: globalVariables.filterObject.userId,
-            recipe_id: globalVariables.filterObject.recipe_id,
+            user_id: feedVariables.filterObject.userId,
+            recipe_id: feedVariables.filterObject.recipe_id,
         };
 
         /* Convert the included search areas array to a 
         comma separated string */
-        const searchAreas = globalVariables.filterObject.searchAreas;
+        const searchAreas = feedVariables.filterObject.searchAreas;
         if (Array.isArray(searchAreas) && searchAreas.length > 0) {
             // Initialize the entry
             additionalParametersObject.search_areas = "";
@@ -356,7 +320,7 @@ export const getRecipePage = async (page, globalHTML, globalVariables) => {
 
         // Convert dietary types to a comma separated string
         // Filter only the 'false' ones to exclude
-        const recipeTypes = Object.entries(globalVariables.filterObject.recipeTypes)
+        const recipeTypes = Object.entries(feedVariables.filterObject.recipeTypes)
             .filter(([, value]) => !value); 
             recipeTypes.forEach((i, index) => {
             const addComma = index < recipeTypes.length - 1 ? "," : "";
@@ -380,10 +344,10 @@ export const getRecipePage = async (page, globalHTML, globalVariables) => {
 
         // Handle no recipes found and then render recipes
         if (data.total_recipes === 0) {
-            hintWindow(globalVariables, globalHTML, "<p>Couldn't find any recipes.</p>");
+            hintWindow("<p>Couldn't find any recipes.</p>");
         }else {
             // Append new recipes to the recipe feed
-            renderRecipes(data, globalHTML, globalVariables);
+            renderRecipes(data, feedHTML, feedVariables);
         }
     }catch (error) {
         console.error(error)
