@@ -48,8 +48,14 @@ const submitBottlePostReview = async (action) => {
             });
 
             if (response.ok) {
-                alert('Recipe bottle post review executed successfully.');
-                window.location.href = '/';
+                await confirmedRedirect(
+                    `<p>
+                        You've succesfully reviewed this recipe! ✔️
+                        <br />
+                        Redirecting to home...
+                    </p>`,
+                    7000,
+                );
             } else {
                 const data = await response.json();
                 console.error('Error when submitting bottle post review:', data);
@@ -122,7 +128,13 @@ export const handlePublishComment = async (feedVariables, feedHTML, recipeId, co
             commentFormData.delete("comment");
             commentFormData.delete("recipe_id");
         } else {
-            alert('Failed to publish comment');
+            hintWindow(
+                `<p>
+                    Failed to publish comment ❌
+                    <br />
+                </p>`, 
+                7000
+            );
         }
     } catch (error) {
         console.error('Error publishing comment:', error);
@@ -253,7 +265,7 @@ export const recipeViewer = (feedHTML, feedVariables, recipeId) => {
         if (recipe.image){
             feedHTML.recipeViewer.image.src = recipe.image;
         }else {
-            feedHTML.recipeViewer.image.src = "/images/icons/missing.webp";
+            feedHTML.recipeViewer.image.src = "/static/images/icons/missing.webp";
         }
         // Description
         feedHTML.recipeViewer.description.innerText = recipe.description;

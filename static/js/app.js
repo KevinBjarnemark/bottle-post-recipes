@@ -113,3 +113,17 @@ export const confirmPassword = (confirmFunction, text="") => {
     );
 
 };
+
+/**
+ * Shows a hint message and redirects to home.
+ * 
+ * @param {bool}  hintHtml innerHTML in hint window
+ * @param {str}   time Time to wait before redirect.
+ */
+export const confirmedRedirect = async (hintHtml, time) => {
+    hintWindow(hintHtml, time);
+    setLoading(false);
+    // Give the user some time to read
+    await new Promise(resolve => setTimeout(resolve, time));
+    window.location.href = '/';
+};

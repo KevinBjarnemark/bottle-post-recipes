@@ -6,7 +6,7 @@ import {DIETARYATTRIBUTES_ALL,
     DIETARYATTRIBUTES_NON_VEGAN,
     RECIPE_EMPTY,
 } from '../constants.js';
-import {setLoading, confirmPassword} from '../app.js';
+import {setLoading, confirmPassword, hintWindow} from '../app.js';
 
 
 /**
@@ -51,9 +51,14 @@ const publishRecipe = async (feedVariables, recipeId) => {
             });
 
             if (response.ok) {
-                // Show success message and redirect to home
-                alert('Recipe successfully created!');
-                window.location.href = '/';
+                await confirmedRedirect(
+                    `<p>
+                        Recipe successfully created! ✔️
+                        <br />
+                        Redirecting to home...
+                    </p>`,
+                    7000
+                );
             } else {
                 // TODO handle backend errors
                 const data = await response.json();
@@ -91,8 +96,14 @@ const deleteRecipeConfirmed = async (recipeId, password) => {
             });
 
             if (response.ok) {
-                alert('Recipe successfully deleted!');
-                window.location.href = '/';
+                await confirmedRedirect(
+                    `<p>
+                        Recipe successfully deleted! ✔️
+                        <br />
+                        Redirecting to home...
+                    </p>`,
+                    7000
+                );
             } else {
                 const data = await response.json();
                 console.error('Error deleting recipe:', data);
