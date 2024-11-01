@@ -15,11 +15,6 @@ document.addEventListener("DOMContentLoaded", function() {
         };
         // Targeted HTML elements
         const feedHTML = {
-            // Account button
-            accountButton: {
-                // NOTE! This should be moved to a profile page in the future
-                myRecipes: document.getElementById('account-button-my-recipes'),
-            },
             // Feed
             feed: document.getElementById('feed'),
             feedContainer: document.getElementById('feed-container'),
@@ -70,9 +65,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 container: document.getElementById("recipe-editor-container"),
                 deleteButtonContainer: document.getElementById(
                     'recipe-editor-delete-button-container'
-                ),
-                deleteRecipeClickCount: document.getElementById(
-                    'recipe-editor-delete-button-click-count'
                 ),
                 deleteButton: document.getElementById('recipe-editor-delete-button'),
                 mainTitle: document.getElementById('recipe-editor-main-title'),
@@ -187,9 +179,9 @@ export const initPage = async (feedHTML, feedVariables) => {
             recipeEditor(feedHTML, feedVariables, "NEW RECIPE");
         });
 
-        // Show my recipes button
-        feedHTML.accountButton.myRecipes.style.display = "block";
-        feedHTML.accountButton.myRecipes.addEventListener(
+        // Show my recipes button and add listener
+        window.appHTML.accountButton.myRecipes.style.display = "block";
+        window.appHTML.accountButton.myRecipes.addEventListener(
             'click', async () => {
                 await loadUserRecipes(
                     feedHTML, 

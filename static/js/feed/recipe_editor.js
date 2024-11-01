@@ -121,8 +121,16 @@ const deleteRecipeConfirmed = async (recipeId, password) => {
 
 const deleteRecipe = async (recipeId) => {
     confirmPassword(
-        (password) => deleteRecipeConfirmed(recipeId, password),
-        "Please confirm your password to delete this recipe."
+        async (password) => await deleteRecipeConfirmed(recipeId, password),
+        `
+            <p>
+                <span class="text-red">
+                    Warning!
+                </span>
+                This action cannot be undone, please confirm your password 
+                to delete this recipe.
+            </p>
+        `
     );
 };
 
@@ -344,10 +352,6 @@ export const recipeEditor = (feedHTML, feedVariables, recipeId) => {
             // Show the delete recipe button
             feedHTML.recipeEditor.deleteButtonContainer.
                 style.display = "block";
-            // Reset click count
-            feedHTML.recipeEditor.deleteRecipeClickCount
-                .innerText = "5";
-
         }else {
             // Hide the delete recipe button
             feedHTML.recipeEditor.deleteButtonContainer
@@ -359,19 +363,7 @@ export const recipeEditor = (feedHTML, feedVariables, recipeId) => {
             feedVariables,
             "click", 
             feedHTML.recipeEditor.deleteButton.id, 
-            () => {
-                const convertToNumber = parseInt(feedHTML.recipeEditor
-                    .deleteRecipeClickCount.innerText
-                );
-                // Decrement number
-                feedHTML.recipeEditor
-                    .deleteRecipeClickCount.innerText = `${convertToNumber - 1}`;
-                if (convertToNumber - 1 === 0) {
-                    feedHTML.recipeEditor
-                    .deleteRecipeClickCount.innerText = 5
-                    deleteRecipe(recipeId);
-                }
-            }
+            () => {deleteRecipe(recipeId)}
         );
 
         // Text inputs (pre filling and listeners) 

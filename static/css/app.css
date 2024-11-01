@@ -1,4 +1,9 @@
 
+/* Hidden components */
+#password-confirmation-pop-up-container {
+    display: none;
+}
+
 #loading-container {
     display: none;
     position: fixed;

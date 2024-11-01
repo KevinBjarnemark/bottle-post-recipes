@@ -443,7 +443,6 @@ body {
     height: 95vh;
     background-color: #252829;
     overflow: auto;
-    /* box-shadow: 0 0 2px 2px #ffffff; */
 }
 
 /* Target sections */
@@ -544,6 +543,3 @@ body {
     border-radius: 10px;
 }
 
-#password-confirmation-pop-up {
-    display: none; /* Hidden by default */
-}

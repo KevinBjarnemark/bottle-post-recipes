@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import register, toggle_vegan_mode
+from .views import register, toggle_vegan_mode, delete_account
 # Djongo's built-in auth views
 from django.contrib.auth import views as auth_views
 # settings.py
@@ -15,6 +15,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register/', register, name='register'),
     path('toggle_vegan_mode/', toggle_vegan_mode, name='toggle_vegan_mode'),
+    path('delete_account/', delete_account, name='delete_account'),
 ]
 
 if settings.DEBUG:

@@ -1,20 +1,53 @@
-import { addStoredEventListener } from "./helpers.js";
+import { addStoredEventListener, getCookie } from "./helpers.js";
 
 document.addEventListener("DOMContentLoaded", function() {
     window.appHTML = {
         // Loading container
         loadingContainer: document.getElementById("loading-container"),
+        // Account button
+        accountButton: {
+            deleteAccountButton: document.getElementById(
+                "account-button-delete-account-button"
+            ),
+            // My recipes (only visible at the home page)
+            myRecipes: document.getElementById('account-button-my-recipes'),
+        },
         // Hint window
         hintWindow: document.getElementById('hint-window'),
         hintWindowText: document.getElementById('hint-window-text'),
+        // Password confirmation pop-up
+        passwordConfirmationPopUp: {
+            container: document.getElementById(
+                "password-confirmation-pop-up-container"
+            ),
+            info: document.getElementById(
+                "password-confirmation-pop-up-info"
+            ),
+            input: document.getElementById(
+                "password-confirmation-pop-up-input"
+            ),
+            confirmButton: document.getElementById(
+                "password-confirmation-pop-up-confirm-button"
+            ),
+            closeButton: document.getElementById(
+                "password-confirmation-pop-up-close-button"
+            ),
+        },
     };
-
+    
     window.appVariables = {
         loadingItems: [],
         confirmPassword: "", 
         eventListeners: {},
         hintWindowTimer: null,
     };
+
+    // Delete account button (only visible at home page)
+    if (window.appHTML.accountButton.deleteAccountButton) {
+        window.appHTML.accountButton.deleteAccountButton
+        .addEventListener("click", async () => {deleteAccount()});
+    }
+
 });
 
 export const setLoading = (bool) => {
@@ -57,35 +90,21 @@ export const hintWindow = (html, time=5000) => {
     }, time);
 };
 
-export const confirmPassword = (confirmFunction, text="") => {
-    /* Get elements */
-    const popUpElement = document.getElementById(
-        "password-confirmation-pop-up"
-    );
-    const inputElement = document.getElementById(
-        "password-confirmation-pop-up-input"
-    );
-    const confirmButtonElement = document.getElementById(
-        "password-confirmation-pop-up-confirm-button"
-    );
-    const closeButtonElement = document.getElementById(
-        "password-confirmation-pop-up-close-button"
-    );
-
-    // Show component
-    popUpElement.style.display = "block";
-    // 
+export const confirmPassword = (confirmFunction, infoHTML="<p></p>") => {
+    // Show component with custom info
+    window.appHTML.passwordConfirmationPopUp.container.style.display = "block";
+    window.appHTML.passwordConfirmationPopUp.info.innerHTML = infoHTML;
 
     // Add and store close button listener
     addStoredEventListener(
         window.appVariables,
         "click", 
-        closeButtonElement.id, 
+        window.appHTML.passwordConfirmationPopUp.closeButton.id, 
         () => {
             // Clear password
             window.appVariables.confirmPassword = "";
             // Hide pop-up
-            popUpElement.style.display = "none";
+            window.appHTML.passwordConfirmationPopUp.container.style.display = "none";
         }
     );
 
@@ -93,7 +112,7 @@ export const confirmPassword = (confirmFunction, text="") => {
     addStoredEventListener(
         window.appVariables,
         "input", 
-        inputElement.id, 
+        window.appHTML.passwordConfirmationPopUp.input.id, 
         (e) => {
             // Store password
             window.appVariables.confirmPassword = e.target.value;
@@ -104,14 +123,13 @@ export const confirmPassword = (confirmFunction, text="") => {
     addStoredEventListener(
         window.appVariables,
         "click", 
-        confirmButtonElement.id, 
+        window.appHTML.passwordConfirmationPopUp.confirmButton.id, 
         () => {
             confirmFunction(window.appVariables.confirmPassword);
             window.appVariables.confirmPassword = "";
-            popUpElement.style.display = "none";
+            window.appHTML.passwordConfirmationPopUp.container.style.display = "none";
         }
     );
-
 };
 
 /**
@@ -126,4 +144,50 @@ export const confirmedRedirect = async (hintHtml, time) => {
     // Give the user some time to read
     await new Promise(resolve => setTimeout(resolve, time));
     window.location.href = '/';
+};
+
+export const deleteAccount = async () => {
+    confirmPassword(
+        async (password) => await deleteAccountConfirmed(password),
+        `
+            <p>
+                <span class="text-red">WARNING!</span> Your account and all your 
+                recipes will be deleted (cannot be undone). Please confirm your 
+                password if you want to proceed deleting your account.
+            </p>
+        `
+    );
+};
+
+const deleteAccountConfirmed = async (password) => {
+    const init = async () => {
+        try {
+            const response = await fetch(`/delete_account/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ password: password }),
+            });
+
+            if (response.ok) {
+                await confirmedRedirect(
+                    `<p>
+                        Your account is now deleted ✔️
+                        <br />
+                        Redirecting to home...
+                    </p>`,
+                    7000
+                );
+            } else {
+                const data = await response.json();
+                console.error('Error deleting account:', data);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        }
+    };
+    await init();
 };

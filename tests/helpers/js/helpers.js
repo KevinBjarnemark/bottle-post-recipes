@@ -166,9 +166,6 @@ const createAndDestructHtmlMockData = (elements, nestedKeys) => {
  */
 export const getFeedHtmlMockData = () => {
     const elements = {
-        accountButton: {
-            myRecipes: { tag: 'button', id: 'account-button-my-recipes' },
-        },
         // Feed
         feed: { tag: 'div', id: 'feed' },
         feedContainer: { tag: 'div', id: 'feed-container' },
@@ -210,7 +207,6 @@ export const getFeedHtmlMockData = () => {
         recipeEditor: {
             container: { tag: 'section', id: 'recipe-editor-container' },
             deleteButtonContainer: { tag: 'section', id: 'recipe-editor-delete-button-container' },
-            deleteRecipeClickCount: { tag: 'span', id: 'recipe-editor-delete-button-click-count' },
             deleteButton: { tag: 'button', id: 'recipe-editor-delete-button' },
             mainTitle: { tag: 'span', id: 'recipe-editor-main-title' },
             mainInfo: { tag: 'div', id: 'recipe-editor-main-info' },
@@ -278,12 +274,25 @@ export const getFeedVariablesMockData = () => {
 export const getAppHtmlMockData = () => {
     const elements = {
         loadingContainer: { tag: 'section', id: 'account-button-my-recipes' },
+        accountButton: {
+            deleteAccountButton: { 
+                tag: 'button', 
+                id: 'account-button-delete-account-button' 
+            },
+            myRecipes: { tag: 'button', id: 'account-button-my-recipes' },
+        },
         hintWindow: { tag: 'section', id: 'hint-window' },
         hintWindowText: { tag: 'p', id: 'hint-window-text' },
+        passwordConfirmationPopUp: {
+            container: { tag: 'section', id: 'password-confirmation-pop-up-container' },
+            input: { tag: 'input', id: 'password-confirmation-pop-up-input' },
+            confirmButton: { tag: 'button', id: 'password-confirmation-pop-up-confirm-button' },
+            closeButton: { tag: 'button', id: 'password-confirmation-pop-up-close-button' },
+        }
     };
 
     // Nested keys
-    const nestedKeys = [];
+    const nestedKeys = ["passwordConfirmationPopUp", "accountButton"];
 
     const htmlObject = createAndDestructHtmlMockData(elements, nestedKeys);
     return htmlObject;

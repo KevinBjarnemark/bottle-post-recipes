@@ -81,6 +81,33 @@ def load_user_profile(request):
 
 
 @csrf_exempt
+def delete_account(request):
+    if request.method == 'DELETE':
+        if not request.user.is_authenticated:
+            return JsonResponse(
+                {'error': 'User not authenticated'}, status=403
+            )
+
+        data = json.loads(request.body)
+        password = data.get('password')
+
+        if not password:
+            return JsonResponse({'error': 'Password is required'}, status=400)
+
+        # Authenticate with password
+        user = authenticate(username=request.user.username, password=password)
+        if user is None:
+            return JsonResponse({'error': 'Incorrect password'}, status=403)
+
+        try:
+            # Delete the user account and profile
+            user.delete()
+            return JsonResponse({'success': 'Account deleted successfully'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
 def toggle_vegan_mode(request):
     if request.method == 'POST':
         data = json.loads(request.body)

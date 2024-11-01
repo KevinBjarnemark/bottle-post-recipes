@@ -39,22 +39,26 @@
         {% if user.is_superuser %}
         <li>
             <a class="dropdown-item" href="/admin">
-                <i class="fa-solid fa-user-tie"></i> Admin
+                <i class="fa-solid fa-user-tie"></i> 
+                Admin
             </a>
         </li>
         {% endif %}
-        <li>
-            <!-- TODO add href -->
-            <a class="dropdown-item" href="#">
-                <i class="fa-solid fa-gear"></i> Edit Account
-            </a>
-        </li>
         <li>
             <button 
                 id="account-button-my-recipes"
                 class="dropdown-item">
                 <i class="fas fa-utensils"></i> 
                 My Recipes
+            </button>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <button 
+                id="account-button-delete-account-button"
+                class="dropdown-item">
+                <i class="fa-solid fa-trash  text-red"></i> 
+                Delete Account
             </button>
         </li>
         <li><hr class="dropdown-divider"></li>
