@@ -1,0 +1,64 @@
+
+{% extends "base.html" %} 
+{% block content %}
+{% load static %}
+
+<div class="page-container">
+    <div class="page">
+    <!-- Page title -->
+        <section class="flex-center w-100 text-align-center ">
+            <h2 class="page-title">
+                Terms of Service
+            </h2>
+        </section>
+        <section class="flex-relative align-items-center 
+            pt-4 w-75 border-radius-soft padding-sides-20 dark-background mt-4">
+            <p>
+                By accessing and using this application, you agree to be bound by 
+                the most up-to-date version of our Terms of Service. Our terms can 
+                be found 
+                <a 
+                    href="https://bottle-post-recipes-eb1abd9c13ee.herokuapp.com/terms_of_service">
+                    here</a>.
+                <br />
+                <br />
+                
+                This application allows users to post, share, and 
+                interact with recipes and comments. 
+                <br /> 
+                <br />
+            </p>
+            <h5>Use at Your Own Risk</h5> 
+            <p>
+                Users are solely responsible for the content they post, 
+                including recipes and comments. The application does not verify the safety of 
+                ingredients listed in user-submitted recipes. Use all recipes at your own 
+                discretion and risk, especially if you have allergies or dietary restrictions.
+                <br /> 
+                <br />
+            </p>
+            <h5>Cloudinary Images</h5>
+            <p>
+                Images uploaded to the application are hosted through Cloudinary. 
+                By uploading images, users agree to Cloudinary’s terms of use and acknowledge that 
+                images may be subject to Cloudinary’s policies and practices.
+                <br /> 
+                <br />
+            </p>
+            <h5>Comments</h5>
+            <p>
+                Currently, users cannot delete individual comments. The only way to remove 
+                comments associated with an account is to delete the entire account.
+                <br /> 
+                <br />
+            </p>
+            <h5>Liability</h5>
+                We are not liable for any damages or harm arising from the use of this application, 
+                including damages due to harmful ingredients in recipes, use of images, or any 
+                issues resulting from user interaction.
+                <br /> 
+                <br />
+        </section>
+    </div>
+</div>
+{% endblock %}

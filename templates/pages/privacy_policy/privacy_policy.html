@@ -1,0 +1,71 @@
+
+{% extends "base.html" %} 
+{% block content %}
+{% load static %}
+
+<div class="page-container">
+    <div class="page">
+    <!-- Page title -->
+        <section class="flex-center w-100 text-align-center ">
+            <h2 class="page-title">
+                Privacy Policy
+            </h2>
+        </section>
+        <section class="flex-relative align-items-center 
+            pt-4 w-75 border-radius-soft padding-sides-20 dark-background mt-4">
+            <p>
+                By accessing and using this application, you agree to be bound by 
+                the most up-to-date version of our Privacy Policy. Our policies can 
+                be found 
+                <a 
+                    href="https://bottle-post-recipes-eb1abd9c13ee.herokuapp.com/privacy_policy">
+                    here</a>.
+                <br />
+                <br />
+            </p>
+            <h5>Information We Collect</h5> 
+            <p>
+                We collect user-submitted information such as recipes, comments, and 
+                images. Additionally, we use cookies to manage session information 
+                securely.
+                <br /> 
+                <br />
+            </p>
+            <h5>Use of Cookies</h5> 
+            <p>
+                Cookies are used in this application to improve security and provide a 
+                better user experience. Specifically, we use CSRF (Cross-Site Request Forgery) 
+                tokens to secure user sessions. You can manage cookies in your browser settings, 
+                though disabling cookies may affect app functionality.
+                <br /> 
+                <br />
+            </p>
+            <h5>Data Storage</h5> 
+            <p>
+                The application integrates with Cloudinary for image storage and uses 
+                PostgreSQL databases for storing user data in testing, development, and 
+                production environments. Databases are configured to isolate real user 
+                data from testing environments to protect user information.
+                <br /> 
+                <br />
+            </p>
+            <h5>Third-Party Services</h5> 
+            <p>
+                We use Cloudinary for image storage and Heroku for 
+                deployment. These third-party services may collect additional data as 
+                outlined in their respective privacy policies.
+                <br /> 
+                <br />
+            </p>
+            <h5>Data Deletion</h5> 
+            <p>
+                To delete your data, including recipes and comments, 
+                please delete your account. Recipes can be deleted individually 
+                by opening the edit view.
+                <br /> 
+                <br />
+            </p>
+        </section>
+    </div>
+</div>
+{% endblock %}

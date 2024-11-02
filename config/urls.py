@@ -8,4 +8,6 @@ urlpatterns = [
     path('', include('apps.pages.home.urls')),
     path('', include('apps.users.urls')),
     path('', include('apps.pages.about.urls')),
+    path('', include('apps.pages.terms_of_service.urls')),
+    path('', include('apps.pages.privacy_policy.urls')),
 ]
