@@ -111,6 +111,11 @@ body {
     background-color: #272a2c;
 }
 
+/* Margin left sidebar */
+.ml-sidebar {
+    margin-left: var(--sidebar-width);
+}
+
 /* Account button */
 .account-button {
     display: flex;
