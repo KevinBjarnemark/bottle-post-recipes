@@ -336,7 +336,7 @@ export const recipeEditor = (feedHTML, feedVariables, recipeId) => {
             <em>Rules</em>
             <p>
                 You cannot spam recipes into the ocean, and must wait <em>24 hours</em>
-                before publishing another one.
+                before publishing another recipe.
             </p>
         `; 
         }else {

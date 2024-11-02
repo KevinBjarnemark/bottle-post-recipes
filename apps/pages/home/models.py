@@ -5,6 +5,10 @@ from cloudinary.models import CloudinaryField
 
 
 class DietaryAttribute(models.Model):
+    """
+    This model is related to the Recipe model.
+    Stores dietary attributes included in a recipe.
+    """
     # e.g., 'Alcohol', 'Dairy', 'Gluten'
     name = models.CharField(max_length=50, unique=True)
 
@@ -13,8 +17,13 @@ class DietaryAttribute(models.Model):
         return self.name
 
 
-# Recipe models
 class Recipe(models.Model):
+    """
+    Represents a recipe and serves as the central model
+    connecting various other models, such as ingredients, comments,
+    dietary attributes, and preparation details.
+    """
+
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     RECIPE_TYPES = [
@@ -45,13 +54,20 @@ class Recipe(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_edited = models.DateTimeField(auto_now=True)
 
-    # Method of incrementing bottle_posted_count
-    def bottle_post(self):
+    def return_to_ocean(self):
+        """Returns the recipe to the ocean"""
         self.bottle_posted_count += 1
+        self.save()
+
+    def remove_from_ocean(self):
+        """Removes the recipe from the coean"""
+        self.in_ocean = False
         self.save()
 
 
 class Ingredient(models.Model):
+    """This model is related to the Recipe model"""
+
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, related_name='ingredients'
     )
@@ -60,6 +76,11 @@ class Ingredient(models.Model):
 
 
 class Time(models.Model):
+    """
+    This model is related to the Recipe model.
+    Stores preparation and cooking time data.
+    """
+
     recipe = models.OneToOneField(
         Recipe, on_delete=models.CASCADE, related_name='time'
     )
@@ -70,16 +91,44 @@ class Time(models.Model):
     cooking_hours = models.IntegerField(default=0)
     cooking_days = models.IntegerField(default=0)
 
+    def update_preparation_time(self, days, hours, minutes):
+        """Updates preparation time (days, hours, minutes)"""
+        self.preparation_days = days
+        self.preparation_hours = hours
+        self.preparation_minutes = minutes
+        self.save()
+
+    def update_cooking_time(self, days, hours, minutes):
+        """Updates cooking time (days, hours, minutes)"""
+        self.cooking_days = days
+        self.cooking_hours = hours
+        self.cooking_minutes = minutes
+        self.save()
+
 
 class EstimatedPricePerMeal(models.Model):
+    """
+    This model is related to the Recipe model.
+    Stores estimated price for a recipe.
+    """
     recipe = models.OneToOneField(
         Recipe, on_delete=models.CASCADE, related_name='estimated_price'
     )
     price_from = models.DecimalField(null=True, max_digits=6, decimal_places=2)
     price_to = models.DecimalField(null=True, max_digits=6, decimal_places=2)
 
+    def update_estimated_price(self, price_from, price_to):
+        """Updates estimated time (price_from, price_to)"""
+        self.price_from = price_from
+        self.price_to = price_to
+        self.save()
+
 
 class Comment(models.Model):
+    """
+    This model is related to the Recipe model.
+    Stores user commenting data.
+    """
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, related_name='comments'
     )

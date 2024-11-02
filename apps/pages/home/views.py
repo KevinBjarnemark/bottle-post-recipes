@@ -4,8 +4,6 @@ import json
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponseForbidden
 from django.db.models import Q
-from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
 from .models import (
     DietaryAttribute, Recipe, Ingredient, Time,
     EstimatedPricePerMeal, Comment
@@ -23,10 +21,10 @@ def submit_bottle_post_review(request):
         try:
             # Get user profile
             profile = Profile.objects.get(user=request.user)
+
             # Check if the user has an assigned review_recipe_id
-            recipe_id_exists = (
-                profile.review_recipe_id == 0 or profile.review_recipe_id
-            )
+            review_recipe_id = profile.review_recipe_id
+            recipe_id_exists = review_recipe_id == 0 or review_recipe_id
             if not recipe_id_exists:
                 return JsonResponse({
                     'success': False,
@@ -37,17 +35,15 @@ def submit_bottle_post_review(request):
             if profile.can_review() and recipe_id_exists:
                 # Get the recipe by id
                 recipe = Recipe.objects.get(id=profile.review_recipe_id)
+                # Delete or return recipe to ocean
                 if action == "DELETE":
-                    # Remove the recipe from ocean if the user is allowed
-                    recipe.in_ocean = False
-                    recipe.save()
+                    recipe.remove_from_ocean()
                 elif action == "BOTTLE_POST":
-                    # Increment bottle_posted_count
-                    recipe.bottle_posted_count = recipe.bottle_posted_count + 1
-                    recipe.save()
-                # Update last_reviewed_at_value
-                profile.last_reviewed_at = timezone.now()
-                profile.save()
+                    recipe.return_to_ocean()
+
+                # Update last_reviewed_at timestamp
+                profile.update_review_timestamp()
+
                 return JsonResponse({
                     'success': True,
                     'message': 'Bottle post review was successful.'
@@ -65,10 +61,14 @@ def submit_bottle_post_review(request):
 
 
 def load_recipes(request):
-    """Loads public recipes in batches and order in
+    """
+    Loads public recipes in batches and order them in
     the following order:
 
-    bottle_posted_count, likes, created_at"""
+    bottle_posted_count, likes, created_at
+
+    Note, likes are integrated but not implemented yet.
+    """
 
     # Load 6 recipes per 'page'
     BATCH = 6
@@ -196,15 +196,14 @@ def load_recipes(request):
     )
 
 
-@csrf_exempt
 def delete_recipe(request):
+    """Deletes a recipe from the database"""
     if request.method == 'DELETE':
         try:
             # Retrieve recipe_id and validate ownership
             recipe_id = request.GET.get('recipe_id')
             data = json.loads(request.body)
             password = data.get('password')
-
             if not password:
                 return JsonResponse(
                     {'error': 'Password is required'}, status=400
@@ -224,6 +223,7 @@ def delete_recipe(request):
                     {'error': 'Incorrect password'}, status=403
                 )
 
+            # Validate url parameter (recipe_id)
             if not recipe_id:
                 return JsonResponse({
                     'success': False,
@@ -253,9 +253,10 @@ def delete_recipe(request):
             return JsonResponse({'success': False, 'error': str(e)})
 
 
-@csrf_exempt
 def submit_recipe(request):
-    """Creates or updates a recipe based on presence of recipe_id."""
+    """
+    Creates or updates a recipe based on how recipe_id is constructed.
+    """
 
     if request.method == 'POST':
         try:
@@ -263,6 +264,7 @@ def submit_recipe(request):
             recipe_id = request.POST.get('recipe_id')
             is_update = recipe_id is not None and recipe_id != "NEW RECIPE"
 
+            # Update if it's a new recipe and update if it already exist
             if is_update:
                 # Retrieve the recipe to edit
                 recipe = Recipe.objects.get(id=recipe_id)
@@ -336,13 +338,16 @@ def submit_recipe(request):
             )
             cooking_time = json.loads(request.POST.get('cooking_time', '{}'))
             time, _ = Time.objects.get_or_create(recipe=recipe)
-            time.preparation_minutes = preparation_time.get('minutes', 0)
-            time.preparation_hours = preparation_time.get('hours', 0)
-            time.preparation_days = preparation_time.get('days', 0)
-            time.cooking_minutes = cooking_time.get('minutes', 0)
-            time.cooking_hours = cooking_time.get('hours', 0)
-            time.cooking_days = cooking_time.get('days', 0)
-            time.save()
+            time.update_preparation_time(
+                preparation_time.get('days', 0),
+                preparation_time.get('hours', 0),
+                preparation_time.get('minutes', 0),
+            )
+            time.update_cooking_time(
+                cooking_time.get('days', 0),
+                cooking_time.get('hours', 0),
+                cooking_time.get('minutes', 0),
+            )
 
             # Update or create estimated price
             estimated_price = json.loads(
@@ -351,13 +356,13 @@ def submit_recipe(request):
             price, _ = EstimatedPricePerMeal.objects.get_or_create(
                 recipe=recipe
             )
-            price.price_from = estimated_price.get('from', 0)
-            price.price_to = estimated_price.get('to', 0)
-            price.save()
+            price.update_estimated_price(
+                estimated_price.get('from', 0),
+                estimated_price.get('to', 0)
+            )
 
-            # Update last_posted_at
-            profile.last_posted_at = timezone.now()
-            profile.save()
+            # Update last_posted_at timestamp
+            profile.update_last_posted_timestamp()
 
         except Exception as e:
             print("Error:", e)
@@ -366,7 +371,6 @@ def submit_recipe(request):
     return JsonResponse({'success': True})
 
 
-@csrf_exempt
 def publish_comment(request):
     if request.method == 'POST' and request.user.is_authenticated:
         try:
