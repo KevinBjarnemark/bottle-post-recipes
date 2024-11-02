@@ -19,6 +19,7 @@ class Profile(models.Model):
         image = CloudinaryField('image', blank=True, null=True)
     last_reviewed_at = models.DateTimeField(null=True, blank=True)
     review_recipe_id = models.IntegerField(null=True, blank=True)
+    last_posted_at = models.DateTimeField(null=True, blank=True)
 
     # Method for tracking/limiting reviews
     def can_review(self):
@@ -31,6 +32,22 @@ class Profile(models.Model):
             # Calculate if a day has passed since their last review
             a_day_has_passed = (
                 now >= self.last_reviewed_at + datetime.timedelta(hours=24)
+            )
+            return a_day_has_passed
+        # Prevent unknown conditions to pass through
+        return False
+
+    # Method for tracking/limiting reviews
+    def can_post(self):
+        # If user haven't reviewed ever, return True
+        if self.last_posted_at is None:
+            return True
+        # Calculate hours if they have reviewed before
+        elif self.last_posted_at:
+            now = timezone.now()
+            # Calculate if a day has passed since their last review
+            a_day_has_passed = (
+                now >= self.last_posted_at + datetime.timedelta(hours=24)
             )
             return a_day_has_passed
         # Prevent unknown conditions to pass through

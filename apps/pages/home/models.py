@@ -75,8 +75,8 @@ class EstimatedPricePerMeal(models.Model):
     recipe = models.OneToOneField(
         Recipe, on_delete=models.CASCADE, related_name='estimated_price'
     )
-    price_from = models.DecimalField(max_digits=6, decimal_places=2)
-    price_to = models.DecimalField(max_digits=6, decimal_places=2)
+    price_from = models.DecimalField(null=True, max_digits=6, decimal_places=2)
+    price_to = models.DecimalField(null=True, max_digits=6, decimal_places=2)
 
 
 class Comment(models.Model):

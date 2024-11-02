@@ -272,6 +272,13 @@ def submit_recipe(request):
                         "You do not have permission to edit this recipe."
                     )
             else:
+                # Block spammy requests (24 hour limit)
+                profile = Profile.objects.get(user=request.user)
+                if not profile.can_post():
+                    return HttpResponseForbidden(
+                        "You must wait 24 hours between each post."
+                    )
+
                 # Create a new recipe for the current user
                 recipe = Recipe(user=request.user)
 
@@ -347,6 +354,10 @@ def submit_recipe(request):
             price.price_from = estimated_price.get('from', 0)
             price.price_to = estimated_price.get('to', 0)
             price.save()
+
+            # Update last_posted_at
+            profile.last_posted_at = timezone.now()
+            profile.save()
 
         except Exception as e:
             print("Error:", e)

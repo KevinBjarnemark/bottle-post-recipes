@@ -52,7 +52,7 @@ const submitBottlePostReview = async (action) => {
                     `<p>
                         You've succesfully reviewed this recipe! ✔️
                         <br />
-                        Redirecting to home...
+                        Redirecting to home soon...
                     </p>`,
                     7000,
                 );

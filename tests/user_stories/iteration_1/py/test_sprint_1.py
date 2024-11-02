@@ -8,6 +8,8 @@ from tests.helpers.py.helpers import (
     create_mock_image
 )
 import json
+from datetime import datetime
+from django.utils import timezone
 
 
 # Recipe creation, javascript insertion, and render
@@ -18,6 +20,13 @@ def test_recipe_creation(client):
 
     # Submit all mock recipes
     for recipe_data in MOCKRECIPEDATA:
+        # Reset last_posted_at to pass spam filter
+        profile = user.profile
+        profile.last_posted_at = timezone.make_aware(
+            datetime(2023, 1, 1, 12, 0, 0)
+        )
+        profile.save()
+
         # Convert to JSON string
         dietary_attributes = json.dumps(recipe_data['dietary_attributes'])
         ingredients = json.dumps(recipe_data['ingredients'])

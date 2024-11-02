@@ -6,7 +6,7 @@ import {DIETARYATTRIBUTES_ALL,
     DIETARYATTRIBUTES_NON_VEGAN,
     RECIPE_EMPTY,
 } from '../constants.js';
-import {setLoading, confirmPassword, hintWindow} from '../app.js';
+import {setLoading, confirmPassword, confirmedRedirect} from '../app.js';
 
 
 /**
@@ -55,7 +55,7 @@ const publishRecipe = async (feedVariables, recipeId) => {
                     `<p>
                         Recipe successfully created! ✔️
                         <br />
-                        Redirecting to home...
+                        Redirecting to home soon...
                     </p>`,
                     7000
                 );
@@ -100,7 +100,7 @@ const deleteRecipeConfirmed = async (recipeId, password) => {
                     `<p>
                         Recipe successfully deleted! ✔️
                         <br />
-                        Redirecting to home...
+                        Redirecting to home soon...
                     </p>`,
                     7000
                 );
