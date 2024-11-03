@@ -110,9 +110,10 @@ def test_user_registration(client):
     user_exists = User.objects.filter(username='new_user').exists()
     assert user_exists
 
-    # Verify that a redirect occurs to the home page
-    assert response.status_code == 302
-    assert response.url == reverse('home')
+    # Parse the JSON response
+    response_data = json.loads(response.content.decode('utf-8'))
+    # Check that the response was successful
+    assert response_data['success'] is True
 
 
 # Check user login

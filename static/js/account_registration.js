@@ -49,7 +49,8 @@ document.addEventListener("DOMContentLoaded", function() {
         registerVariables.inputs.confirmPassword = e.target.value;
     });
     // Listen to submit button 
-    registerHTML.submitButton.addEventListener("click", async () => {
+    registerHTML.submitButton.addEventListener("click", async (e) => {
+        e.preventDefault();
         await createAccount(registerHTML, registerVariables);
     });
 });
@@ -74,9 +75,19 @@ const createAccount = async (registerHTML, registerVariables) => {
             if (registerHTML.image.files.length > 0) {
                 formData.append('image', registerHTML.image.files[0]);
             }
-
-            if (!registerVariables.inputs.username) {
+            
+            // Validate inputs
+            const username = registerVariables.inputs.username
+            const password = registerVariables.inputs.username
+            const confirmedPassword = registerVariables.inputs.username
+            if (!username) {
                 throw new Error("clientError: Username is missing.")
+            }
+            if (!password) {
+                throw new Error("clientError: Password is missing.")
+            }
+            if (password !== confirmedPassword) {
+                throw new Error("clientError: Passwords must to be identical.")
             }
 
             // Send destructed form data
@@ -88,7 +99,8 @@ const createAccount = async (registerHTML, registerVariables) => {
                 body: formData,
             });
 
-            if (response.ok) {
+            const jsonResponse = await response.json();
+            if (jsonResponse.success) {
                 await confirmedRedirect(
                     `<p>
                         Account created successfully! ✔️
@@ -98,8 +110,7 @@ const createAccount = async (registerHTML, registerVariables) => {
                     7000
                 );
             } else {
-                const data = await response.json();
-                displayServerError(data.error, 7000);
+                displayServerError(jsonResponse.error, 7000);
             }
         } catch (error) {
             displayClientError(error.message);
