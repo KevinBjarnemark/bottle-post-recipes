@@ -16,7 +16,7 @@
                     type="text" 
                     placeholder="Username" 
                     name="username" 
-                    id="id_username" 
+                    id="log-in-username" 
                     value="{{ form.username.value|default:'' }}"
                 />
             </div>
@@ -28,12 +28,13 @@
                     type="password" 
                     placeholder="Password" 
                     name="password" 
-                    id="id_password" 
+                    id="log-in-password" 
                     value="{{ form.password.value|default:'' }}"
                 />
             </div>
             <!-- Submit -->
-            <button class="btn btn-outline-secondary text-white" 
+            <button class="btn btn-outline-secondary text-white"
+                id="log-in-button"
                 type="submit">Log in</button>
         </form>
         <!-- Navigate to account registration page -->
@@ -45,4 +46,6 @@
         </p>
     </div>
 </div>
+<!-- JavaScript -->
+<script type="module" src="{% static 'js/log_in.js' %}"></script>
 {% endblock %}

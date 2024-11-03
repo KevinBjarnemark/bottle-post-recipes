@@ -11,4 +11,5 @@ urlpatterns = [
     path('', include('apps.pages.terms_of_service.urls')),
     path('', include('apps.pages.privacy_policy.urls')),
     path('', include('apps.pages.account_registration.urls')),
+    path('', include('apps.pages.log_in.urls')),
 ]

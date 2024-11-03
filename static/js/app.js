@@ -196,6 +196,9 @@ const deleteAccountConfirmed = async (password) => {
 /**
  * Displays a client-side error in the hint window.
  * 
+ * Also, blocks 'developer' errors, use 'clientError:' prefix
+ * whenever you throw errors.
+ * 
  * @param {Object}  errors Object of errors
  * @param {Number}   time Time to display the errors
  * @param {Boolean}   client Client-side errors, if true

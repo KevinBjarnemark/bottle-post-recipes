@@ -12,5 +12,5 @@ def test_homepage_loads(client):
 # Check if the login page loads
 @pytest.mark.django_db
 def test_login_loads(client):
-    response = client.get(reverse('login'))
+    response = client.get(reverse('log_in'))
     assert response.status_code == 200

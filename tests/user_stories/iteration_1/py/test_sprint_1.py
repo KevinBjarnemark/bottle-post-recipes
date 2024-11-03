@@ -131,9 +131,9 @@ def test_user_login(client, django_user_model):
     }
 
     # Submit login data
-    response = client.post(reverse('login'), data=login_data)
+    response = client.post(reverse('submit_log_in'), data=login_data)
 
-    # Check that the login was successful by verifying
-    # redirection to the home page
-    assert response.status_code == 302
-    assert response.url == reverse('home')
+    # Parse the JSON response
+    response_data = json.loads(response.content.decode('utf-8'))
+    # Check that the response was successful
+    assert response_data['success'] is True

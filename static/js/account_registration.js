@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
         inputs: {
             username: "",
             password: "",
-            confirmPassword: "",
+            confirmedPassword: "",
             image: null,
         }
     }
@@ -45,8 +45,8 @@ document.addEventListener("DOMContentLoaded", function() {
     registerHTML.password.addEventListener("change", (e) => {
         registerVariables.inputs.password = e.target.value;
     });
-    registerHTML.password.addEventListener("change", (e) => {
-        registerVariables.inputs.confirmPassword = e.target.value;
+    registerHTML.confirmedPassword.addEventListener("change", (e) => {
+        registerVariables.inputs.confirmedPassword = e.target.value;
     });
     // Listen to submit button 
     registerHTML.submitButton.addEventListener("click", async (e) => {
@@ -71,15 +71,15 @@ const createAccount = async (registerHTML, registerVariables) => {
             // Populate formData with input values
             formData.append('username', registerVariables.inputs.username);
             formData.append('password1', registerVariables.inputs.password);
-            formData.append('password2', registerVariables.inputs.confirmPassword);
+            formData.append('password2', registerVariables.inputs.confirmedPassword);
             if (registerHTML.image.files.length > 0) {
                 formData.append('image', registerHTML.image.files[0]);
             }
             
             // Validate inputs
             const username = registerVariables.inputs.username
-            const password = registerVariables.inputs.username
-            const confirmedPassword = registerVariables.inputs.username
+            const password = registerVariables.inputs.password
+            const confirmedPassword = registerVariables.inputs.confirmedPassword
             if (!username) {
                 throw new Error("clientError: Username is missing.")
             }

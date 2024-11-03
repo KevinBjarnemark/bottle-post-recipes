@@ -9,9 +9,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('login/', auth_views.LoginView.as_view(
-        template_name='users/login.html'), name='login'
-    ),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('toggle_vegan_mode/', toggle_vegan_mode, name='toggle_vegan_mode'),
     path('delete_account/', delete_account, name='delete_account'),

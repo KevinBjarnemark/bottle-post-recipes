@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'apps.pages.terms_of_service',
     'apps.pages.privacy_policy',
     'apps.pages.account_registration',
+    'apps.pages.log_in',
 ]
 
 MIDDLEWARE = [
