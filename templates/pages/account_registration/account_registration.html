@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+<div class="page-container">
+    <div class="page"> 
+        <!-- Title -->
+        <h2 class="pb-2">Sign up</h2>
+        <!-- Sign up form -->
+        <form 
+            method="post" 
+            enctype="multipart/form-data" 
+            class="dark-background padding-sides-20 border-radius-soft
+                pt-4 pb-4">
+            {% csrf_token %}
+            <!-- Username -->
+            <div class="mb-2">
+                <label for="id_username">Username</label>
+                <input 
+                    class="form-control" 
+                    type="text" 
+                    placeholder="Username" 
+                    name="username" 
+                    id="register-username" 
+                    value="{{ form.username.value|default:'' }}"
+                    required
+                />
+            </div>
+            <!-- Password -->
+            <div class="mb-2">
+                <label for="id_password1">Password</label>
+                <input 
+                    class="form-control" 
+                    type="password" 
+                    placeholder="Password" 
+                    name="password1" 
+                    id="register-password" 
+                    value="{{ form.password1.value|default:'' }}"
+                    required
+                />
+            </div>
+            <!-- Confirm password -->
+            <div class="mb-4">
+                <label for="id_password1">Confirm password</label>
+                <input 
+                    class="form-control" 
+                    type="password" 
+                    placeholder="Confirm password" 
+                    name="password2" 
+                    id="register-confirmed-password" 
+                    value="{{ form.password2.value|default:'' }}"
+                    required
+                />
+            </div>
+            <!-- Profile picture upload -->
+            <div class="mb-4">
+                <label for="id_image">Profile picture (optional)</label>
+                <input 
+                    class="form-control" 
+                    type="file" 
+                    name="image" 
+                    id="register-image"
+                />
+            <!-- Terms of service and Privacy Policy -->
+            </div>
+            <div class="flex-row justify-content-start w-100
+                pt-1 pb-1">
+                <input 
+                    class="form-check-input"
+                    style="margin-right: 10px "
+                    type="checkbox" 
+                    name="terms_of_service" 
+                    id="register-terms-of-service" 
+                />
+                <p class="text-white">
+                    I accept this website's 
+                    <a 
+                        href="https://bottle-post-recipes-eb1abd9c13ee.herokuapp.com/terms_of_service">
+                        Terms of Service
+                    </a>
+                </p>
+            </div>
+            <div class="flex-row justify-content-start w-100
+                pt-1 pb-1">
+                <input 
+                    class="form-check-input"
+                    style="margin-right: 10px "
+                    type="checkbox" 
+                    name="privacy_policy" 
+                    id="register-privacy-policy" 
+                />
+                <p class="text-white">
+                    I accept this website's 
+                    <a href="https://bottle-post-recipes-eb1abd9c13ee.herokuapp.com/privacy_policy">
+                        Privacy Policy
+                    </a>
+                </p>
+            </div>
+            <p class="text-white pt-3">
+                You must accept all our terms to register.
+
+            </p>
+            <!-- Submit -->
+            <button 
+                class="btn btn-outline-secondary text-white mt-3 w-100"
+                id="register-submit-button" 
+                type="submit"
+                disabled>
+                Register
+            </button>
+
+            {% if form.errors %}
+                <div class="alert alert-danger mt-2">
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                            <li>{{ field }}: {{ errors|join:", " }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+<!-- JavaScript -->
+<script type="module" src="{% static 'js/account_registration.js' %}"></script>
+{% endblock %}

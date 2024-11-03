@@ -191,3 +191,40 @@ const deleteAccountConfirmed = async (password) => {
     };
     await init();
 };
+
+
+/**
+ * Displays a client-side error in the hint window.
+ * 
+ * @param {Object}  errors Object of errors
+ * @param {Number}   time Time to display the errors
+ * @param {Boolean}   client Client-side errors, if true
+ */
+export const displayClientError = (error="", time=7000, client=true) => {
+    /* Distinguish client-side errors and avoid 'developer errors' to be exposed to 
+    the client */
+    if (error.startsWith("clientError:")) {
+        hintWindow(`
+            <p>❌ Client error <br /> ${error.replace("clientError:", "").trim()}</p>
+            `, time
+        );
+    }else {
+        hintWindow(`<p>❌ Client error <br /> Something went wrong..</p>`, time);
+    }
+};
+
+/**
+ * Displays a server-side error in the hint window.
+ * 
+ * @param {String} error The composed error message from the server response.
+ * @param {Number} time Time to display the error (default is 7000ms).
+ */
+export const displayServerError = (error = "An unknown error occurred.", time = 7000) => {
+    if (typeof error === "string" && error) {
+        hintWindow(`
+            <p>Server error ❌<br /> ${error}</p>
+        `, time);
+    } else {
+        hintWindow(`<p>Something went wrong on our server ❌</p>`, time);
+    }
+};

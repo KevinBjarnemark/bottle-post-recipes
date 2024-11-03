@@ -104,7 +104,7 @@ def test_user_registration(client):
         'password2': 'securePassword123',
     }
     # Submit signup data
-    response = client.post(reverse('register'), data=signup_data)
+    response = client.post(reverse('register_account'), data=signup_data)
 
     # Check that the user was created
     user_exists = User.objects.filter(username='new_user').exists()
