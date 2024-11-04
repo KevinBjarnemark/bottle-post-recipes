@@ -37,7 +37,7 @@ const publishRecipe = async (feedVariables, recipeId) => {
                 "estimated_price",
             ];
 
-            // Append all form data 
+            // Append form data from feedVariables
             Object.entries(feedVariables.formData).forEach(([entry, value]) => {
                 if (stringifyEntries.includes(entry)){
                     formData.append(entry, JSON.stringify(value));
@@ -122,85 +122,99 @@ const deleteRecipeConfirmed = async (recipeId, password) => {
 };
 
 const deleteRecipe = async (recipeId) => {
-    confirmPassword(
-        async (password) => await deleteRecipeConfirmed(recipeId, password),
-        `
-            <p>
-                <span class="text-red">
-                    Warning!
-                </span>
-                This action cannot be undone, please confirm your password 
-                to delete this recipe.
-            </p>
-        `
-    );
+    setLoading(true);
+    try {
+        confirmPassword(
+            async (password) => await deleteRecipeConfirmed(recipeId, password),
+            `
+                <p>
+                    <span class="text-red">
+                        Warning!
+                    </span>
+                    This action cannot be undone, please confirm your password 
+                    to delete this recipe.
+                </p>
+            `
+        );
+    }catch (error) {
+        displayClientError(error.message);
+    } finally {
+        setLoading(false);
+    }
 };
 
 const buildDietaryAttributes = (feedHTML, feedVariables, attributesPreFill) => {
-    // Clear previous elements
-    feedHTML.recipeEditor.dietaryAttributes.innerHTML = "";
-    let attributes = [];
-    // Build the boolean items
-    DIETARYATTRIBUTES_ALL.forEach(i => {
-        attributes.push(
-            {
-                name: `dietary-attributes-${i}`,
-                field: `${i}`,
-                id: `create-recipe-boolean-dietary-attributes-${i}`,
-                label: `${capitalizeFirstLetter(i)}`,
-                nonVegan: DIETARYATTRIBUTES_NON_VEGAN.includes(i),
-            }
-        );
-    });
+    setLoading(true);
+    try {
+        // Clear previous elements
+        feedHTML.recipeEditor.dietaryAttributes.innerHTML = "";
+        let attributes = [];
+        // Build the boolean items
+        DIETARYATTRIBUTES_ALL.forEach(i => {
+            attributes.push(
+                {
+                    name: `dietary-attributes-${i}`,
+                    field: `${i}`,
+                    id: `create-recipe-boolean-dietary-attributes-${i}`,
+                    label: `${capitalizeFirstLetter(i)}`,
+                    nonVegan: DIETARYATTRIBUTES_NON_VEGAN.includes(i),
+                }
+            );
+        });
 
-    let htmlString = "";
-    attributes.forEach(i => {
-        const checked = attributesPreFill.includes(i.label.toLowerCase());
-        // Add form data, if true
-        if (checked){
-            feedVariables.formData.dietary_attributes.push(i.field);
-        }
-        htmlString += 
-        `<div class="flex-row pop-up-boolean-item align-items-start"
-            style="margin: 5px 5px; padding: 0 5px; 
-                ${i.nonVegan ? "box-shadow: 0 0 3px 1.8px #ffb472" : ""}">
-            <input 
-                class="form-check-input"
-                style="margin-right: 10px;" 
-                type="checkbox" 
-                name="${i.name}" 
-                id="${i.id}"
-                ${checked ? "checked" : ""} />
-            <label class="form-check-label text-white" for="${i.id}">
-                ${i.label}
-            </label>
+        let htmlString = "";
+        attributes.forEach(i => {
+            const checked = attributesPreFill.includes(i.label.toLowerCase());
+            // Add form data, if true
+            if (checked){
+                feedVariables.formData.dietary_attributes.push(i.field);
+            }
+            htmlString += 
+            `<div class="flex-row pop-up-boolean-item align-items-start"
+                style="margin: 5px 5px; padding: 0 5px; 
+                    ${i.nonVegan ? "box-shadow: 0 0 3px 1.8px #ffb472" : ""}">
+                <input 
+                    class="form-check-input"
+                    style="margin-right: 10px;" 
+                    type="checkbox" 
+                    name="${i.name}" 
+                    id="${i.id}"
+                    ${checked ? "checked" : ""} />
+                <label class="form-check-label text-white" for="${i.id}">
+                    ${i.label}
+                </label>
+            </div>
+            `;
+        });
+
+        feedHTML.recipeEditor.dietaryAttributes.innerHTML = `
+        <div class="flex-row mb-4" style="flex-wrap: wrap;">
+            ${htmlString}
         </div>
         `;
-    });
 
-    feedHTML.recipeEditor.dietaryAttributes.innerHTML = `
-    <div class="flex-row mb-4" style="flex-wrap: wrap;">
-        ${htmlString}
-    </div>
-    `;
-
-    attributes.forEach(i => {
-        // Set up listeners
-        const element = document.getElementById(i.id);
-        element.addEventListener("change", function(e) {
-            let dietaryAttributes = feedVariables.formData.dietary_attributes;
-            if (e.target.checked) {
-                if (!dietaryAttributes.includes(i.field)){
-                    dietaryAttributes.push(i.field);
+        attributes.forEach(i => {
+            // Set up listeners
+            const element = document.getElementById(i.id);
+            element.addEventListener("change", function(e) {
+                let dietaryAttributes = feedVariables.formData.dietary_attributes;
+                if (e.target.checked) {
+                    if (!dietaryAttributes.includes(i.field)){
+                        dietaryAttributes.push(i.field);
+                    }
+                }else {
+                    if (dietaryAttributes.includes(i.field)){
+                        dietaryAttributes = dietaryAttributes.filter(attr => attr !== i.field);
+                    }
                 }
-            }else {
-                if (dietaryAttributes.includes(i.field)){
-                    dietaryAttributes = dietaryAttributes.filter(attr => attr !== i.field);
-                }
-            }
-            feedVariables.formData.dietary_attributes = dietaryAttributes;
+                feedVariables.formData.dietary_attributes = dietaryAttributes;
+            });
         });
-    });
+    }catch (error) {
+        displayClientError(error.message);
+    } finally {
+        setLoading(false);
+    }
 };
 
 /**
@@ -213,71 +227,78 @@ const buildDietaryAttributes = (feedHTML, feedVariables, attributesPreFill) => {
  * @param {Object}  ingredient {name, quantity}
  */
 const addIngredientToList = (feedHTML, feedVariables, ingredient) => {
-    // Create the ingredient element and assign classname
-    const ingredientElement = document.createElement("div");
-    ingredientElement.className = "pop-up-list-element-container";
-    // Create the remove button and assing attributes
-    const removeIngredientButton = document.createElement("button");
-    removeIngredientButton.innerText = "X";
-    removeIngredientButton.className = "pop-up-list-element-remove-button";
-    // Create event listener
-    removeIngredientButton.addEventListener("click", function() {
-        // Remove the ingredient from form data
-        feedVariables.formData.ingredients = 
-            feedVariables.formData.ingredients.filter(i => i !== ingredient);
-        // Remove element (listener will also be removed in this action)
-        ingredientElement.remove();
-    });
+        try {
+        // Create the ingredient element and assign classname
+        const ingredientElement = document.createElement("div");
+        ingredientElement.className = "pop-up-list-element-container";
+        // Create the remove button and assing attributes
+        const removeIngredientButton = document.createElement("button");
+        removeIngredientButton.innerText = "X";
+        removeIngredientButton.className = "pop-up-list-element-remove-button";
+        // Create event listener
+        removeIngredientButton.addEventListener("click", function() {
+            // Remove the ingredient from form data
+            feedVariables.formData.ingredients = 
+                feedVariables.formData.ingredients.filter(i => i !== ingredient);
+            // Remove element (listener will also be removed in this action)
+            ingredientElement.remove();
+        });
 
-    // Add the ingredient element
-    ingredientElement.innerHTML = `
-        <li class="text-nowrap">
-            <span class="highlighted-word">${ingredient.quantity}</span> 
-            ${ingredient.name}
-        </li>
-    `;
-    ingredientElement.appendChild(removeIngredientButton);
-    feedHTML.recipeEditor.ingredients.appendChild(ingredientElement);
+        // Add the ingredient element
+        ingredientElement.innerHTML = `
+            <li class="text-nowrap">
+                <span class="highlighted-word">${ingredient.quantity}</span> 
+                ${ingredient.name}
+            </li>
+        `;
+        ingredientElement.appendChild(removeIngredientButton);
+        feedHTML.recipeEditor.ingredients.appendChild(ingredientElement);
 
-    // Add the ingredient to the form data
-    feedVariables.formData.ingredients.push(ingredient);
+        // Add the ingredient to the form data
+        feedVariables.formData.ingredients.push(ingredient);
+    }catch (error) {
+        displayClientError(error.message);
+    }
 };
 
 const buildIngredients = (feedHTML, feedVariables, ingredientsPreFill) => {
-    // Clear previous values
-    feedVariables.formData.ingredients = [];
+    try {
+        // Clear previous values
+        feedVariables.formData.ingredients = [];
 
-    // Clear ingredients list
-    feedHTML.recipeEditor.ingredients.innerHTML = "";
-    // 'Prefill' ingredients by adding them
-    ingredientsPreFill.forEach(ingredient => {
-        addIngredientToList(feedHTML, feedVariables, ingredient);
-    })
+        // Clear ingredients list
+        feedHTML.recipeEditor.ingredients.innerHTML = "";
+        // 'Prefill' ingredients by adding them
+        ingredientsPreFill.forEach(ingredient => {
+            addIngredientToList(feedHTML, feedVariables, ingredient);
+        })
 
-    // Add and store add ingredient button listener
-    addStoredEventListener(
-        feedVariables,
-        "click",
-        feedHTML.recipeEditor.ingredient.addButton.id, 
-        () => {
-            // Get the ingredient elements
-            let quantity = feedHTML.recipeEditor.ingredient
-                .quantity;
-            let name = feedHTML.recipeEditor.ingredient
-                .name;
+        // Add and store add ingredient button listener
+        addStoredEventListener(
+            feedVariables,
+            "click",
+            feedHTML.recipeEditor.ingredient.addButton.id, 
+            () => {
+                // Get the ingredient elements
+                let quantity = feedHTML.recipeEditor.ingredient
+                    .quantity;
+                let name = feedHTML.recipeEditor.ingredient
+                    .name;
 
-            if (name.value && quantity.value) {
-                addIngredientToList(
-                    feedHTML, 
-                    feedVariables, 
-                    {name: name.value, quantity: quantity.value}
-                );
-                quantity.value = '';
-                name.value = '';
+                if (name.value && quantity.value) {
+                    addIngredientToList(
+                        feedHTML, 
+                        feedVariables, 
+                        {name: name.value, quantity: quantity.value}
+                    );
+                    quantity.value = '';
+                    name.value = '';
+                }
             }
-        }
-    );
-
+        );
+    }catch (error) {
+        displayClientError(error.message);
+    }
 }
 
 /**
@@ -300,7 +321,7 @@ const handleClose = (feedHTML) => {
  * 
  */
 export const recipeEditor = (feedHTML, feedVariables, recipeId) => {
-        try {
+    try {
         /* Render either an empty recipe to publish or a 
         prefilled recipe to edit */ 
         let recipe = {};
@@ -493,7 +514,7 @@ export const recipeEditor = (feedHTML, feedVariables, recipeId) => {
         // Finally, Make the component visible
         feedHTML.recipeEditor.container.style.visibility = "visible";
     } catch (error) {
-        console.log(error);
+        displayClientError(error.message);
     } finally {
         setLoading(false);
     }

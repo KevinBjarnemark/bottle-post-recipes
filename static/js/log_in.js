@@ -43,8 +43,9 @@ document.addEventListener("DOMContentLoaded", function() {
  * @param {String}   recipeId 
  */
 const logIn = async (logInVariables) => {
-    setLoading(true);
+
     const init = async () => {
+        setLoading(true);
         try {
             // Create the form data constructor
             const formData = new FormData();

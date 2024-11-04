@@ -1,17 +1,22 @@
+import {displayClientError} from './app'
 
 export const getCookie = (name) => {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+    try {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
+        return cookieValue;
+    }catch (error) {
+        displayClientError(error.message);
     }
-    return cookieValue;
 };
 
 /**
@@ -58,17 +63,21 @@ export const trimText = (text, slice) => {
  * should reference.
  */
 export const addStoredEventListener = (feedVariables, eventString, id, listenerFunction) => {
-    const element = document.getElementById(id);
-    // Remove existing event listener, if any
-    if (feedVariables.eventListeners[id]) {
-        element.removeEventListener(
-            eventString,
-            feedVariables.eventListeners[id]
-        );
+    try {
+        const element = document.getElementById(id);
+        // Remove existing event listener, if any
+        if (feedVariables.eventListeners[id]) {
+            element.removeEventListener(
+                eventString,
+                feedVariables.eventListeners[id]
+            );
+        }
+        // Add and store listener
+        element.addEventListener(eventString, listenerFunction);
+        feedVariables.eventListeners[id] = listenerFunction;
+    }catch (error) {
+        displayClientError(error.message);
     }
-    // Add and store listener
-    element.addEventListener(eventString, listenerFunction);
-    feedVariables.eventListeners[id] = listenerFunction;
 };
 
 /**

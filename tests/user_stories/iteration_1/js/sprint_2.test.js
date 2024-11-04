@@ -23,7 +23,10 @@ global.fetch = jest.fn((url) => {
     if (url.includes('/toggle_vegan_mode')) {
         return Promise.resolve({
         status: 200,
-        json: () => Promise.resolve({})
+        json: () => Promise.resolve({
+            success: true,
+            error: "",
+        })
         });
     } else if (url.includes('/load_recipes')) {
         return Promise.resolve({

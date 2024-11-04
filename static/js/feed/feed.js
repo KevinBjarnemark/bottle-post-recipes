@@ -147,17 +147,24 @@ document.addEventListener("DOMContentLoaded", function() {
 
 export const loadUserRecipes = async (feedHTML, feedVariables, userId, username) => {
     const init = async () => {
-        // Reset filter
-        feedVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
-        // Set user id as a filter
-        feedVariables.filterObject.userId = userId;
-        // Clean up feed and load page 1
-        cleanUpFeed(feedHTML, feedVariables);
-        await getRecipePage(1, feedHTML, feedVariables);
-        if (userId === feedVariables.user.userId) {
-            feedHTML.topText.innerText = "Showing only your recipes";
-        }else {
-            feedHTML.topText.innerText = `Showing only recipes made by ${username}`;
+        setLoading(true);
+        try {
+            // Reset filter
+            feedVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
+            // Set user id as a filter
+            feedVariables.filterObject.userId = userId;
+            // Clean up feed and load page 1
+            cleanUpFeed(feedHTML, feedVariables);
+            await getRecipePage(1, feedHTML, feedVariables);
+            if (userId === feedVariables.user.userId) {
+                feedHTML.topText.innerText = "Showing only your recipes";
+            }else {
+                feedHTML.topText.innerText = `Showing only recipes made by ${username}`;
+            }
+        }catch (error) {
+            displayClientError(error.message);
+        } finally {
+            setLoading(false);
         }
     };
     
@@ -200,35 +207,49 @@ export const initPage = async (feedHTML, feedVariables) => {
 
 export const handleBottlePostNotifications = async (feedHTML, feedVariables) => {
     const init = async () => {
-        /* Make the bottle post review button appear after a slight delay
-        if the user is allowed to review. */
-        if (feedVariables.user.review_recipe_id !== null){
-            feedHTML.bottlePostNotificationButton.style.display = "block";
-            // Pop-up effect with a slight delay
-            setTimeout(() => {
-                feedHTML.bottlePostNotificationButton.style.transform = "scale(1)";
-            }, 2500);
-            
-            feedHTML.bottlePostNotificationButton
-                .addEventListener("click", async () => {
-                // Reset filter
-                feedVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
-                // Add recipe_id filter
-                feedVariables.filterObject.recipe_id = feedVariables
-                    .user.review_recipe_id;
-                cleanUpFeed(feedHTML, feedVariables);
-                await getRecipePage(1, feedHTML, feedVariables);
-            });
+        setLoading(true);
+        try {
+            /* Make the bottle post review button appear after a slight delay
+            if the user is allowed to review. */
+            if (feedVariables.user.review_recipe_id !== null){
+                feedHTML.bottlePostNotificationButton.style.display = "block";
+                // Pop-up effect with a slight delay
+                setTimeout(() => {
+                    feedHTML.bottlePostNotificationButton.style.transform = "scale(1)";
+                }, 2500);
+                
+                feedHTML.bottlePostNotificationButton
+                    .addEventListener("click", async () => {
+                    // Reset filter
+                    feedVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
+                    // Add recipe_id filter
+                    feedVariables.filterObject.recipe_id = feedVariables
+                        .user.review_recipe_id;
+                    cleanUpFeed(feedHTML, feedVariables);
+                    await getRecipePage(1, feedHTML, feedVariables);
+                });
+            }
+        }catch (error) {
+            displayClientError(error.message);
+        } finally {
+            setLoading(false);
         }
     };
     await init();
 };
 
 export const generateHTML = (feedHTML, feedVariables) => {
-    // Sidebar search areas checkboxes
-    htmlSidebarSearchAreas(feedHTML, feedVariables);
-    // Sidebar include filters (vegan, vegetarian, meat)
-    htmlSidebarFilters(feedHTML, feedVariables);
+    setLoading(true);
+    try {
+        // Sidebar search areas checkboxes
+        htmlSidebarSearchAreas(feedHTML, feedVariables);
+        // Sidebar include filters (vegan, vegetarian, meat)
+        htmlSidebarFilters(feedHTML, feedVariables);
+    }catch (error) {
+        displayClientError(error.message);
+    } finally {
+        setLoading(false);
+    }
 };
 
 /**

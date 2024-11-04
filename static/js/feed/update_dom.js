@@ -27,38 +27,45 @@ export const cleanUpFeed = (feedHTML, feedVariables) => {
  * 
  */
 export const filterVeganRecipes = (feedVariables) => {
-    let veganRecipeCount = 0;
-    let nonVeganRecipeCount = 0;
+    setLoading(true);
+    try {
+        let veganRecipeCount = 0;
+        let nonVeganRecipeCount = 0;
 
-    feedVariables.recipes.forEach(i => {
-        const recipeItem = document.getElementById(`recipe-item-${i.id}`);
-        if (feedVariables.user.veganMode){
-            if (!i.vegan){
-                recipeItem.style.display = "none";
-                nonVeganRecipeCount += 1;
+        feedVariables.recipes.forEach(i => {
+            const recipeItem = document.getElementById(`recipe-item-${i.id}`);
+            if (feedVariables.user.veganMode){
+                if (!i.vegan){
+                    recipeItem.style.display = "none";
+                    nonVeganRecipeCount += 1;
+                }else {
+                    recipeItem.style.display = "flex";
+                    veganRecipeCount += 1;
+                }
             }else {
                 recipeItem.style.display = "flex";
                 veganRecipeCount += 1;
             }
-        }else {
-            recipeItem.style.display = "flex";
-            veganRecipeCount += 1;
+        });
+
+        // If all recipes are hidden, display message
+        if (veganRecipeCount === 0 && nonVeganRecipeCount !== 0) {
+            hintWindow(
+                `<p>
+                    You need to disable vegan mode to view 
+                    the recipes on this page
+                    <i class="fa-solid fa-carrot"></i>
+                </p>`,
+            );
         }
-    });
 
-    // If all recipes are hidden, display message
-    if (veganRecipeCount === 0 && nonVeganRecipeCount !== 0) {
-        hintWindow(
-            `<p>
-                You need to disable vegan mode to view 
-                the recipes on this page
-                <i class="fa-solid fa-carrot"></i>
-            </p>`,
-        );
+        // Reset, just in case
+        veganRecipeCount = 0;
+    }catch (error) {
+        displayClientError(error.message);
+    } finally {
+        setLoading(false);
     }
-
-    // Reset, just in case
-    veganRecipeCount = 0;
 };
 
 /**
@@ -160,7 +167,10 @@ export const renderRecipes = (data, feedHTML, feedVariables) => {
                             : ""}
                         </div>
                     </div>
-                    <button class="absolute-flex recipe-item-bottle-post-count-container interactive-turn">
+                    <button 
+                        id="recipe-item-bottle-posted-count-${recipe.id}"
+                        class="absolute-flex recipe-item-bottle-post-count-container 
+                            interactive-turn">
                         <div class="absolute-flex recipe-item-bottle-post-red-count">
                             ${recipe.bottle_posted_count}
                         </div>
@@ -274,6 +284,22 @@ export const renderRecipes = (data, feedHTML, feedVariables) => {
                     recipeViewer(feedHTML, feedVariables, recipe.id);
                     feedHTML.recipeViewer.comments.scrollIntoView(
                         { behavior: "smooth", block: "start" }
+                    );
+                }
+            );
+            
+            // Add and store event listener for the comment button
+            addStoredEventListener(
+                feedVariables, 
+                "click", 
+                `recipe-item-bottle-posted-count-${recipe.id}`, 
+                () => {
+                    hintWindow(
+                        `<p>
+                            This recipe has been returned to the ocean 
+                            ${recipe.bottle_posted_count} times.
+                            <i class="fa-solid fa-water text-blue"></i>
+                        </p>`
                     );
                 }
             );

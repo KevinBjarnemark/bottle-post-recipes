@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate
 from .models import Profile
 import json
-from django.http import JsonResponse
 import random
 from apps.pages.home.models import Recipe
 from static.py.json_responses import throw_error, success
@@ -104,11 +103,17 @@ def delete_account(request):
 
 
 def toggle_vegan_mode(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        vegan_mode = data.get('vegan_mode', True)
-        profile = Profile.objects.get(user=request.user)
-        profile.vegan_mode = vegan_mode
-        profile.save()
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'failed'}, status=400)
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            vegan_mode = data.get('vegan_mode', True)
+            profile = Profile.objects.get(user=request.user)
+            profile.vegan_mode = vegan_mode
+            profile.save()
+            return success()
+        else:
+            return throw_error("Invalid request method")
+    except Exception:
+        return throw_error(
+            "Unexpected error when toggling vegan mode"
+        )

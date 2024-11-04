@@ -41,8 +41,8 @@ export const htmlComment = (username, date, text) => {
  * @param {String} recipeId 
  */
 const submitBottlePostReview = async (action) => {
-    setLoading(true);
     const init = async () => {
+        setLoading(true);
         try {
             // Send a DELETE request to the backend
             const response = await fetch(`/submit_bottle_post_review/?action=${action}`, {
@@ -72,7 +72,7 @@ const submitBottlePostReview = async (action) => {
         }
     };
 
-    init();
+    await init();
 };
 
 /**
