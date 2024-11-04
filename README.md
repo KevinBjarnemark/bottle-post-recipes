@@ -5,6 +5,8 @@
 Click [here](https://bottle-post-recipes-eb1abd9c13ee.herokuapp.com/) 
 to explore the live app! 🔥
 
+![Screenshot](static/images/readme/screenshots/wide.webp "Wide screenshot of the home page.")
+
 ## Quick tip!
 
 If you've cloned this project, you can view this readme file with
@@ -75,6 +77,76 @@ Since the app determines who can boost which recipe, it keeps cheating users (an
   
 > ❕ **Future update**  
 > Polls may be introduced to give some recipes an extra chance. Perhaps a few 'non-ocean' recipes per month could be sent out randomly to have another chance to enter the ocean again. 
+
+## Features ⭐️
+
+Here's a more detailed look at the features of this app. 
+
+#### Vegan mode 🍏
+
+
+A concerted effort has been dedicated to make this app a vegan-friendly app. Some people don't want to see animal products when they start the computer, and all systems in the Bottle Post Recipes app are designed to filter out such recipes right away. The orange <span class="em" style="color: var(--orange)">Vegan Button</span> is not just a button, it's a mark on your profile. If you disable vegan mode, it will stay disabled even if you refresh your browser. This setting is extremely easy to toggle and it's a great way to let everyone feel welcome. If you don't like vegan recipes, you can even filter them out entirely. It's worth noting that when vegan mode is turned on, it will overwrite any other settings.
+
+> ⛔️ **KNOWN ISSUE**  
+> Users with vegan mode enabled can be asked to review a non-vegan recipe. The non-vegan recipe won't be shown until or if the user disables vegan mode. A fix for this should be prioritized, as it goes against the intent of the app. It may also cause vegans to downrate non-vegan recipes that others might enjoy.
+
+#### Viewing recipes 👀
+
+To view a recipe's details, simply click on the recipe image in the main view. This will display all details related to the recipe at hand.
+
+> ⛔️ **KNOWN ISSUE**  
+> When scrolling in the recipe viewer pop-up, it may also scroll the main view behind the recipe viewer.
+
+
+#### Searching and filtering recipes 🔍
+
+As mentioned, users are able to search for recipes in a highly sophisticated way. If you want vegetarian or meat recipes but no fish, it's as easy as clicking on a couple of buttons. Perhaps title searching isn't enough? At Bottle Post Recipes, you can find recipes based on their ingredients, description, title, and tags, all customizable to help you narrow down your search results.
+
+#### User-based search 👤
+
+User-based search isn't fully implemented but you can click on users and display their recipes. If you want to view all the recipes that you've created, you can do so by clicking **My Recipes** in the **Account Button** dropdown.
+
+#### Create recipe 🧾
+
+If you ever want to become a chef at Bottle Post Recipes, it's as easy as posting on social media! Click on the big ➕ button at the bottom left, fill out the form, and your recipe will be bottled up and dropped into the ocean immediately! A spamming filter is integrated and users are allowed to post **1 recipe per day**.
+
+#### Edit or delete recipe 🖊️
+
+A fully fledged recipe editor is integrated and easily accessible in the main view. You can open this by clicking the edit button located at the right side of each recipe. After clicking on the edit button, a pop-up window will appear, displaying your recipe in a more comprehensive view with editable fields. All fields are pre-populated and remain as they were when you last edited your recipe.
+
+#### Commenting 🗯️
+
+There's a BETA commenting system you can engage with when viewing a recipe.
+
+> ⛔️ **KNOWN ISSUES**  
+> 1. When posting a comment, it should appear immediately. However, the comment that appears is simulated (not read from db), this is to avoid re-fetching and breaking the UI. When closing the recipe view, this simulated comment will be cleared. This means that if you open that recipe again (without refreshing your browser), the comment will appear to be erased. It should however be written to the database and loaded after a browser refresh. 
+>  
+> 2.  The latest comments are loaded top-down which breaks the pattern of 'normal' comment sections on the web. 
+
+#### Bottle post system ♻️
+
+This has already been explained in the [introduction](#introduction). When using the app, you will be asked to review recipes that exists in 'the ocean' on a daily basis.
+
+> ⛔️ **KNOWN ISSUES**  
+> 1. **SEVERE!** Hghlighted recipes that users are allowed to review may get 'stuck'. It may appear as the already reviewed recipe can be reviewed again. The back-end will block any unauthorized user actions if the user does submit the review again. This is a catche issue that needs to be fixed ASAP.    
+>  
+> 2. If there are no recipes in the ocean, it may be confusing when reviews nevers gets handed out. Some type of message should be displayed here.
+>  
+> 3. When there are few users and recipes, this feature can give early users a massively unfair advantage.The number of users and recipes should be factored into the calculation of how many recipes can be reviewed per day.
+>  
+> 4. Users are able to return the same recipe to the ocean more than one time. This is a problem for the algorithm, especially when there aren't that many recipes. 
+>  
+> 5. Users are able to boost their own recipes. Again, when there's not that many recipes, chances are high that new users will take advantage of this fluke.  
+>  
+> 6. If a recipe has had their recipe retunred to the ocean more and 100 times, it may break the UI.
+
+
+#### Delete account ❌
+
+To comply with privacy laws and to provide a seamless way to allow users to delete their data. A **Delete Account** button is located at the **Account Button** dropdown. This is designed in such a way that it also deletes related data in the database. Users are therefore able to purge their data from the system meaning recipes, comments, username, etc. 
+
+> ⛔️ **KNOWN ISSUE**  
+> As of right now, images uploaded with cloudinary (third-party) won't be automatically deleted. This should be integrated ASAP. 
 
 ## UX-Design
 
