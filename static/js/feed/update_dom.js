@@ -115,8 +115,8 @@ export const renderRecipes = (data, feedHTML, feedVariables) => {
                 <h1 class="hidden-heading">${recipe.title}</h1>
                 <div class="flex-column">
                     <div class="${recipe.id === feedVariables.user.review_recipe_id ?
-                        'recipe-item-background backdrop-blur allowed-review-glow' : 
-                        'recipe-item-background backdrop-blur'}">
+                            'recipe-item-background backdrop-blur allowed-review-glow' : 
+                            'recipe-item-background backdrop-blur'}">
                     </div>
                     <h4 class="recipe-item-title backdrop-blur">
                         ${trimText(recipe.title, 20)}

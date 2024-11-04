@@ -1,4 +1,4 @@
-import {displayClientError} from './app'
+import {displayClientError} from './app.js'
 
 export const getCookie = (name) => {
     try {

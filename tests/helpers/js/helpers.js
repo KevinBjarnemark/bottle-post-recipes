@@ -11,6 +11,8 @@ export const MOCKRECIPEDATA = {
             id: 1,
             user_id: 0,
             title: "Vegan Recipe",
+            vegan: true,
+            recipe_type: "vegan",
             description: "Test description",
             instructions: "Test instructions",
             dietary_attributes: ["soy"],
@@ -20,7 +22,6 @@ export const MOCKRECIPEDATA = {
             ],
             bottle_posted_count: 5,
             image: null,
-            user_image: null,
             in_ocean: true,
             user_image: null,
             comments: [
@@ -46,7 +47,6 @@ export const MOCKRECIPEDATA = {
             ],
             bottle_posted_count: 5,
             image: null,
-            user_image: null,
             in_ocean: true,
             user_image: null,
             comments: [],
@@ -66,7 +66,6 @@ export const MOCKRECIPEDATA = {
             ],
             bottle_posted_count: 5,
             image: null,
-            user_image: null,
             in_ocean: true,
             user_image: null,
             comments: [
@@ -92,7 +91,6 @@ export const MOCKRECIPEDATA = {
             ],
             bottle_posted_count: 5,
             image: null,
-            user_image: null,
             in_ocean: true,
             user_image: null,
             comments: [

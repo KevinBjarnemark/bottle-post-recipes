@@ -19,7 +19,7 @@ def test_recipe_creation(client):
     user = user_log_in(client)
 
     # Submit all mock recipes
-    for recipe_data in MOCKRECIPEDATA:
+    for recipe_data in MOCKRECIPEDATA['recipes']:
         # Reset last_posted_at to pass spam filter
         profile = user.profile
         profile.last_posted_at = timezone.make_aware(
@@ -30,21 +30,16 @@ def test_recipe_creation(client):
         # Convert to JSON string
         dietary_attributes = json.dumps(recipe_data['dietary_attributes'])
         ingredients = json.dumps(recipe_data['ingredients'])
-        preparation_time = json.dumps(recipe_data['preparation_time'])
-        cooking_time = json.dumps(recipe_data['cooking_time'])
-        estimated_price = json.dumps(recipe_data['estimated_price'])
+
+        print(dietary_attributes)
 
         recipe = {
             'title': recipe_data['title'],
             'description': recipe_data['description'],
             'dietary_attributes': dietary_attributes,
             'image': create_mock_image(),
-            'tags': recipe_data['tags'],
             'instructions': recipe_data['instructions'],
             'ingredients': ingredients,
-            'preparation_time': preparation_time,
-            'cooking_time': cooking_time,
-            'estimated_price': estimated_price,
         }
         # Submit form
         response = client.post(reverse('submit_recipe'), recipe)

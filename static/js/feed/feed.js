@@ -5,6 +5,7 @@ import { veganModeColor } from '../helpers.js';
 import { recipeEditor } from '../feed/recipe_editor.js';
 import { DEFAULT_FILTER_OBJECT } from '../constants.js';
 import { displayClientError, setLoading } from '../app.js';
+import { addStoredEventListener } from '../helpers.js';
 
 document.addEventListener("DOMContentLoaded", function() {
     setLoading(true);
@@ -218,16 +219,21 @@ export const handleBottlePostNotifications = async (feedHTML, feedVariables) => 
                     feedHTML.bottlePostNotificationButton.style.transform = "scale(1)";
                 }, 2500);
                 
-                feedHTML.bottlePostNotificationButton
-                    .addEventListener("click", async () => {
-                    // Reset filter
-                    feedVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
-                    // Add recipe_id filter
-                    feedVariables.filterObject.recipe_id = feedVariables
-                        .user.review_recipe_id;
-                    cleanUpFeed(feedHTML, feedVariables);
-                    await getRecipePage(1, feedHTML, feedVariables);
-                });
+                    // Add and store close button listener
+                    addStoredEventListener(
+                        feedVariables,
+                        "click", 
+                        feedHTML.bottlePostNotificationButton.id, 
+                        async () => {
+                            // Reset filter
+                            feedVariables.filterObject = {...DEFAULT_FILTER_OBJECT};
+                            // Add recipe_id filter
+                            feedVariables.filterObject.recipe_id = feedVariables
+                                .user.review_recipe_id;
+                            cleanUpFeed(feedHTML, feedVariables);
+                            await getRecipePage(1, feedHTML, feedVariables);
+                        }
+                    );
             }
         }catch (error) {
             displayClientError(error.message);

@@ -84,7 +84,7 @@ const publishRecipe = async (feedVariables, recipeId) => {
  * 
  * @param {String} recipeId 
  */
-const deleteRecipeConfirmed = async (recipeId, password) => {
+export const deleteRecipeConfirmed = async (recipeId, password) => {
     setLoading(true);
     const init = async () => {
         try {
@@ -121,7 +121,7 @@ const deleteRecipeConfirmed = async (recipeId, password) => {
     init();
 };
 
-const deleteRecipe = async (recipeId) => {
+export const deleteRecipe = async (recipeId) => {
     setLoading(true);
     try {
         confirmPassword(

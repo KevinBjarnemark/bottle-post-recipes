@@ -3,124 +3,108 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 # NOTE Do not add anything that is declared in the backend,
 # like 'vegan', recipe_type, etc.
-MOCKRECIPEDATA = [
+MOCKRECIPEDATA = {
+    "recipes": [
         {
-            'id': 1,
-            'title': "Vegan Recipe",
-            'description': "Test description",
-            'instructions': "Test instructions",
-            'dietary_attributes': ["soy"],
-            'ingredients': [
-                {'name': "Kale", 'quantity': "3 handfuls of"},
-                {'name': "Olive oil", 'quantity': "1/4 cup of"},
+            "id": 1,
+            "user_id": 0,
+            "title": "Vegan Recipe",
+            "vegan": True,
+            "recipe_type": "vegan",
+            "description": "Test description",
+            "instructions": "Test instructions",
+            "dietary_attributes": ["soy"],
+            "ingredients": [
+                {"name": "Kale", "quantity": "3 handfuls of"},
+                {"name": "Olive oil", "quantity": "1/4 cup of"},
             ],
-            'image': None,
-            'tags': "healthy, fresh",
-            'user_image': None,
-            'user_image': None,
-            'preparation_time': {
-                'preparation-time-minutes': 0,
-                'preparation-time-hours': 1,
-                'preparation-time-days': 0,
-            },
-            'cooking_time': {
-                'cooking-time-minutes': 20,
-                'cooking-time-hours': 1,
-                'cooking-time-days': 0,
-            },
-            'estimated_price': {
-                'estimated-price-from': 20,
-                'estimated-price-to': 40,
-            },
+            "bottle_posted_count": 5,
+            "image": None,
+            "in_ocean": True,
+            "user_image": None,
+            "comments": [
+                {
+                    "user": "Test user",
+                    "text": "Test comment",
+                    "created_at": "2024-01-01 00 00 00",
+                }
+            ],
         },
         {
-            'id': 2,
-            'title': "Vegetarian Recipe",
-            'description': "Test description",
-            'instructions': "Test instructions",
-            'dietary_attributes': ["meat"],
-            'ingredients': [
-                {'name': "Mozzarella", 'quantity': "100g"},
-                {'name': "Olive oil", 'quantity': "1/4 cup of"},
+            "id": 2,
+            "user_id": 0,
+            "recipe_type": "vegetarian",
+            "vegan": False,
+            "title": "Vegetarian Recipe",
+            "description": "Test description",
+            "instructions": "Test instructions",
+            "dietary_attributes": ["meat"],
+            "ingredients": [
+                {"name": "Mozzarella", "quantity": "100g"},
+                {"name": "Olive oil", "quantity": "1/4 cup of"},
             ],
-            'image': None,
-            'tags': "summer, yummy",
-            'user_image': None,
-            'user_image': None,
-            'preparation_time': {
-                'preparation-time-minutes': 0,
-                'preparation-time-hours': 1,
-                'preparation-time-days': 0,
-            },
-            'cooking_time': {
-                'cooking-time-minutes': 20,
-                'cooking-time-hours': 1,
-                'cooking-time-days': 0,
-            },
-            'estimated_price': {
-                'estimated-price-from': 20,
-                'estimated-price-to': 40,
-            },
+            "bottle_posted_count": 5,
+            "image": None,
+            "in_ocean": True,
+            "user_image": None,
+            "comments": [],
         },
         {
-            'id': 3,
-            'title': "Fish Recipe",
-            'description': "Test description",
-            'instructions': "Test instructions",
-            'dietary_attributes': ["fish"],
-            'ingredients': [
-                {'name': "Salmon", 'quantity': "300g"},
-                {'name': "Olive oil", 'quantity': "1/4 cup of"},
+            "id": 3,
+            "user_id": 0,
+            "recipe_type": "fish",
+            "vegan": False,
+            "title": "Fish Recipe",
+            "description": "Test description",
+            "instructions": "Test instructions",
+            "dietary_attributes": ["fish"],
+            "ingredients": [
+                {"name": "Salmon", "quantity": "300g"},
+                {"name": "Olive oil", "quantity": "1/4 cup of"},
             ],
-            'image': None,
-            'tags': "dinner",
-            'user_image': None,
-            'user_image': None,
-            'preparation_time': {
-                'preparation-time-minutes': 0,
-                'preparation-time-hours': 1,
-                'preparation-time-days': 0,
-            },
-            'cooking_time': {
-                'cooking-time-minutes': 20,
-                'cooking-time-hours': 1,
-                'cooking-time-days': 0,
-            },
-            'estimated_price': {
-                'estimated-price-from': 20,
-                'estimated-price-to': 40,
-            },
+            "bottle_posted_count": 5,
+            "image": None,
+            "in_ocean": True,
+            "user_image": None,
+            "comments": [
+                {
+                    "user": "Test user",
+                    "text": "Test comment",
+                    "created_at": "2024-01-01 00 00 00",
+                }
+            ],
         },
         {
-            'id': 4,
-            'title': "Meat Recipe",
-            'description': "Test description",
-            'instructions': "Test instructions",
-            'dietary_attributes': ["meat"],
-            'ingredients': [
-                {'name': "Chicken", 'quantity': "300g"},
-                {'name': "Olive oil", 'quantity': "1/4 cup of"},
+            "id": 4,
+            "user_id": 0,
+            "recipe_type": "meat",
+            "vegan": False,
+            "title": "Meat Recipe",
+            "description": "Test description",
+            "instructions": "Test instructions",
+            "dietary_attributes": ["meat"],
+            "ingredients": [
+                {"name": "Chicken", "quantity": "300g"},
+                {"name": "Olive oil", "quantity": "1/4 cup of"},
             ],
-            'image': None,
-            'tags': "",
-            'user_image': None,
-            'user_image': None,
-            'preparation_time': {
-                'preparation-time-minutes': 0,
-                'preparation-time-hours': 1,
-                'preparation-time-days': 0,
-            },
-            'cooking_time': {
-                'cooking-time-minutes': 20,
-                'cooking-time-hours': 1,
-                'cooking-time-days': 0,
-            },
-            'estimated_price': {
-                'estimated-price-from': 20,
-                'estimated-price-to': 40,
-            },
+            "bottle_posted_count": 5,
+            "image": None,
+            "in_ocean": True,
+            "user_image": None,
+            "comments": [
+                {
+                    "user": "Test user",
+                    "text": "Test comment",
+                    "created_at": "2024-01-01 00 00 00",
+                }
+            ],
         },
-]
+    ],
+    "success": True,
+    "error": "",
+    "total_recipes": 4,
+    "batch": 6,
+}
 
 
 def create_mock_image():

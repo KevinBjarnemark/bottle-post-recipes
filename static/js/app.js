@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
         hintWindowTimer: null,
     };
 
-    // Delete account button (only visible at home page)
+    // Delete account button
     if (window.appHTML.accountButton.deleteAccountButton) {
         window.appHTML.accountButton.deleteAccountButton
         .addEventListener("click", async () => {deleteAccount()});
