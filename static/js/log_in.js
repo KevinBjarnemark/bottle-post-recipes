@@ -1,10 +1,10 @@
-import {getCookie} from './helpers.js'
+import {getCookie} from './helpers.js';
 import {
     confirmedRedirect, 
     setLoading, 
     displayClientError, 
     displayServerError
-} from './app.js'
+} from './app.js';
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -12,14 +12,14 @@ document.addEventListener("DOMContentLoaded", function() {
         username: document.getElementById("log-in-username"),
         password: document.getElementById("log-in-password"),
         logInButton: document.getElementById("log-in-button"),
-    }
+    };
 
     let logInVariables = {
         inputs: {
             username: "",
             password: "",
         }
-    }
+    };
 
     // Listen to inputs
     logInHTML.username.addEventListener("change", (e) => {

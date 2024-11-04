@@ -263,6 +263,8 @@ def submit_recipe(request):
             # Check if this is an edit (update) or create operation
             recipe_id = request.POST.get('recipe_id')
             is_update = recipe_id is not None and recipe_id != "NEW RECIPE"
+            # Get user profile
+            profile = Profile.objects.get(user=request.user)
 
             # Update if it's a new recipe and update if it already exist
             if is_update:
@@ -275,7 +277,6 @@ def submit_recipe(request):
                     )
             else:
                 # Block spammy requests (24 hour limit)
-                profile = Profile.objects.get(user=request.user)
                 if not profile.can_post():
                     return throw_error(
                         "You must wait 24 hours between each post."

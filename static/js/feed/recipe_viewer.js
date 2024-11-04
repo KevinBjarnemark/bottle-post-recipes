@@ -6,7 +6,8 @@ import {
     setLoading, 
     displayServerError, 
     displayClientError,
-    confirmedRedirect
+    confirmedRedirect,
+    hintWindow
 } from "../app.js";
 
 
