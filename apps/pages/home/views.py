@@ -2,7 +2,7 @@ from django.shortcuts import render
 from apps.users.models import Profile
 import json
 from django.core.paginator import Paginator
-from django.http import JsonResponse, HttpResponseForbidden
+from django.http import JsonResponse
 from django.db.models import Q
 from .models import (
     DietaryAttribute, Recipe, Ingredient, Time,
@@ -11,14 +11,27 @@ from .models import (
 from constants import NON_VEGAN_ATTRIBUTES
 from apps.users.views import load_user_profile
 from django.contrib.auth import authenticate
+from static.py.json_responses import throw_error, success
 
 
 def submit_bottle_post_review(request):
     """Handles bottle post reviews"""
+    try:
+        if request.method == 'POST':
+            # Check authentication
+            if not request.user.is_authenticated:
+                return throw_error(
+                    "You need to be logged in to review a recipe"
+                )
 
-    if request.method == 'POST' and request.user.is_authenticated:
-        action = request.GET.get('action')
-        try:
+            # Validate action type
+            action = request.GET.get('action')
+            possible_actions = ["DELETE", "BOTTLE_POST"]
+            if action not in possible_actions:
+                return throw_error(
+                    "Unrekognized action type."
+                )
+
             # Get user profile
             profile = Profile.objects.get(user=request.user)
 
@@ -26,12 +39,9 @@ def submit_bottle_post_review(request):
             review_recipe_id = profile.review_recipe_id
             recipe_id_exists = review_recipe_id == 0 or review_recipe_id
             if not recipe_id_exists:
-                return JsonResponse({
-                    'success': False,
-                    'error': (
-                        'You do not have permission to delete this recipe.'
-                    )
-                })
+                return throw_error(
+                    "You do not have permission to review this recipe."
+                )
             if profile.can_review() and recipe_id_exists:
                 # Get the recipe by id
                 recipe = Recipe.objects.get(id=profile.review_recipe_id)
@@ -43,21 +53,13 @@ def submit_bottle_post_review(request):
 
                 # Update last_reviewed_at timestamp
                 profile.update_review_timestamp()
-
-                return JsonResponse({
-                    'success': True,
-                    'message': 'Bottle post review was successful.'
-                })
-            else:
-                return JsonResponse({
-                    'success': False,
-                    'error': (
-                        'You do not have permission to review this recipe.'
-                    )
-                })
-        except Exception as e:
-            print("Error:", e)
-            return JsonResponse({'success': False, 'error': str(e)})
+                return success()
+        else:
+            return throw_error("Invalid request type")
+    except Exception:
+        return throw_error(
+            "Unexpected error when hanlding a recipe review."
+        )
 
 
 def load_recipes(request):
@@ -69,197 +71,195 @@ def load_recipes(request):
 
     Note, likes are integrated but not implemented yet.
     """
+    try:
+        # Load 6 recipes per 'page'
+        BATCH = 6
+        # URL parameters
+        page_number = request.GET.get('page')
+        q = request.GET.get('q')  # Query
+        search_areas = request.GET.get('search_areas')
+        recipe_types_exclude = request.GET.get('recipe_types_exclude')
+        # Only show recipes of a certain id
+        user_id = request.GET.get('user_id')
+        # Show a specific recipe
+        recipe_id = request.GET.get('recipe_id')
 
-    # Load 6 recipes per 'page'
-    BATCH = 6
-    # URL parameters
-    page_number = request.GET.get('page')
-    q = request.GET.get('q')  # Query
-    search_areas = request.GET.get('search_areas')
-    recipe_types_exclude = request.GET.get('recipe_types_exclude')
-    # Only show recipes of a certain id
-    user_id = request.GET.get('user_id')
-    # Show a specific recipe
-    recipe_id = request.GET.get('recipe_id')
+        # Validation
+        if q and len(q) > 200:
+            return throw_error("Your search query is too long!")
 
-    # Make sure q is declared and then create a query filter
-    if not q:
-        q = ""
-    query_filter = Q()
-    if q:
-        query_filter |= Q(title__icontains=q)
+        # Make sure q is declared and then create a query filter
+        if not q:
+            q = ""
+        query_filter = Q()
+        if q:
+            query_filter |= Q(title__icontains=q)
 
-    # Apply search areas
-    if search_areas:
-        # Split search_areas into a list (e.g., ['ingredients', 'tags'])
-        search_areas = search_areas.split(',')
-        if 'description' in search_areas:
-            query_filter |= Q(description__icontains=q)
-        if 'ingredients' in search_areas:
-            query_filter |= Q(ingredients__name__icontains=q)
-        if 'tags' in search_areas:
-            query_filter |= Q(tags__icontains=q)
+        # Apply search areas
+        if search_areas:
+            # Split search_areas into a list (e.g., ['ingredients', 'tags'])
+            search_areas = search_areas.split(',')
+            if 'description' in search_areas:
+                query_filter |= Q(description__icontains=q)
+            if 'ingredients' in search_areas:
+                query_filter |= Q(ingredients__name__icontains=q)
+            if 'tags' in search_areas:
+                query_filter |= Q(tags__icontains=q)
 
-    # Exclude recipe types
-    if recipe_types_exclude:
-        exclude_types = recipe_types_exclude.split(',')
-        if exclude_types:
-            query_filter &= ~Q(recipe_type__in=exclude_types)
+        # Exclude recipe types
+        if recipe_types_exclude:
+            exclude_types = recipe_types_exclude.split(',')
+            if exclude_types:
+                query_filter &= ~Q(recipe_type__in=exclude_types)
 
-    if user_id:
-        query_filter &= Q(user__id=user_id)
+        if user_id:
+            query_filter &= Q(user__id=user_id)
 
-    if recipe_id:
-        query_filter &= Q(id=recipe_id)
+        if recipe_id:
+            query_filter &= Q(id=recipe_id)
 
-    # Apply filters and prevent duplicate search results with distinct
-    recipes = Recipe.objects.filter(query_filter).distinct()
+        # Apply filters and prevent duplicate search results with distinct
+        recipes = Recipe.objects.filter(query_filter).distinct()
 
-    # NOTE! Do not remove '-created' at as it is ensuring consistent
-    # order and may cause duplicated search results
-    recipes = recipes.order_by('-bottle_posted_count', '-likes', '-created_at')
+        # NOTE! Do not remove '-created' at as it is ensuring consistent
+        # order and may cause duplicated search results
+        recipes = recipes.order_by(
+            '-bottle_posted_count', '-likes', '-created_at'
+        )
 
-    total_recipes = recipes.count()
-    paginator = Paginator(recipes, BATCH)
-    page = paginator.get_page(page_number)
+        total_recipes = recipes.count()
+        paginator = Paginator(recipes, BATCH)
+        page = paginator.get_page(page_number)
 
-    # Send necessary fields for frontend rendering
-    data = [
-        {
-            'id': recipe.id,
-            'user_id': recipe.user.id,
-            'username': recipe.user.username,
-            'title': recipe.title,
-            'description': recipe.description,
-            'instructions': recipe.instructions,
-            'tags': recipe.tags,
-            'dietary_attributes': [
-                attr.name for attr in recipe.dietary_attributes.all()
-            ],
-            'ingredients': [
-                {
-                    'name': ingredient.name, 'quantity': ingredient.quantity
-                }
-                for ingredient in recipe.ingredients.all()
-            ],
-            'bottle_posted_count': recipe.bottle_posted_count,
-            'likes': recipe.likes,
-            'in_ocean': recipe.in_ocean,
-            'image': recipe.image.url if recipe.image else None,
-            'user_image': (
-                recipe.user.profile.image.url
-                if recipe.user.profile.image
-                else None
-            ),
-            'vegan': recipe.vegan,
-            'preparation_time': [
-                {
-                    'days': recipe.time.preparation_days,
-                    'hours': recipe.time.preparation_hours,
-                    'minutes': recipe.time.preparation_minutes,
-                }
-            ],
-            'cooking_time': [
-                {
-                    'days': recipe.time.cooking_days,
-                    'hours': recipe.time.cooking_hours,
-                    'minutes': recipe.time.cooking_minutes,
-                }
-            ],
-            'estimated_price': [{
-                'from': float(recipe.estimated_price.price_from) if hasattr(
-                    recipe, 'estimated_price') else 0.0,
-                'to': float(recipe.estimated_price.price_to) if hasattr(
-                    recipe, 'estimated_price') else 0.0,
-            }],
-            'comments': [
-                {
-                    'user': comment.user.username,
-                    'text': comment.text,
-                    'created_at': comment.created_at.strftime(
-                        '%Y-%m-%d %H:%M:%S'
-                    )
-                }
-                for comment in recipe.comments.all().order_by('created_at')
-            ],
-        }
-        for recipe in page.object_list
-    ]
+        # Send necessary fields for frontend rendering
+        data = [
+            {
+                'id': recipe.id,
+                'user_id': recipe.user.id,
+                'username': recipe.user.username,
+                'title': recipe.title,
+                'description': recipe.description,
+                'instructions': recipe.instructions,
+                'tags': recipe.tags,
+                'dietary_attributes': [
+                    attr.name for attr in recipe.dietary_attributes.all()
+                ],
+                'ingredients': [
+                    {
+                        'name': ingredient.name,
+                        'quantity': ingredient.quantity
+                    }
+                    for ingredient in recipe.ingredients.all()
+                ],
+                'bottle_posted_count': recipe.bottle_posted_count,
+                'likes': recipe.likes,
+                'in_ocean': recipe.in_ocean,
+                'image': recipe.image.url if recipe.image else None,
+                'user_image': (
+                    recipe.user.profile.image.url
+                    if recipe.user.profile.image
+                    else None
+                ),
+                'vegan': recipe.vegan,
+                'preparation_time': [
+                    {
+                        'days': recipe.time.preparation_days,
+                        'hours': recipe.time.preparation_hours,
+                        'minutes': recipe.time.preparation_minutes,
+                    }
+                ],
+                'cooking_time': [
+                    {
+                        'days': recipe.time.cooking_days,
+                        'hours': recipe.time.cooking_hours,
+                        'minutes': recipe.time.cooking_minutes,
+                    }
+                ],
+                'estimated_price': [{
+                    'from': float(
+                        recipe.estimated_price.price_from) if hasattr(
+                        recipe, 'estimated_price') else 0.0,
+                    'to': float(recipe.estimated_price.price_to) if hasattr(
+                        recipe, 'estimated_price') else 0.0,
+                }],
+                'comments': [
+                    {
+                        'user': comment.user.username,
+                        'text': comment.text,
+                        'created_at': comment.created_at.strftime(
+                            '%Y-%m-%d %H:%M:%S'
+                        )
+                    }
+                    for comment in recipe.comments.all().order_by('created_at')
+                ],
+            }
+            for recipe in page.object_list
+        ]
 
-    return JsonResponse(
-        {
-            'recipes': data,
-            'total_recipes': total_recipes,
-            'batch': BATCH,
-        },
-        safe=False
-    )
+        return JsonResponse(
+            {
+                'success': True,
+                'error': "",
+                'recipes': data,
+                'total_recipes': total_recipes,
+                'batch': BATCH,
+            },
+            safe=False
+        )
+    except Exception:
+        return throw_error("Unexpected error when loading recipes.")
 
 
 def delete_recipe(request):
     """Deletes a recipe from the database"""
-    if request.method == 'DELETE':
-        try:
-            # Retrieve recipe_id and validate ownership
-            recipe_id = request.GET.get('recipe_id')
-            data = json.loads(request.body)
-            password = data.get('password')
-            if not password:
-                return JsonResponse(
-                    {'error': 'Password is required'}, status=400
-                )
+    # Basic validation
+    if not request.method == 'DELETE':
+        return throw_error("Invalid request type.")
 
-            # Authorize user
-            user = request.user
-            if not user.is_authenticated:
-                return JsonResponse(
-                    {'error': 'User not authenticated'}, status=403
-                )
+    try:
+        # Retrieve recipe_id and validate ownership
+        recipe_id = request.GET.get('recipe_id')
+        data = json.loads(request.body)
+        password = data.get('password')
+        if not password:
+            return throw_error("Password is required.")
 
-            # Authenticate user with password
-            user = authenticate(username=user.username, password=password)
-            if user is None:
-                return JsonResponse(
-                    {'error': 'Incorrect password'}, status=403
-                )
+        # Authorize user
+        user = request.user
+        if not user.is_authenticated:
+            return throw_error("User not authenticated.")
 
-            # Validate url parameter (recipe_id)
-            if not recipe_id:
-                return JsonResponse({
-                    'success': False,
-                    'error': 'Recipe ID is required for deletion.'
-                })
+        # Authenticate user with password
+        user = authenticate(username=user.username, password=password)
+        if user is None:
+            return throw_error("Incorrect password.")
 
-            # Get the recipe and ensure the current user is the owner
-            recipe = Recipe.objects.get(id=recipe_id)
-            if recipe.user != request.user:
-                return HttpResponseForbidden(
-                    "You do not have permission to delete this recipe."
-                )
+        # Validate url parameter (recipe_id)
+        if not recipe_id:
+            return throw_error("Recipe ID is required for deletion.")
 
-            # Delete the recipe
-            recipe.delete()
-            return JsonResponse(
-                {'success': True, 'message': 'Recipe deleted successfully.'}
+        # Get the recipe and ensure the current user is the owner
+        recipe = Recipe.objects.get(id=recipe_id)
+        if recipe.user != request.user:
+            return throw_error(
+                "You do not have permission to delete this recipe."
             )
 
-        except Recipe.DoesNotExist:
-            return JsonResponse({
-                'success': False,
-                'error': 'Recipe not found.'
-            })
-        except Exception as e:
-            print("Error:", e)
-            return JsonResponse({'success': False, 'error': str(e)})
+        # Delete the recipe
+        recipe.delete()
+        return success()
+    except Recipe.DoesNotExist:
+        return throw_error("Recipe not found.")
+    except Exception:
+        return throw_error("Unexpected error.")
 
 
 def submit_recipe(request):
     """
     Creates or updates a recipe based on how recipe_id is constructed.
     """
-
-    if request.method == 'POST':
-        try:
+    try:
+        if request.method == 'POST':
             # Check if this is an edit (update) or create operation
             recipe_id = request.POST.get('recipe_id')
             is_update = recipe_id is not None and recipe_id != "NEW RECIPE"
@@ -270,14 +270,14 @@ def submit_recipe(request):
                 recipe = Recipe.objects.get(id=recipe_id)
                 # Check if the current user is the author of the recipe
                 if recipe.user != request.user:
-                    return HttpResponseForbidden(
+                    return throw_error(
                         "You do not have permission to edit this recipe."
                     )
             else:
                 # Block spammy requests (24 hour limit)
                 profile = Profile.objects.get(user=request.user)
                 if not profile.can_post():
-                    return HttpResponseForbidden(
+                    return throw_error(
                         "You must wait 24 hours between each post."
                     )
 
@@ -363,17 +363,22 @@ def submit_recipe(request):
 
             # Update last_posted_at timestamp
             profile.update_last_posted_timestamp()
-
-        except Exception as e:
-            print("Error:", e)
-            return JsonResponse({'success': False, 'error': str(e)})
-
-    return JsonResponse({'success': True})
+            return success()
+        else:
+            return throw_error("Unvalid request type.")
+    except Exception:
+        return throw_error("Unexpected error.")
 
 
 def publish_comment(request):
-    if request.method == 'POST' and request.user.is_authenticated:
-        try:
+    try:
+        if request.method == 'POST':
+            # Check authentication
+            if not request.user.is_authenticated:
+                return throw_error(
+                    "You must be logged in to publish a comment."
+                )
+
             # URL parameters
             recipe_id = request.POST.get('recipe_id')
             comment_text = request.POST.get('comment')
@@ -388,12 +393,10 @@ def publish_comment(request):
                 text=comment_text
             )
 
-            return JsonResponse({'success': True})
-
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
-
-    return JsonResponse({'success': False, 'message': 'Invalid request'})
+            return success()
+        return throw_error("Invalid request type.")
+    except Exception:
+        return throw_error("Unexpected error when handling comments.")
 
 
 def home(request):

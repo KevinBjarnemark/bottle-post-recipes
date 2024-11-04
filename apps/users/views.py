@@ -1,10 +1,10 @@
 from django.contrib.auth import authenticate
-# Import all profile model
 from .models import Profile
 import json
 from django.http import JsonResponse
 import random
 from apps.pages.home.models import Recipe
+from static.py.json_responses import throw_error, success
 
 
 def manage_recipe_review_id(request):
@@ -67,29 +67,40 @@ def load_user_profile(request):
 
 
 def delete_account(request):
-    if request.method == 'DELETE':
-        if not request.user.is_authenticated:
-            return JsonResponse(
-                {'error': 'User not authenticated'}, status=403
+    """
+    Deletes a user account and all related CASCADE
+    data.
+    """
+
+    try:
+        if request.method == 'DELETE':
+            if not request.user.is_authenticated:
+                return throw_error(
+                    "You must be logged in to delete your account."
+                )
+
+            # Get and validate password
+            data = json.loads(request.body)
+            password = data.get('password')
+            if not password:
+                return throw_error("Password is required")
+
+            # Authenticate with password
+            user = authenticate(
+                username=request.user.username, password=password
             )
+            if user is None:
+                return throw_error("Incorrect password")
 
-        data = json.loads(request.body)
-        password = data.get('password')
-
-        if not password:
-            return JsonResponse({'error': 'Password is required'}, status=400)
-
-        # Authenticate with password
-        user = authenticate(username=request.user.username, password=password)
-        if user is None:
-            return JsonResponse({'error': 'Incorrect password'}, status=403)
-
-        try:
             # Delete the user account and profile
             user.delete()
-            return JsonResponse({'success': 'Account deleted successfully'})
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            return success()
+        else:
+            return throw_error("Invalid request type.")
+    except Exception:
+        return throw_error(
+            "Unexpected error when handling account deletion."
+        )
 
 
 def toggle_vegan_mode(request):

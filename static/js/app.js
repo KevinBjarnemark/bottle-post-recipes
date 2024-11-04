@@ -50,27 +50,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 
-export const setLoading = (bool) => {
-    if (bool){
-        window.appVariables.loadingItems.push(".");
-    }else {
-        window.appVariables.loadingItems.pop(".");
-    }
-
-    if (window.appVariables.loadingItems.length === 0) {
-        window.appHTML.loadingContainer.style.display = "none";
-    }else {
-        window.appHTML.loadingContainer.style.display = "flex";
-    }
-};
-
 /**
  * Sets the innerHTML of hint_window.html component and clear it after 
  * 5 seconds.
  * 
- * @param {Object}  feedVariables
- * @param {Object}  feedHTML
- * @param {String}  html The html string to insert in the hint window
+ * @param {Object}  html The html string to insert in the hint window
+ * @param {Number}  time
  */
 export const hintWindow = (html, time=5000) => {
     // Clear any previously set timers
@@ -88,6 +73,63 @@ export const hintWindow = (html, time=5000) => {
         window.appHTML.hintWindow.style.transform = 'scale(0)';
         window.appHTML.hintWindowText.innerHTML = "";
     }, time);
+};
+
+/**
+ * Displays a client-side error in the hint window and 
+ * blocks 'developer' errors. 
+ * 
+ * If an unexepcted error occurs, "Something went wrong"
+ * displays.
+ * 
+ * If you want to create a custom error, throw an error 
+ * with 'clientError:' as a prefiix prefix.
+ * 
+ * @param {Object}  errors Object of errors
+ * @param {Number}   time Time to display the errors
+ * @param {Boolean}   client Client-side errors, if true
+ */
+export const displayClientError = (error="", time=7000, client=true) => {
+    /* Distinguish client-side errors and avoid 'developer errors' to be exposed to 
+    the client */
+    if (error.startsWith("clientError:")) {
+        hintWindow(`
+            <p>❌ Client error <br /> ${error.replace("clientError:", "").trim()}</p>
+            `, time
+        );
+    }else {
+        hintWindow(`<p>❌ Client error <br /> Something went wrong..</p>`, time);
+    }
+};
+
+/**
+ * Displays a server-side error in the hint window.
+ * 
+ * @param {String} error The composed error message from the server response.
+ * @param {Number} time Time to display the error (default is 7000ms).
+ */
+export const displayServerError = (error = "An unknown error occurred.", time = 7000) => {
+    if (typeof error === "string" && error) {
+        hintWindow(`
+            <p>Server error ❌<br /> ${error}</p>
+        `, time);
+    } else {
+        hintWindow(`<p>Something went wrong on our server ❌</p>`, time);
+    }
+};
+
+export const setLoading = (bool) => {
+    if (bool){
+        window.appVariables.loadingItems.push(".");
+    }else {
+        window.appVariables.loadingItems.pop(".");
+    }
+
+    if (window.appVariables.loadingItems.length === 0) {
+        window.appHTML.loadingContainer.style.display = "none";
+    }else {
+        window.appHTML.loadingContainer.style.display = "flex";
+    }
 };
 
 export const confirmPassword = (confirmFunction, infoHTML="<p></p>") => {
@@ -171,7 +213,8 @@ const deleteAccountConfirmed = async (password) => {
                 body: JSON.stringify({ password: password }),
             });
 
-            if (response.ok) {
+            const jsonResponse = await response.json();
+            if (jsonResponse.success) {
                 await confirmedRedirect(
                     `<p>
                         Your account is now deleted ✔️
@@ -181,53 +224,11 @@ const deleteAccountConfirmed = async (password) => {
                     7000
                 );
             } else {
-                const data = await response.json();
-                console.error('Error deleting account:', data);
+                displayServerError(jsonResponse.error);
             }
         } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+            displayClientError(error.message);
         }
     };
     await init();
-};
-
-
-/**
- * Displays a client-side error in the hint window.
- * 
- * Also, blocks 'developer' errors, use 'clientError:' prefix
- * whenever you throw errors.
- * 
- * @param {Object}  errors Object of errors
- * @param {Number}   time Time to display the errors
- * @param {Boolean}   client Client-side errors, if true
- */
-export const displayClientError = (error="", time=7000, client=true) => {
-    /* Distinguish client-side errors and avoid 'developer errors' to be exposed to 
-    the client */
-    if (error.startsWith("clientError:")) {
-        hintWindow(`
-            <p>❌ Client error <br /> ${error.replace("clientError:", "").trim()}</p>
-            `, time
-        );
-    }else {
-        hintWindow(`<p>❌ Client error <br /> Something went wrong..</p>`, time);
-    }
-};
-
-/**
- * Displays a server-side error in the hint window.
- * 
- * @param {String} error The composed error message from the server response.
- * @param {Number} time Time to display the error (default is 7000ms).
- */
-export const displayServerError = (error = "An unknown error occurred.", time = 7000) => {
-    if (typeof error === "string" && error) {
-        hintWindow(`
-            <p>Server error ❌<br /> ${error}</p>
-        `, time);
-    } else {
-        hintWindow(`<p>Something went wrong on our server ❌</p>`, time);
-    }
 };

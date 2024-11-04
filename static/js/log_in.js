@@ -86,7 +86,6 @@ const logIn = async (logInVariables) => {
                 displayServerError(jsonResponse.error, 7000);
             }
         } catch (error) {
-            console.log(error)
             displayClientError(error.message);
         } finally {
             setLoading(false);

@@ -6,7 +6,13 @@ import {DIETARYATTRIBUTES_ALL,
     DIETARYATTRIBUTES_NON_VEGAN,
     RECIPE_EMPTY,
 } from '../constants.js';
-import {setLoading, confirmPassword, confirmedRedirect} from '../app.js';
+import {
+    setLoading, 
+    confirmPassword, 
+    confirmedRedirect,
+    displayClientError,
+    displayServerError,
+} from '../app.js';
 
 
 /**
@@ -21,10 +27,7 @@ const publishRecipe = async (feedVariables, recipeId) => {
         try {
             // Create the form data constructor
             const formData = new FormData();
-
-            // Include recipeId to handle edits
-            formData.append("recipe_id", recipeId);
-
+            
             // These entries should be stringified
             const stringifyEntries = [
                 "dietary_attributes", 
@@ -33,6 +36,8 @@ const publishRecipe = async (feedVariables, recipeId) => {
                 "cooking_time",
                 "estimated_price",
             ];
+
+            // Append all form data 
             Object.entries(feedVariables.formData).forEach(([entry, value]) => {
                 if (stringifyEntries.includes(entry)){
                     formData.append(entry, JSON.stringify(value));
@@ -40,6 +45,8 @@ const publishRecipe = async (feedVariables, recipeId) => {
                     formData.append(entry, value);
                 } 
             });
+            // Include recipeId to handle edits
+            formData.append("recipe_id", recipeId);
 
             // Send destructed form data
             const response = await fetch('/submit_recipe/', {
@@ -50,7 +57,8 @@ const publishRecipe = async (feedVariables, recipeId) => {
                 body: formData,
             });
 
-            if (response.ok) {
+            const jsonResponse = await response.json();
+            if (jsonResponse.success) {
                 await confirmedRedirect(
                     `<p>
                         Recipe successfully created! ✔️
@@ -60,14 +68,10 @@ const publishRecipe = async (feedVariables, recipeId) => {
                     7000
                 );
             } else {
-                // TODO handle backend errors
-                const data = await response.json();
-                console.error(data);
+                displayServerError(jsonResponse.error);
             }
-          
         } catch (error) {
-            // TODO client errors
-            console.error('Error:', error);
+            displayClientError(error.message);
         } finally {
             setLoading(false);
         }
@@ -84,7 +88,6 @@ const deleteRecipeConfirmed = async (recipeId, password) => {
     setLoading(true);
     const init = async () => {
         try {
-
             // Send a DELETE request to the backend
             const response = await fetch(`/delete_recipe/?recipe_id=${recipeId}`, {
                 method: 'DELETE',
@@ -95,7 +98,8 @@ const deleteRecipeConfirmed = async (recipeId, password) => {
                 body: JSON.stringify({ password: password }),
             });
 
-            if (response.ok) {
+            const jsonResponse = await response.json();
+            if (jsonResponse.success) {
                 await confirmedRedirect(
                     `<p>
                         Recipe successfully deleted! ✔️
@@ -105,12 +109,10 @@ const deleteRecipeConfirmed = async (recipeId, password) => {
                     7000
                 );
             } else {
-                const data = await response.json();
-                console.error('Error deleting recipe:', data);
+                displayServerError(jsonResponse.error, 7000);
             }
-        
         } catch (error) {
-            console.error('Error:', error);
+            displayClientError(error.message, 7000);
         } finally {
             setLoading(false);
         }

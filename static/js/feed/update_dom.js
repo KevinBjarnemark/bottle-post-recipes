@@ -1,7 +1,12 @@
 import { trimText, addStoredEventListener } from "../helpers.js";
 import { recipeViewer } from "./recipe_viewer.js";
 import { recipeEditor } from "./recipe_editor.js";
-import { setLoading, hintWindow } from "../app.js";
+import { 
+    setLoading, 
+    hintWindow, 
+    displayServerError, 
+    displayClientError 
+} from "../app.js";
 import { loadUserRecipes } from "../feed/feed.js"; 
 
 /**
@@ -21,7 +26,7 @@ export const cleanUpFeed = (feedHTML, feedVariables) => {
  * message to the user. 
  * 
  */
-export const filterVeganRecipes = (feedHTML, feedVariables) => {
+export const filterVeganRecipes = (feedVariables) => {
     let veganRecipeCount = 0;
     let nonVeganRecipeCount = 0;
 
@@ -285,7 +290,7 @@ export const renderRecipes = (data, feedHTML, feedVariables) => {
 
         });
         // Show recipes based on vegan mode
-        filterVeganRecipes(feedHTML, feedVariables);
+        filterVeganRecipes(feedVariables);
     }else {
         hintWindow("<p>All recipes are loaded!</p>");
     }
@@ -293,7 +298,7 @@ export const renderRecipes = (data, feedHTML, feedVariables) => {
 
 export const getRecipePage = async (page, feedHTML, feedVariables) => {
     setLoading(true);
-        try {
+    try {
         let additionalParametersObject = {
             q: feedVariables.filterObject.q,
             search_areas: "",
@@ -340,17 +345,21 @@ export const getRecipePage = async (page, feedHTML, feedVariables) => {
         const response = await fetch(
             `/load_recipes?page=${page}${additionalParameters}`
         );
-        const data = await response.json();
 
-        // Handle no recipes found and then render recipes
-        if (data.total_recipes === 0) {
-            hintWindow("<p>Couldn't find any recipes.</p>");
-        }else {
-            // Append new recipes to the recipe feed
-            renderRecipes(data, feedHTML, feedVariables);
+        const jsonResponse = await response.json();
+        if (jsonResponse.success) {
+            // Handle no recipes found and then render recipes
+            if (jsonResponse.total_recipes === 0) {
+                hintWindow("<p>Couldn't find any recipes.</p>");
+            }else {
+                // Append new recipes to the recipe feed
+                renderRecipes(jsonResponse, feedHTML, feedVariables);
+            }
+        } else {
+            displayServerError(jsonResponse.error, 7000);
         }
     }catch (error) {
-        console.error(error)
+        displayClientError(error.message, 7000);
     } finally {
         setLoading(false);
     }

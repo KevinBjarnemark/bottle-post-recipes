@@ -81,7 +81,7 @@ export const toggleVeganMode = async (feedHTML, feedVariables) => {
         `;
         hintWindow(hintWindowHtml);
 
-        filterVeganRecipes(feedHTML, feedVariables);
+        filterVeganRecipes(feedVariables);
     } else {
         console.error('Failed to toggle vegan mode');
     }

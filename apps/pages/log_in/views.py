@@ -8,10 +8,11 @@ from static.py.json_responses import throw_error, success
 def submit_log_in(request):
     try:
         if request.method == 'POST':
+
+            # Get and validate data
             username = request.POST.get('username')
             password = request.POST.get('password')
 
-            # Basic validation
             if not username or not password:
                 return throw_error("Username and password are required.")
 
@@ -22,10 +23,10 @@ def submit_log_in(request):
                 return success()
             else:
                 return throw_error("Invalid username or password.")
-        else:
-            return throw_error("Invalid request method.")
+        else: 
+            return throw_error("Invalid request type.")
     except Exception:
-        return throw_error("Something went wrong.")
+        return throw_error("Unexpected error.")
 
 
 def log_in(request):

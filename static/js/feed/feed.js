@@ -4,7 +4,7 @@ import { getRecipePage, cleanUpFeed } from './update_dom.js';
 import { veganModeColor } from '../helpers.js';
 import { recipeEditor } from '../feed/recipe_editor.js';
 import { DEFAULT_FILTER_OBJECT } from '../constants.js';
-import { setLoading } from '../app.js';
+import { displayClientError, setLoading } from '../app.js';
 
 document.addEventListener("DOMContentLoaded", function() {
     setLoading(true);
@@ -192,7 +192,7 @@ export const initPage = async (feedHTML, feedVariables) => {
 
         handleBottlePostNotifications(feedHTML, feedVariables);
     }catch(error) {
-        console.log(error);
+        displayClientError(error.message)
     } finally {
         setLoading(false);
     }
@@ -241,4 +241,3 @@ export const setInitialStates = async (feedHTML, feedVariables) => {
     // Load the first recipe group
     await getRecipePage(1, feedHTML, feedVariables);
 };
-

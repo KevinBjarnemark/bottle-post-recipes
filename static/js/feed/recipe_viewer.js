@@ -2,7 +2,12 @@ import {
     addStoredEventListener, 
     getCookie 
 } from "../helpers.js";
-import { setLoading } from "../app.js";
+import { 
+    setLoading, 
+    displayServerError, 
+    displayClientError,
+    confirmedRedirect
+} from "../app.js";
 
 
 /**
@@ -47,7 +52,8 @@ const submitBottlePostReview = async (action) => {
                 },
             });
 
-            if (response.ok) {
+            const jsonResponse = await response.json();
+            if (jsonResponse.success) {
                 await confirmedRedirect(
                     `<p>
                         You've succesfully reviewed this recipe! ✔️
@@ -57,11 +63,10 @@ const submitBottlePostReview = async (action) => {
                     7000,
                 );
             } else {
-                const data = await response.json();
-                console.error('Error when submitting bottle post review:', data);
+                displayServerError(jsonResponse.error, 7000);
             }
         } catch (error) {
-            console.error('Error:', error);
+            displayClientError(error.message);
         } finally {
             setLoading(false);
         }
@@ -107,9 +112,9 @@ export const handlePublishComment = async (feedVariables, feedHTML, recipeId, co
             },
             body: commentFormData,
         });
-        const result = await response.json();
-        
-        if (result.success) {
+
+        const jsonResponse = await response.json();
+        if (jsonResponse.success) {
             // Target the first div inside the comment section
             const commentSection = feedHTML.recipeViewer.comments
                 .parentElement.querySelector('div');
@@ -127,17 +132,17 @@ export const handlePublishComment = async (feedVariables, feedHTML, recipeId, co
             feedHTML.recipeViewer.commentInput.value = "";
             commentFormData.delete("comment");
             commentFormData.delete("recipe_id");
-        } else {
             hintWindow(
                 `<p>
-                    Failed to publish comment ❌
-                    <br />
+                    Your comment published successfully ✔️
                 </p>`, 
                 7000
             );
+        } else {
+            displayServerError(jsonResponse.error, 7000);
         }
     } catch (error) {
-        console.error('Error publishing comment:', error);
+        displayClientError(error.message, 7000);
     } finally {
         setLoading(false);
     }

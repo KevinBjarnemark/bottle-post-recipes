@@ -104,8 +104,10 @@ export const MOCKRECIPEDATA = {
             ],
         },
     ],
-total_recipes: 4,
-batch: 6,
+    success: true,
+    error: "",
+    total_recipes: 4,
+    batch: 6,
 };
 
 /**
@@ -285,6 +287,7 @@ export const getAppHtmlMockData = () => {
         hintWindowText: { tag: 'p', id: 'hint-window-text' },
         passwordConfirmationPopUp: {
             container: { tag: 'section', id: 'password-confirmation-pop-up-container' },
+            info: { tag: 'div', id: 'password-confirmation-pop-up-info' },
             input: { tag: 'input', id: 'password-confirmation-pop-up-input' },
             confirmButton: { tag: 'button', id: 'password-confirmation-pop-up-confirm-button' },
             closeButton: { tag: 'button', id: 'password-confirmation-pop-up-close-button' },

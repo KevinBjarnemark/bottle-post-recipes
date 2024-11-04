@@ -8,10 +8,14 @@ from static.py.json_responses import throw_error, success
 
 
 def register_account(request):
+    """
+    Registers a user account with username and password.
+    """
     try:
         if request.method == 'POST':
+            # Form
             form = UserCreationForm(request.POST, request.FILES)
-            # Validate form
+            #  Validate form
             if not form.is_valid():
                 # Get the first error message
                 first_error = next(iter(form.errors.values()))[0]
@@ -35,19 +39,20 @@ def register_account(request):
             # Authenticate
             user = authenticate(username=username, password=password)
             # Handle the Profile object and associate the image
-
             profile, created = Profile.objects.get_or_create(user=user)
             if profile_image:
                 profile.image = profile_image
             profile.save()
             # Automatically opt in the user and redirect to home
             login(request, user)
+
             return success()
         else:
-            return throw_error("Invalid request")
-    except Exception as e:
-        print(e)
-        return throw_error("Something went wrong")
+            return throw_error("Invalid request type.")
+    except Exception:
+        return throw_error(
+            "Unexpected error when handling acocunt registration."
+        )
 
 
 def account_registration(request):
