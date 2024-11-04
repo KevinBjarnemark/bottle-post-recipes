@@ -34,7 +34,7 @@ export const MOCKRECIPEDATA = {
         },
         {// Note, no comment
             id: 2,
-            user_id: 0,
+            user_id: 1,
             recipe_type: "vegetarian",
             vegan: false,
             title: "Vegetarian Recipe",
@@ -53,7 +53,7 @@ export const MOCKRECIPEDATA = {
         },
         {
             id: 3,
-            user_id: 0,
+            user_id: 2,
             recipe_type: "fish",
             vegan: false,
             title: "Fish Recipe",
@@ -78,7 +78,7 @@ export const MOCKRECIPEDATA = {
         },
         {
             id: 4,
-            user_id: 0,
+            user_id: 3,
             recipe_type: "meat",
             vegan: false,
             title: "Meat Recipe",

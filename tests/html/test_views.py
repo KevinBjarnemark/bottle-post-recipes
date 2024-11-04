@@ -2,15 +2,17 @@ import pytest
 from django.urls import reverse
 
 
-# Check if the homepage loads
+# Test all pages
 @pytest.mark.django_db
-def test_homepage_loads(client):
-    response = client.get(reverse('home'))
-    assert response.status_code == 200
-
-
-# Check if the login page loads
-@pytest.mark.django_db
-def test_login_loads(client):
-    response = client.get(reverse('log_in'))
-    assert response.status_code == 200
+def test_pages(client):
+    pages = [
+        'home',
+        'log_in',
+        'about',
+        'account_registration',
+        'terms_of_service',
+        'privacy_policy',
+    ]
+    for page in pages:
+        response = client.get(reverse(page))
+        assert response.status_code == 200

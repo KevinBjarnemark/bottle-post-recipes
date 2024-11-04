@@ -26,6 +26,11 @@ def test_homepage_uses_correct_templates_user(client):
     assert 'base.html' in templates_used
     assert 'components/page/hint_window.html' in templates_used
     assert 'components/page/sidebar.html' in templates_used
+    assert 'components/page/recipe_viewer.html' in templates_used
+    assert 'components/page/recipe_editor.html' in templates_used
+    assert (
+        'components/buttons/bottle_post_notification_button.html'
+        in templates_used)
     # Should not render
     assert 'components/user/login_required.html' not in templates_used
 

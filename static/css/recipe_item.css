@@ -171,3 +171,19 @@ bottle icon and the red counter */
     75% {box-shadow: 0 0 15px 8px #ffbc78;}
     100% {box-shadow: 0 0 8px 8px #ffffff;}
 }
+
+/* Decrease recipe item width on screens smaller than 390px */
+@media (max-width: 390px) {
+    :root {
+        --recipe-item-width: 200px;
+    }
+}
+/* Decrease recipe item width on screens smaller than 320px */
+@media (max-width: 320px) {
+    :root {
+        --recipe-item-width: 170px;
+    }
+    .recipe-item-bottle-post-count-container {
+        left: 17px
+    }
+}

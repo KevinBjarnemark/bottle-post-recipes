@@ -1,5 +1,21 @@
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils import timezone
+from datetime import datetime
+
+
+def pass_spam_filter(user):
+    """
+    Passes the 24h posting limit by altering the
+    last_posted_at value
+    """
+    profile = user.profile
+    # Reset last_posted_at to pass spam filter
+    profile.last_posted_at = timezone.make_aware(
+        datetime(2023, 1, 1, 12, 0, 0)
+    )
+    profile.save()
+
 
 # NOTE Do not add anything that is declared in the backend,
 # like 'vegan', recipe_type, etc.
@@ -9,8 +25,6 @@ MOCKRECIPEDATA = {
             "id": 1,
             "user_id": 0,
             "title": "Vegan Recipe",
-            "vegan": True,
-            "recipe_type": "vegan",
             "description": "Test description",
             "instructions": "Test instructions",
             "dietary_attributes": ["soy"],
@@ -32,13 +46,11 @@ MOCKRECIPEDATA = {
         },
         {
             "id": 2,
-            "user_id": 0,
-            "recipe_type": "vegetarian",
-            "vegan": False,
+            "user_id": 1,
             "title": "Vegetarian Recipe",
             "description": "Test description",
             "instructions": "Test instructions",
-            "dietary_attributes": ["meat"],
+            "dietary_attributes": ["dairy"],
             "ingredients": [
                 {"name": "Mozzarella", "quantity": "100g"},
                 {"name": "Olive oil", "quantity": "1/4 cup of"},
@@ -51,9 +63,7 @@ MOCKRECIPEDATA = {
         },
         {
             "id": 3,
-            "user_id": 0,
-            "recipe_type": "fish",
-            "vegan": False,
+            "user_id": 2,
             "title": "Fish Recipe",
             "description": "Test description",
             "instructions": "Test instructions",
@@ -76,9 +86,7 @@ MOCKRECIPEDATA = {
         },
         {
             "id": 4,
-            "user_id": 0,
-            "recipe_type": "meat",
-            "vegan": False,
+            "user_id": 3,
             "title": "Meat Recipe",
             "description": "Test description",
             "instructions": "Test instructions",

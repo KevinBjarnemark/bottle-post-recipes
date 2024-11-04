@@ -5,88 +5,10 @@ from apps.users.models import User
 from tests.helpers.py.helpers import (
     MOCKRECIPEDATA,
     user_log_in,
-    create_mock_image
+    create_mock_image,
+    pass_spam_filter
 )
 import json
-from datetime import datetime
-from django.utils import timezone
-
-
-# Recipe creation, javascript insertion, and render
-@pytest.mark.django_db
-def test_recipe_creation(client):
-    # Log in user
-    user = user_log_in(client)
-
-    # Submit all mock recipes
-    for recipe_data in MOCKRECIPEDATA['recipes']:
-        # Reset last_posted_at to pass spam filter
-        profile = user.profile
-        profile.last_posted_at = timezone.make_aware(
-            datetime(2023, 1, 1, 12, 0, 0)
-        )
-        profile.save()
-
-        # Convert to JSON string
-        dietary_attributes = json.dumps(recipe_data['dietary_attributes'])
-        ingredients = json.dumps(recipe_data['ingredients'])
-
-        print(dietary_attributes)
-
-        recipe = {
-            'title': recipe_data['title'],
-            'description': recipe_data['description'],
-            'dietary_attributes': dietary_attributes,
-            'image': create_mock_image(),
-            'instructions': recipe_data['instructions'],
-            'ingredients': ingredients,
-        }
-        # Submit form
-        response = client.post(reverse('submit_recipe'), recipe)
-        # Ensure successful response
-        assert response.status_code == 200
-        # Ensure the recipe was created
-        assert Recipe.objects.filter(title=recipe_data['title']).exists()
-        # Get the created recipe instance
-        recipe_instance = Recipe.objects.get(
-            user=user, title=recipe_data['title']
-        )
-        # Deserialize submitted ingredients for verification
-        submitted_ingredients = json.loads(ingredients)
-        # Verify that ingredients are associated with the recipe
-        for ingredient_data in submitted_ingredients:
-            assert recipe_instance.ingredients.filter(
-                name=ingredient_data['name'],
-                quantity=ingredient_data['quantity']
-            ).exists()
-
-    # NOTE Recipes are displayed with JS, there are separate
-    # JEST tests for checking if recipe components gets displayed.
-
-
-# Check user profile
-@pytest.mark.django_db
-def test_user_profile_data_in_js(client):
-    user = user_log_in(client)
-    response = client.get(reverse('home'))
-    content = response.content.decode()
-
-    # Check if JSON is identical to user profile
-    user_profile_json = json.loads(response.context['user_profile'])
-    assert '"user-profile-data"' in response.content.decode()
-    assert user_profile_json['vegan_mode'] == user.profile.vegan_mode
-
-    # Check if vegan mode is True by default
-    assert user.profile.vegan_mode is True
-
-    # Check if vegan mode can be configured
-    user.profile.vegan_mode = False
-    user.profile.save()
-    user.refresh_from_db()
-    assert user.profile.vegan_mode is False
-
-    # Check if vegan mode toggle button exists
-    assert 'id="vegan-mode-button"' in content
 
 
 # Check user registration
@@ -132,3 +54,73 @@ def test_user_login(client, django_user_model):
     response_data = json.loads(response.content.decode('utf-8'))
     # Check that the response was successful
     assert response_data['success'] is True
+
+
+# Check user profile
+@pytest.mark.django_db
+def test_user_profile_data_in_js(client):
+    user = user_log_in(client)
+    response = client.get(reverse('home'))
+    content = response.content.decode()
+
+    # Check if JSON is identical to user profile
+    user_profile_json = json.loads(response.context['user_profile'])
+    assert '"user-profile-data"' in response.content.decode()
+    assert user_profile_json['vegan_mode'] == user.profile.vegan_mode
+
+    # Check if vegan mode is True by default
+    assert user.profile.vegan_mode is True
+
+    # Check if vegan mode can be configured
+    user.profile.vegan_mode = False
+    user.profile.save()
+    user.refresh_from_db()
+    assert user.profile.vegan_mode is False
+
+    # Check if vegan mode toggle button exists
+    assert 'id="vegan-mode-button"' in content
+
+
+# Recipe creation, javascript insertion, and render
+@pytest.mark.django_db
+def test_recipe_creation(client):
+    # Log in user
+    user = user_log_in(client)
+
+    # Submit all mock recipes
+    for recipe_data in MOCKRECIPEDATA['recipes']:
+        pass_spam_filter(user)
+
+        # Convert to JSON string
+        dietary_attributes = json.dumps(recipe_data['dietary_attributes'])
+        ingredients = json.dumps(recipe_data['ingredients'])
+
+        recipe = {
+            'title': recipe_data['title'],
+            'description': recipe_data['description'],
+            'dietary_attributes': dietary_attributes,
+            'image': create_mock_image(),
+            'instructions': recipe_data['instructions'],
+            'ingredients': ingredients,
+        }
+        # Submit form
+        response = client.post(reverse('submit_recipe'), recipe)
+        # Ensure successful response
+        assert response.status_code == 200
+        # Ensure the recipe was created
+        assert Recipe.objects.filter(title=recipe_data['title']).exists()
+        # Get the created recipe instance
+        recipe_instance = Recipe.objects.get(
+            user=user, title=recipe_data['title']
+        )
+        # Deserialize submitted ingredients for verification
+        submitted_ingredients = json.loads(ingredients)
+        # Verify that ingredients are associated with the recipe
+        for ingredient_data in submitted_ingredients:
+            assert recipe_instance.ingredients.filter(
+                name=ingredient_data['name'],
+                quantity=ingredient_data['quantity']
+            ).exists()
+
+    # NOTE Recipes are displayed with JS, there are separate
+    # JEST tests for checking if recipe components gets displayed.
