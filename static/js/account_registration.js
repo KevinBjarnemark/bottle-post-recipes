@@ -1,10 +1,10 @@
-import {getCookie} from './helpers.js'
+import {getCookie} from './helpers.js';
 import {
     confirmedRedirect, 
     setLoading, 
     displayClientError, 
     displayServerError
-} from './app.js'
+} from './app.js';
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
         termsOfService: document.getElementById("register-terms-of-service"),
         privacyPolicy: document.getElementById("register-privacy-policy"),
         submitButton: document.getElementById("register-submit-button"),
-    }
+    };
 
     let registerVariables = {
         inputs: {
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
             confirmedPassword: "",
             image: null,
         }
-    }
+    };
 
     const checkTerms = () => {
         // Enable the button only if both checkboxes are checked
@@ -77,17 +77,17 @@ const createAccount = async (registerHTML, registerVariables) => {
             }
             
             // Validate inputs
-            const username = registerVariables.inputs.username
-            const password = registerVariables.inputs.password
-            const confirmedPassword = registerVariables.inputs.confirmedPassword
+            const username = registerVariables.inputs.username;
+            const password = registerVariables.inputs.password;
+            const confirmedPassword = registerVariables.inputs.confirmedPassword;
             if (!username) {
-                throw new Error("clientError: Username is missing.")
+                throw new Error("clientError: Username is missing.");
             }
             if (!password) {
-                throw new Error("clientError: Password is missing.")
+                throw new Error("clientError: Password is missing.");
             }
             if (password !== confirmedPassword) {
-                throw new Error("clientError: Passwords must to be identical.")
+                throw new Error("clientError: Passwords must to be identical.");
             }
 
             // Send destructed form data

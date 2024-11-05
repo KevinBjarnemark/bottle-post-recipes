@@ -271,7 +271,7 @@ const buildIngredients = (feedHTML, feedVariables, ingredientsPreFill) => {
         // 'Prefill' ingredients by adding them
         ingredientsPreFill.forEach(ingredient => {
             addIngredientToList(feedHTML, feedVariables, ingredient);
-        })
+        });
 
         // Add and store add ingredient button listener
         addStoredEventListener(
@@ -299,7 +299,7 @@ const buildIngredients = (feedHTML, feedVariables, ingredientsPreFill) => {
     }catch (error) {
         displayClientError(error.message);
     }
-}
+};
 
 /**
  * Closes the recipe editor component and clears 
@@ -386,7 +386,7 @@ export const recipeEditor = (feedHTML, feedVariables, recipeId) => {
             feedVariables,
             "click", 
             feedHTML.recipeEditor.deleteButton.id, 
-            () => {deleteRecipe(recipeId)}
+            () => {deleteRecipe(recipeId);}
         );
 
         // Text inputs (pre filling and listeners) 
@@ -427,7 +427,7 @@ export const recipeEditor = (feedHTML, feedVariables, recipeId) => {
             const collection = feedHTML.recipeEditor
                 .combinedNumberInputs[feedHtmlEntry];
             Object.entries(collection).forEach(([entry, element]) => {
-                const entrySnake = toSnakeCase(entry)
+                const entrySnake = toSnakeCase(entry);
                 const entryData = recipe[feedHtmlEntrySnake][0][entrySnake];
 
                 // Clear previous value (form data and input)
@@ -469,7 +469,7 @@ export const recipeEditor = (feedHTML, feedVariables, recipeId) => {
         buildDietaryAttributes(feedHTML, feedVariables, recipe.dietary_attributes);
         
         // Ingredients
-        buildIngredients(feedHTML, feedVariables, recipe.ingredients)
+        buildIngredients(feedHTML, feedVariables, recipe.ingredients);
 
         // Add and store submit button
         addStoredEventListener(
@@ -486,7 +486,7 @@ export const recipeEditor = (feedHTML, feedVariables, recipeId) => {
             feedVariables,
             "click", 
             `recipe-editor-close-button`, 
-            () => {handleClose(feedHTML)}
+            () => {handleClose(feedHTML);}
         );
 
         // Add and store image preview listener

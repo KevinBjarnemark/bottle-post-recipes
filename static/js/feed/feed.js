@@ -200,7 +200,7 @@ export const initPage = async (feedHTML, feedVariables) => {
 
         handleBottlePostNotifications(feedHTML, feedVariables);
     }catch(error) {
-        displayClientError(error.message)
+        displayClientError(error.message);
     } finally {
         setLoading(false);
     }

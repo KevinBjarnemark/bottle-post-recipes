@@ -55,13 +55,13 @@ const logIn = async (logInVariables) => {
             formData.append('password', logInVariables.inputs.password);
             
             // Validate inputs
-            const username = logInVariables.inputs.username
-            const password = logInVariables.inputs.password
+            const username = logInVariables.inputs.username;
+            const password = logInVariables.inputs.password;
             if (!username) {
-                throw new Error("clientError: Username is missing.")
+                throw new Error("clientError: Username is missing.");
             }
             if (!password) {
-                throw new Error("clientError: Password is missing.")
+                throw new Error("clientError: Password is missing.");
             }
 
             // Send destructed form data

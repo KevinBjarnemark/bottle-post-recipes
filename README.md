@@ -21,7 +21,8 @@ Here's how to do it in VS Code:
 ## Table of contents
 
 - 🍃 [Introduction](#introduction)
-- 🎨 [UX](#ux)
+- ⭐️ [Features](#features)
+- 🎨 [UX](#ux-design)
 - 📉 [Agile](#agile)
 - ⚙️ [Testing](#testing)
 - 🛠️ [Technologies](#technologies)
@@ -69,7 +70,7 @@ For example, on other social platforms, a person can alert 30 of their friends a
 
 > ⚠️ **NOTE**  
 > This is an MVP project, and the system is far from perfect. 
-> For example, users can return the same recipes to the ocean multiple times. This needs to be addressed, especially when users and recipes are not that many. 
+> For example, users can return the same recipes to the ocean multiple times. This needs to be addressed, especially when there are few users and recipes. 
 
 #### Finishing up 💪
 
@@ -84,11 +85,10 @@ Here's a more detailed look at the features of this app.
 
 #### Vegan mode 🍏
 
-
-A concerted effort has been dedicated to make this app a vegan-friendly app. Some people don't want to see animal products when they start the computer, and all systems in the Bottle Post Recipes app are designed to filter out such recipes right away. The orange <span class="em" style="color: var(--orange)">Vegan Button</span> is not just a button, it's a mark on your profile. If you disable vegan mode, it will stay disabled even if you refresh your browser. This setting is extremely easy to toggle and it's a great way to let everyone feel welcome. If you don't like vegan recipes, you can even filter them out entirely. It's worth noting that when vegan mode is turned on, it will overwrite any other settings.
+A concerted effort has been dedicated to make this app a vegan-friendly app. Some people simply don't want to see animal products.Therefore, all systems in the Bottle Post Recipes app are designed to filter out such recipes right from the start. The orange <span class="em" style="color: var(--orange)">vegan button</span> is not just a button, it's a mark on your profile. If you disable vegan mode, it will stay disabled even if you refresh your browser. This setting is extremely easy to toggle and it's a great way to welcome any type of user. If you don't like vegan recipes, you can even filter them out entirely. It's worth noting that when vegan mode is turned on, it will overwrite any other settings.
 
 > ⛔️ **KNOWN ISSUE**  
-> Users with vegan mode enabled can be asked to review a non-vegan recipe. The non-vegan recipe won't be shown until or if the user disables vegan mode. A fix for this should be prioritized, as it goes against the intent of the app. It may also cause vegans to downrate non-vegan recipes that others might enjoy.
+> Users with vegan mode enabled can be asked to review a non-vegan recipe. The non-vegan recipe won't be shown until or if the user disables vegan mode. A fix for this should be prioritized, as it goes against the intent of the app. It may also cause vegans to downrate non-vegan recipes that others might be interested in.
 
 #### Viewing recipes 👀
 
@@ -100,15 +100,15 @@ To view a recipe's details, simply click on the recipe image in the main view. T
 
 #### Searching and filtering recipes 🔍
 
-As mentioned, users are able to search for recipes in a highly sophisticated way. If you want vegetarian or meat recipes but no fish, it's as easy as clicking on a couple of buttons. Perhaps title searching isn't enough? At Bottle Post Recipes, you can find recipes based on their ingredients, description, title, and tags, all customizable to help you narrow down your search results.
+As mentioned, users are able to search for recipes in a highly sophisticated way. If you want vegetarian or meat recipes but no fish, it's as easy as clicking on a couple of buttons. If title searching isn't enough, you can find recipes based on their ingredients, description, title, and tags, all customizable to help you narrow down your search results. 
 
 #### User-based search 👤
 
-User-based search isn't fully implemented but you can click on users and display their recipes. If you want to view all the recipes that you've created, you can do so by clicking **My Recipes** in the **Account Button** dropdown.
+User-based search isn't fully implemented, but you can click on users and display their recipes. If you want to view all the recipes that you've published yourself, you can do so by clicking `My Recipes` in the `Account Button` dropdown.
 
 #### Create recipe 🧾
 
-If you ever want to become a chef at Bottle Post Recipes, it's as easy as posting on social media! Click on the big ➕ button at the bottom left, fill out the form, and your recipe will be bottled up and dropped into the ocean immediately! A spamming filter is integrated and users are allowed to post **1 recipe per day**.
+If you ever want to become a chef at Bottle Post Recipes, it's as easy as posting on social media! Click on the big ➕ button at the bottom left, fill out the form, and your recipe will be bottled up and dropped into the ocean immediately! Users are allowed to post **1 recipe per day**, this prevents alorithm-abuse and spam.
 
 #### Edit or delete recipe 🖊️
 
@@ -143,7 +143,7 @@ This has already been explained in the [introduction](#introduction). When using
 
 #### Delete account ❌
 
-To comply with privacy laws and to provide a seamless way to allow users to delete their data. A **Delete Account** button is located at the **Account Button** dropdown. This is designed in such a way that it also deletes related data in the database. Users are therefore able to purge their data from the system meaning recipes, comments, username, etc. 
+To comply with privacy laws and to provide a seamless way to allow users to delete their data. A `Delete account button` is located at the `Account button dropdown`. This is designed in such a way that it also deletes related data in the database. Users are therefore able to purge their data from the system meaning recipes, comments, username, etc. 
 
 > ⛔️ **KNOWN ISSUE**  
 > As of right now, images uploaded with cloudinary (third-party) won't be automatically deleted. This should be integrated ASAP. 
@@ -369,13 +369,54 @@ The work done in previous sprints acted as a strong foundational layer and the f
 
 ## Testing
 
-In this chapter you'll find out more about how code testing has been approached in this project. Both manual and automatic testing with **`Jest`** and **`Pytest`** have been configured to catch problems before anything goes live.
+In this chapter you'll find out more about how code testing has been approached in this project. Both manual and automatic testing with **`Jest`** and **`Pytest`** have been configured to catch problems before anything goes live. 
+
+**All** testing files are located in [this](tests) folder. There you can find rigorous tests for user stories, views, features, and functionality. **Validators** have also been used throughout development, here's a list of them and their results:
+
+<details>
+    <summary>
+        JSHint
+    </summary>
+
+No problems detected in any `.js` files throughout the project.
+
+</details>
+
+<details>
+    <summary>
+        Python linter
+    </summary>
+
+[Here's](.flake8) the configuration file. Flake 8 with additional configuartion hasn't detected any problems in any `.py` file in this project. 
+
+</details>
+
+<details>
+    <summary>
+        Lighthouse
+    </summary>
+
+Lighthouse have been used and tested locally. If you run a Lighthouse test in the deployed version, reuslts may differ. Improvements can be done here. 
+
+For example, images should have a width and a hight attribute and these values should mirror the real dimensions of the image. With users uploading images though, it becomes slightly more difficult. One solution is to collect and store this data when the user uploads the image.
+
+Below is a test run locally.
+
+![Lighthouse results](static/images/readme/tests/lighthouse.webp "The outcome a Lighthouse test")
+
+</details>
+ 
+###### Browser testing and UI
+
+The web app have also been tested in different browsers and all pages are fit to handle small devices with screensizes as narrow as **285px** wide.
 
 ### Manual testing
 
-There are many ways you can run manual tests, but the most straightforward way to execute JavaScript-based tests might be to simply run **`npm test`** configured in [package.json](package.json). 
+There are many ways you can run manual tests, but the most straightforward way to execute JavaScript-based tests in this project might be to simply run **`npm test`** (configured in [package.json](package.json)). 
 
-To run tests for Python, use `pytest`. This will find any .py file that either has `test_` in the beginning or `_test` in the end of its name.  
+To run tests for Python, use **`pytest`**. This will find any .py file that either has `test_` in the beginning or `_test` in the end of its name. Make sure to prefix your functions with `_test`, otherwise they will be silently skipped when running **`pytest`**.
+
+![Pytest and JEST test](static/images/readme/tests/pytest_and_jest.webp "The outcome of both a Pytest and JEST test.")
 
 ### Automatic testing
 
@@ -383,7 +424,7 @@ There are multiple ways to automate testing, in this chapter, we'll walk through
 
 #### GitHub Actions
 
-With GitHub Actions configured you can automate testing inside the GitHub environment. In the development of this project, these types of tests are only executed on deploys. This is because testing is already automated locally with Git hooks in this case. 
+With GitHub Actions configured, you can automate testing inside the GitHub environment. In the development of this project, these types of tests are only executed on deploys. This is because testing is already automated locally with Git hooks in this case. 
 
 > ⚠️ **NOTE**  
 > When configuring a GitHub workflow, you need to permit GitHub to do the following:  
@@ -399,9 +440,9 @@ You also need to submit your environment secrets to GitHub.
 3. Click on `Actions` in the `Secrets and variables tab`.
 4. Click on `Add new repository secret`. 
 
-Now, if you've configured your [deploy.yml](.github/workflows/deploy.yml) similarly, you should be able to simply create a tag, and then deploy the project with a push.
+Now, if you've configured your [deploy.yml](.github/workflows/deploy.yml) similarly, you should be able to deploy by simply creating a tag, and then deploying the tagged project with a push.
 
-Before proceeding, it's worth noting that you might want to push normally before deploying a new version. 
+But before proceeding, it's worth noting that you might want to push normally before deploying a new version. 
 
 1. Create a tag
     - **`git tag v0.1`**
@@ -409,6 +450,11 @@ Before proceeding, it's worth noting that you might want to push normally before
     - **`git push origin v0.1`**
 
 If everything works as expected, your automated tests will be running in the GitHub Actions environment. If all tests pass, your project should also be deployed to Heroko. More on that in [Deployment and Github Actions](#deployment-and-github-actions).
+
+> ⚠️ **5 Nov, 2024**  
+> Currently there seem to be some UI issues at GitHub in the actions environment. Check your console and maybe try a different browser.  
+
+![GitHub Actions deploy](static/images/readme/tests/github_actions_deploy.webp "The outcome a GitHub Actions deploy")
 
 #### Git hooks locally (optional) ⭐️
 
@@ -419,7 +465,7 @@ If you want to enable automatic testing locally, you might want to configure a c
 
 ##### Here's how to set it up
 
-With the following setup, you'll be able to automatically run whichever tests you like before pushing to GitHub. The Git hook will terminate your `git push` command if any of your tests fail, and only push tested changes to your remote repository.
+With the following setup, you'll be able to automatically run whichever tests you like before pushing to GitHub. The Git hook will terminate your `git push` command if any of your tests fail, and only push locally tested changes to your remote repository.
 
 1. Create a `pre-push` file in your `.git` folder.
 2. Configure your custom testing script, example below.
@@ -629,6 +675,10 @@ You can find details about some of the third parties that we've used in the tech
 - [Luckiest Guy](https://fonts.google.com/specimen/Luckiest+Guy)
 - [Tilt Neon](https://fonts.google.com/specimen/Tilt+Neon)
 - [Lilita One](https://fonts.google.com/specimen/Lilita+One) 
+
+# References
+
+
 
 ## Environment variables
 

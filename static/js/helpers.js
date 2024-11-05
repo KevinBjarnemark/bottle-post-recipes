@@ -1,4 +1,4 @@
-import {displayClientError} from './app.js'
+import {displayClientError} from './app.js';
 
 export const getCookie = (name) => {
     try {
@@ -95,4 +95,4 @@ export const toSnakeCase = (str) => {
         .replace(/([a-z])([A-Z])/g, '$1_$2')
         // Make everything lower case
         .toLowerCase();
-}
+};

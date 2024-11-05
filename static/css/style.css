@@ -564,13 +564,13 @@ body {
 
 /* Decrease recipe item width on screens smaller than 700px */
 @media (max-width: 700px) {
-    #hint-window {
+    #hint-window, #bottle-post-notification-button {
         width: 70vw;
     }
 }
 /* Decrease recipe item width on screens smaller than 380px */
 @media (max-width: 380px) {
-    #hint-window {
+    #hint-window, #bottle-post-notification-button {
         width: 100vw;
     }
     /* Profile image */
@@ -585,5 +585,8 @@ body {
     }
     .sidebar-settings-container {
         width: 190px;
+    }
+    #bottle-post-notification-button {
+        width: 100vw
     }
 }

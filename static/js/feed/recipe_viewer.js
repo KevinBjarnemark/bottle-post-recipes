@@ -32,7 +32,7 @@ export const htmlComment = (username, date, text) => {
             </div>
             <p class="comment-item-text border-radius-soft">${text}</p>
         </div>`
-    )
+    );
 };
 
 
@@ -209,7 +209,7 @@ export const buildIngredients = (element, ingredients) => {
 
     // Replace previous content with this recipe's ingredients
     element.innerHTML = ingredientElements;
-}
+};
 
 /**
  * Closes the recipe Viewer component and clears 
@@ -316,7 +316,7 @@ export const recipeViewer = (feedHTML, feedVariables, recipeId) => {
             feedVariables,
             "input",
             `recipe-viewer-comment-input`, 
-            (e) => {handleCommentTextarea(e, feedVariables, commentFormData)}
+            (e) => {handleCommentTextarea(e, feedVariables, commentFormData);}
         );
 
         // Add and store publish comment listener
@@ -339,7 +339,7 @@ export const recipeViewer = (feedHTML, feedVariables, recipeId) => {
             feedVariables,
             "click", 
             `recipe-viewer-close-button`, 
-            () => {handleClose(feedHTML, feedVariables)}
+            () => {handleClose(feedHTML, feedVariables);}
         );
 
         // Finally, Make the component visible

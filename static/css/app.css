@@ -21,6 +21,7 @@
     justify-content: center;
     align-items: center;
 }
+
 #loading-container img {
     width: 70%;
     object-fit: contain;
@@ -32,11 +33,13 @@
     animation-iteration-count: infinite; 
     animation-timing-function: linear;
 }
+
 #loading-container h3 {
     position: absolute;
     bottom: -45px;
     color: white
 }
+
 @keyframes loading-spinner-animation {
     0% {transform: rotate(0deg);}
     50% {transform: rotate(180deg);}

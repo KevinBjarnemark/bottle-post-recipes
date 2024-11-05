@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Delete account button
     if (window.appHTML.accountButton.deleteAccountButton) {
         window.appHTML.accountButton.deleteAccountButton
-        .addEventListener("click", async () => {deleteAccount()});
+        .addEventListener("click", async () => {deleteAccount();});
     }
 
 });
