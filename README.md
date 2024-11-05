@@ -7,7 +7,7 @@ to explore the live app! 🔥
 
 ![Screenshot](static/images/readme/screenshots/wide.webp "Wide screenshot of the home page.")
 
-## Quick tip!
+## Quick Tip!
 
 If you've cloned this project, you can view this readme file with
 <span class="em">customized</span> 
@@ -16,9 +16,9 @@ styling.
 Here's how to do it in VS Code:
 1. Right-click on `README.md`
 2. Select `Open Preview`
-3. (Optional) You can change the text color and/or enahnce styling by editing the contents of `readme.css` (found in `static/css`). 
+3. (Optional) You can change the text color and/or enhance styling by editing the contents of `readme.css` (found in `static/css`). 
 
-## Table of contents
+## Table of Contents
 
 - 🍃 [Introduction](#introduction)
 - ⭐️ [Features](#features)
@@ -37,20 +37,20 @@ Have you ever released a bottled message in the ocean? 🌊
 
 This is an old concept, and while it may seem inviting, it's not environmentally friendly. This web app mimics that idea but for recipes and without littering the ocean! 
 
-The goal is to empower the DIY era and create an archive of recipes crafted by the people. Do you have a talent for cooking and feel the desire to share it to the world? Bottle up your recipe, post it on 
+The goal is to empower the DIY era and create an archive of recipes crafted by the people. Do you have a talent for cooking, and feel the desire to share it to the world? Bottle up your recipe, post it on 
 <span class="em">Bottle Post Recipes</span>, and it might arrive on someone's digital shore. Yes, whenever you publish a recipe, there's a chance it will appear as a notification to any user! This is how this web app stands out, it leverages the power of sharing while filtering signal from noise. Recipes are algorithmically boosted **based on their quality**, not the creator's ability to reach. Say goodbye to **networking skills** and say hello to **delicious, high-quality recipes!**
 
 #### Mission 🗻
 
 In today's age, it is common for social media influencers to use 'unapproved' strategies to increase their reach on the web. These influencers are buying followers, likes, and comments to boost their social media presence. This app is determined to tackle these problems with a concept inspired by the famous <span class="em">bottle post</span>.
 
-#### How it works 🔨
+#### How it Works 🔨
 
 At <span class="em">Bottle Post Recipes</span>, the most powerful metric for boosting a post is the number of times it's been returned to the 'ocean'. Below is a step-by-step explanation of how it works.
 
 1. **A user visits the app and receives a recipe**
 
-If all conditions are met, the algorithm will authorize and notify the user to review a random recipe that currently exist 'in the ocean'🌊.   
+If all conditions are met, the algorithm will authorize and notify the user to review a random recipe that currently exists 'in the ocean'🌊.   
 
 2. **The user reviews the recipe.**
 
@@ -64,9 +64,9 @@ There are <span class="em">two</span> choices:
 
 At this point, the user will be locked out from this feature for **24 hours** to prevent algorithm abuse.
 
-#### Why it works 🤷‍♂️
+#### Why it Works 🤷‍♂️
 
-For example, on other social platforms, a person can alert 30 of their friends and tell them to engage with their post imediatelly, thus increasing the chances of boosting its visibility to other users. This won't work at <span class="em">Bottle Post Recipes</span> because all 30 people would need to be randomly picked by server-side calculations, which is very unlikely.
+For example, on other social platforms, a person can alert 30 of their friends and tell them to engage with their post immediately, thus increasing the chances of boosting its visibility to other users. This won't work at <span class="em">Bottle Post Recipes</span> because all 30 people would need to be randomly picked by server-side calculations, which is very unlikely.
 
 > ⚠️ **NOTE**  
 > This is an MVP project, and the system is far from perfect. 
@@ -83,14 +83,14 @@ Since the app determines who can boost which recipe, it keeps cheating users (an
 
 Here's a more detailed look at the features of this app. 
 
-#### Vegan mode 🍏
+#### Vegan Mode 🍏
 
 A concerted effort has been dedicated to make this app a vegan-friendly app. Some people simply don't want to see animal products.Therefore, all systems in the Bottle Post Recipes app are designed to filter out such recipes right from the start. The orange <span class="em" style="color: var(--orange)">vegan button</span> is not just a button, it's a mark on your profile. If you disable vegan mode, it will stay disabled even if you refresh your browser. This setting is extremely easy to toggle and it's a great way to welcome any type of user. If you don't like vegan recipes, you can even filter them out entirely. It's worth noting that when vegan mode is turned on, it will overwrite any other settings.
 
 > ⛔️ **KNOWN ISSUE**  
 > Users with vegan mode enabled can be asked to review a non-vegan recipe. The non-vegan recipe won't be shown until or if the user disables vegan mode. A fix for this should be prioritized, as it goes against the intent of the app. It may also cause vegans to downrate non-vegan recipes that others might be interested in.
 
-#### Viewing recipes 👀
+#### Viewing Recipes 👀
 
 To view a recipe's details, simply click on the recipe image in the main view. This will display all details related to the recipe at hand.
 
@@ -98,19 +98,19 @@ To view a recipe's details, simply click on the recipe image in the main view. T
 > When scrolling in the recipe viewer pop-up, it may also scroll the main view behind the recipe viewer.
 
 
-#### Searching and filtering recipes 🔍
+#### Searching and Filtering Recipes 🔍
 
 As mentioned, users are able to search for recipes in a highly sophisticated way. If you want vegetarian or meat recipes but no fish, it's as easy as clicking on a couple of buttons. If title searching isn't enough, you can find recipes based on their ingredients, description, title, and tags, all customizable to help you narrow down your search results. 
 
-#### User-based search 👤
+#### User-based Search 👤
 
 User-based search isn't fully implemented, but you can click on users and display their recipes. If you want to view all the recipes that you've published yourself, you can do so by clicking `My Recipes` in the `Account Button` dropdown.
 
-#### Create recipe 🧾
+#### Create Recipe 🧾
 
-If you ever want to become a chef at Bottle Post Recipes, it's as easy as posting on social media! Click on the big ➕ button at the bottom left, fill out the form, and your recipe will be bottled up and dropped into the ocean immediately! Users are allowed to post **1 recipe per day**, this prevents alorithm-abuse and spam.
+If you ever want to become a chef at Bottle Post Recipes, it's as easy as posting on social media! Click on the big ➕ button at the bottom left, fill out the form, and your recipe will be bottled up and dropped into the ocean immediately! Users are allowed to post **1 recipe per day**, this prevents algorithm-abuse and spam.
 
-#### Edit or delete recipe 🖊️
+#### Edit or Delete Recipe 🖊️
 
 A fully fledged recipe editor is integrated and easily accessible in the main view. You can open this by clicking the edit button located at the right side of each recipe. After clicking on the edit button, a pop-up window will appear, displaying your recipe in a more comprehensive view with editable fields. All fields are pre-populated and remain as they were when you last edited your recipe.
 
@@ -123,14 +123,14 @@ There's a BETA commenting system you can engage with when viewing a recipe.
 >  
 > 2.  The latest comments are loaded top-down which breaks the pattern of 'normal' comment sections on the web. 
 
-#### Bottle post system ♻️
+#### Bottle Post System ♻️
 
 This has already been explained in the [introduction](#introduction). When using the app, you will be asked to review recipes that exists in 'the ocean' on a daily basis.
 
 > ⛔️ **KNOWN ISSUES**  
-> 1. **SEVERE!** Hghlighted recipes that users are allowed to review may get 'stuck'. It may appear as the already reviewed recipe can be reviewed again. The back-end will block any unauthorized user actions if the user does submit the review again. This is a catche issue that needs to be fixed ASAP.    
+> 1. **SEVERE!** Highlighted recipes that users are allowed to review may get 'stuck'. It may appear as the already reviewed recipe can be reviewed again. The back-end will block any unauthorized user actions if the user does submit the review again. This is a cache issue that needs to be fixed ASAP.    
 >  
-> 2. If there are no recipes in the ocean, it may be confusing when reviews nevers gets handed out. Some type of message should be displayed here.
+> 2. If there are no recipes in the ocean, it may be confusing when reviews never gets handed out. Some type of message should be displayed here.
 >  
 > 3. When there are few users and recipes, this feature can give early users a massively unfair advantage.The number of users and recipes should be factored into the calculation of how many recipes can be reviewed per day.
 >  
@@ -138,10 +138,10 @@ This has already been explained in the [introduction](#introduction). When using
 >  
 > 5. Users are able to boost their own recipes. Again, when there's not that many recipes, chances are high that new users will take advantage of this fluke.  
 >  
-> 6. If a recipe has had their recipe retunred to the ocean more and 100 times, it may break the UI.
+> 6. If a recipe has had their recipe returned to the ocean more and 100 times, it may break the UI.
 
 
-#### Delete account ❌
+#### Delete Account ❌
 
 To comply with privacy laws and to provide a seamless way to allow users to delete their data. A `Delete account button` is located at the `Account button dropdown`. This is designed in such a way that it also deletes related data in the database. Users are therefore able to purge their data from the system meaning recipes, comments, username, etc. 
 
@@ -150,35 +150,35 @@ To comply with privacy laws and to provide a seamless way to allow users to dele
 
 ## UX-Design
 
-### Initial design 🎨
+### Initial Design 🎨
 
-This app's design was initially composed with the help of illustrations and vector editing, to understand of how the components could coexist.
+This app's design was initially composed with the help of illustrations and vector editing, to understand how the components could coexist.
 
 ![Initial design](static/images/readme/development_process/initial_design.gif "An illustrated mockup video of the homepage.")
 
-### Thought process 💭
+### Thought Process 💭
 
-According to [this article](https://medium.com/@hayavuk/ui-ux-design-fundamentals-for-the-front-end-developers-688ba43eaed4) written by [Hajime Yamasaki Vukelic](https://medium.com/@hayavuk), the most important content should be placed front and center but more towards the top. This follows widely recognized patterns seen on famous platforms such as [YouTube](https://youtube.com/), [Google](https://google.com/), and just about any social media platform. Therefore, in this app, the recipes are placed accordingly. This is thought to draw the users' immediate attention to the app's most important content.
+According to [this article](https://medium.com/@hayavuk/ui-ux-design-fundamentals-for-the-front-end-developers-688ba43eaed4) written by [Hajime Yamasaki Vukelic](https://medium.com/@hayavuk), the most important content should be placed front and center but more towards the top. This follow widely recognized patterns seen on famous platforms such as [YouTube](https://youtube.com/), [Google](https://google.com/), and just about any social media platform. Therefore, in this app, the recipes are placed accordingly. This is thought to draw the users' immediate attention to the app's most important content.
 
-##### Consistency, color scheme, and sizing
+##### Consistency, Color Scheme, and Sizing
 
-The illustrations follows a 'universal design' and elements throughout the app are in line with universally recognized patterns. Action buttons are marked with common icons (e.g., magnifying glass for search, heart for likes, etc.) and these elements are placed in areas familiar to many mainstream applications. If the user receives a notification, the famous red circle and white number appear, again 
+The illustrations follow a 'universal design' and elements throughout the app are in line with universally recognized patterns. Action buttons are marked with common icons (e.g., magnifying glass for search, heart for likes, etc.) and these elements are placed in areas familiar to many mainstream applications. If the user receives a notification, the famous red circle and white number appear, again 
 in harmony with other popular apps.
 
 Elements and texts are designed in different (but consistent) sizes to help guide the user. Titles are generally larger, clearly visible, placed conveniently, and aligned to the left to give the user a natural feel and flow of reading.
 
 Colors are designed to provide a strong contrast and to make the main components of the app stand out. 
 
-##### Keeping the user informed 
+##### Keeping the User Informed 
 
 [Santhosh Adiga U](https://santhosh-adiga-u.medium.com/) wrote an interesting piece about 
 [Jakob Nielsen](https://www.nngroup.com/people/jakob-nielsen/)'s idea about keeping the user informed 
 ([Source](https://santhosh-adiga-u.medium.com/jakob-nielsens-heuristics-for-interaction-design-guidelines-for-user-centered-excellence-609b270c7e6a)).
 Users should be informed about the status of the system underneath the app. This concept has been followed when designing the 
-<span class="em">Bottle post recipes</span>
+<span class="em">Bottle Post Recipes</span>
 . Without any navigation, the user can view the immediate app response of user actions when events such as toggling on/off states or receiving notifications happen. The app is also configured with loading spinners that further inform the user about the current status of the app.
 
-##### Minimalistic design
+##### Minimalistic Design
 
 A minimalistic design has been approached for this project due to a couple of reasons. 
 1. To allow and leave room for further implementations.
@@ -194,7 +194,7 @@ This project has been developed using an agile workflow. A full product backlog 
 
 ![Sprints](static/images/readme/development_process/sprints.jpg "Six columns listing user stories (Backlog, Sprint 3, Sprint 2, Todo, In Progess, Done)")
 
-### First iteration 🚀
+### First Iteration 🚀
 
 #### Diagrams
 
@@ -221,7 +221,7 @@ Each sprint is documented separately below.
         Sprint 1
     </summary>
 
-### User authentication, basic recipe creation & sensitive content
+### User Authentication, Basic Recipe Creation & Sensitive Content
 
 - **Duration:** <span class="em">3 Days</span>
 - **Story points:** <span class="em">7</span>
@@ -274,7 +274,7 @@ Use and improve the already implemented systems for the upcoming tasks.
         Sprint 2
     </summary>
 
-### Recipe, search, filtering, viewing, and commenting
+### Recipe, Search, Filtering, Viewing, and Commenting
 
 - **Duration:** <span class="em">4 Days</span>
 - **Story points:** <span class="em">9</span>
@@ -325,7 +325,7 @@ Consider a more dynamic system for displaying, editing, and creating recipes. It
         Sprint 3 (with iteration 1 summary)
     </summary>
 
-### Reviewing and editing
+### Reviewing and Editing
 
 - **Duration:** <span class="em">3 Days</span>
 - **Story points:** <span class="em">7</span>
@@ -406,11 +406,11 @@ Below is a test run locally.
 
 </details>
  
-###### Browser testing and UI
+###### Browser Testing and UI
 
-The web app have also been tested in different browsers and all pages are fit to handle small devices with screensizes as narrow as **285px** wide.
+The web app has also been tested in different browsers and all pages are fit to handle small devices with screen sizes as narrow as **285px** wide.
 
-### Manual testing
+### Manual Testing
 
 There are many ways you can run manual tests, but the most straightforward way to execute JavaScript-based tests in this project might be to simply run **`npm test`** (configured in [package.json](package.json)). 
 
@@ -418,7 +418,7 @@ To run tests for Python, use **`pytest`**. This will find any .py file that eith
 
 ![Pytest and JEST test](static/images/readme/tests/pytest_and_jest.webp "The outcome of both a Pytest and JEST test.")
 
-### Automatic testing
+### Automatic Testing
 
 There are multiple ways to automate testing, in this chapter, we'll walk through some configurations used in the development of this project. 
 
@@ -449,10 +449,10 @@ But before proceeding, it's worth noting that you might want to push normally be
 2. Push new version
     - **`git push origin v0.1`**
 
-If everything works as expected, your automated tests will be running in the GitHub Actions environment. If all tests pass, your project should also be deployed to Heroko. More on that in [Deployment and Github Actions](#deployment-and-github-actions).
+If everything works as expected, your automated tests will be running in the GitHub Actions environment. If all tests pass, your project should also be deployed to Heroku. More on that in [Deployment and Github Actions](#deployment-and-github-actions).
 
 > ⚠️ **5 Nov, 2024**  
-> Currently there seem to be some UI issues at GitHub in the actions environment. Check your console and maybe try a different browser.  
+> Currently, there seem to be some UI issues at GitHub in the actions environment. Check your console and maybe try a different browser.  
 
 ![GitHub Actions deploy](static/images/readme/tests/github_actions_deploy.webp "The outcome a GitHub Actions deploy")
 
@@ -500,6 +500,76 @@ fi
 ##### Will this force each developer to configure this individually?
 
 Yes, but since this configuration rather enhances the developer's workflow, it's not necessarily a 'catch'. In this project, `GitHub Actions` are also configured for when the project is deployed, which ensures that only tested changes go live. Even if untested changes make it to the remote repository, they won't pass the deployment stage. This workflow is therefore a great way to give developers the freedom for a custom setup while sticking to the housing rules! 
+
+## Databases
+
+The app is integrated with three databases. 
+
+- Testing database
+- PostgreSQL database (development)
+- PostgreSQL database (production)
+
+This confguration enables safe data manipulation without touching any real users' data. 
+
+### Models
+
+Here's an organized 
+[Google Drive folder](https://drive.google.com/drive/folders/1XI6bcvofHK3coOBKf5o2hF7HKXSjMe5f?usp=sharing)
+with all models used in this app. 
+
+![Example model](static/images/readme/development_process/initial_model_example.jpg "A spreadsheet of a recipe model.")
+
+## Areas of Improvements
+
+Let's address some areas that would benefit from some improvement. 
+
+### Unresolved bugs
+
+These have been mentioned as 'strong notes' throughout this document.
+
+### Error handling
+
+The error handling system is 'tuned' to fit an MVP first iteration release. Nothing gets printed to the console, especially errors meant for the developer. The intent here is both enhance the user experience but also for security reasons. Server errors can reveal hints about the background processes and potentially expose weak points to the front-end. This is especially important in a 'first-iteration-MVP-project' like this. However, this system is far from complete.
+
+- Silent errors.
+
+With the current system, an error would typically be silent although it should be displayed in the front-end. 
+
+Example:
+
+> ❌ **Something went wrong when publishing your comment**  
+
+These can easily be tracked down since this is a relatively small project with not that many functions. A strong priority however, should be to implement a logging system for developers. 
+
+- Standard workflows
+
+The system could also benefit from upgrading to a more 'common workflow' to avoid 'developer confusion'.
+
+### Recipe URLs
+
+The recipe viewer is a child component of the homepage, a URL should be pointing to each recipe to allow social media sharing. 
+
+### SEO
+
+SEO has not been addressed in this MVP project and should be covered in future iterations. 
+
+### Javascript-generated HTML
+
+This can become a total mess. Not to mention how the 'real-world output' can become. 
+
+Example:
+
+```html
+    <body><h1>Welcome to My Page</h1><p>This is a very messy HTML page to demonstrate 
+    JavaScript-generated code
+
+
+</p>
+
+    </body>
+```
+
+For the next iterations, libraries like [React](https://react.dev/) could be used to combat this. This would allow developers to write code in almost plain HTML but still be able to apply the power of JavaScript. A library like this could also solve a whole range of other problems for this project. 
 
 ## Technologies
 
@@ -648,24 +718,6 @@ A platform that enables developers to build, run and operate applications entire
 
 </details>
 
-## Databases
-
-The app is integrated with three databases. 
-
-- Testing database
-- PostgreSQL database (development)
-- PostgreSQL database (production)
-
-This confguration enables safe data manipulation without touching any real users' data. 
-
-### Models
-
-Here's an organized 
-[Google Drive folder](https://drive.google.com/drive/folders/1XI6bcvofHK3coOBKf5o2hF7HKXSjMe5f?usp=sharing)
-with all models used in this app. 
-
-![Example model](static/images/readme/development_process/initial_model_example.jpg "A spreadsheet of a recipe model.")
-
 ## Credits
 
 You can find details about some of the third parties that we've used in the technologies section. Explore the third party sources that hasn't been established elsewhere in this document below. 
@@ -678,13 +730,27 @@ You can find details about some of the third parties that we've used in the tech
 
 # References
 
+### Developers' note
 
+    I had never worked with Django, Bootstrap, Jest, Pytest, or PostGreSQL before starting this project. Although I was familiar with Python previously, I hadn't used it in this way. I started off by searching the web and found a Youtube tutorial (link below) that explained the basics of Django. When I started to gain a little bit of confidence, I started building the project using mostly documentation and some web searches here and there.
+
+- [Youtube tutorial](https://www.youtube.com/watch?v=Rp5vd34d-z4&t=6047s) by [Dave Gray](https://www.youtube.com/@DaveGrayTeachesCode/videos)
+
+- [This](https://stackoverflow.com/questions/70637161/integrityerror-not-null-constraint-failed-in-the-models-decimalfield) [Stack Overflow](https://stackoverflow.com/) thread led me to solving a problem with decimal fields and null values.
+
+- [Django docs](https://docs.djangoproject.com/en/5.1/)
+
+- [BootStrap docs](https://getbootstrap.com/docs/4.1/)
+
+- [PyTest](https://docs.pytest.org/en/stable/)
+
+- [JEST](https://jestjs.io/docs/getting-started)
 
 ## Environment variables
 
 Here we'll go over how environment variables are configured and how the development environment differs from production.
 
-To mimic the Bottle post Recipes setup, you'll need to configure your environments accordingly.
+To mimic the Bottle Post Recipes setup, you'll need to configure your environments accordingly.
 
 <details>
     <summary>
@@ -853,4 +919,3 @@ Forking is your gateway to personalizing Bottle Post Recipes and proposing chang
 4. Clone your forked version using the cloning steps outlined above.
 
 Once you've forked and cloned, feel free to explore and enhance the project! Check out the [README.md](README.md) for guidance on running the project locally.
-
