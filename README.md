@@ -22,14 +22,17 @@ Here's how to do it in VS Code:
 
 - 🍃 [Introduction](#introduction)
 - ⭐️ [Features](#features)
-- 🎨 [UX](#ux-design)
+- 🎨 [UX-Design](#ux-design)
 - 📉 [Agile](#agile)
 - ⚙️ [Testing](#testing)
 - 🛠️ [Technologies](#technologies)
 - 🖥️ [Databases](#databases)
+- 🖊️ [Areas for Improvement](#areas-for-improvement)
 - 🌳 [Credits](#credits)
 - 🏕️ [Environment variables](#environment-variables)
 - ☁️ [Deployment with Github Actions](#deployment-with-github-actions)
+- 🧬 [Cloning the repository](#cloning-the-repository)
+- 🍴 [Forking the repository](#forking-the-repository)
 
 ## Introduction
 
@@ -79,7 +82,7 @@ Since the app determines who can boost which recipe, it keeps cheating users (an
 > ❕ **Future update**  
 > Polls may be introduced to give some recipes an extra chance. Perhaps a few 'non-ocean' recipes per month could be sent out randomly to have another chance to enter the ocean again. 
 
-## Features ⭐️
+## Features 
 
 Here's a more detailed look at the features of this app. 
 
@@ -501,76 +504,6 @@ fi
 
 Yes, but since this configuration rather enhances the developer's workflow, it's not necessarily a 'catch'. In this project, `GitHub Actions` are also configured for when the project is deployed, which ensures that only tested changes go live. Even if untested changes make it to the remote repository, they won't pass the deployment stage. This workflow is therefore a great way to give developers the freedom for a custom setup while sticking to the housing rules! 
 
-## Databases
-
-The app is integrated with three databases. 
-
-- Testing database
-- PostgreSQL database (development)
-- PostgreSQL database (production)
-
-This confguration enables safe data manipulation without touching any real users' data. 
-
-### Models
-
-Here's an organized 
-[Google Drive folder](https://drive.google.com/drive/folders/1XI6bcvofHK3coOBKf5o2hF7HKXSjMe5f?usp=sharing)
-with all models used in this app. 
-
-![Example model](static/images/readme/development_process/initial_model_example.jpg "A spreadsheet of a recipe model.")
-
-## Areas of Improvements
-
-Let's address some areas that would benefit from some improvement. 
-
-### Unresolved bugs
-
-These have been mentioned as 'strong notes' throughout this document.
-
-### Error handling
-
-The error handling system is 'tuned' to fit an MVP first iteration release. Nothing gets printed to the console, especially errors meant for the developer. The intent here is both enhance the user experience but also for security reasons. Server errors can reveal hints about the background processes and potentially expose weak points to the front-end. This is especially important in a 'first-iteration-MVP-project' like this. However, this system is far from complete.
-
-- Silent errors.
-
-With the current system, an error would typically be silent although it should be displayed in the front-end. 
-
-Example:
-
-> ❌ **Something went wrong when publishing your comment**  
-
-These can easily be tracked down since this is a relatively small project with not that many functions. A strong priority however, should be to implement a logging system for developers. 
-
-- Standard workflows
-
-The system could also benefit from upgrading to a more 'common workflow' to avoid 'developer confusion'.
-
-### Recipe URLs
-
-The recipe viewer is a child component of the homepage, a URL should be pointing to each recipe to allow social media sharing. 
-
-### SEO
-
-SEO has not been addressed in this MVP project and should be covered in future iterations. 
-
-### Javascript-generated HTML
-
-This can become a total mess. Not to mention how the 'real-world output' can become. 
-
-Example:
-
-```html
-    <body><h1>Welcome to My Page</h1><p>This is a very messy HTML page to demonstrate 
-    JavaScript-generated code
-
-
-</p>
-
-    </body>
-```
-
-For the next iterations, libraries like [React](https://react.dev/) could be used to combat this. This would allow developers to write code in almost plain HTML but still be able to apply the power of JavaScript. A library like this could also solve a whole range of other problems for this project. 
-
 ## Technologies
 
 Explore some of the technologies that have been utilized in the development of this project below. 
@@ -718,6 +651,101 @@ A platform that enables developers to build, run and operate applications entire
 
 </details>
 
+## Databases
+
+The app is integrated with three databases. 
+
+- Testing database
+- PostgreSQL database (development)
+- PostgreSQL database (production)
+
+This confguration enables safe data manipulation without touching any real users' data. 
+
+### Models
+
+Here's an organized 
+[Google Drive folder](https://drive.google.com/drive/folders/1XI6bcvofHK3coOBKf5o2hF7HKXSjMe5f?usp=sharing)
+with all models used in this app. 
+
+![Example model](static/images/readme/development_process/initial_model_example.jpg "A spreadsheet of a recipe model.")
+
+## Areas for Improvement
+
+Let's address some areas that would benefit from some improvement. 
+
+### Unresolved bugs
+
+These have been mentioned as 'strong notes' throughout this document.
+
+### Error handling
+
+The error handling system is 'tuned' to fit an MVP first iteration release. Nothing gets printed to the console, especially errors meant for the developer. The intent here is both enhance the user experience but also for security reasons. Server errors can reveal hints about the background processes and potentially expose weak points to the front-end. This is especially important in a 'first-iteration-MVP-project' like this. However, this system is far from complete.
+
+- Silent errors.
+
+With the current system, an error would typically be silent although it should be displayed in the front-end. 
+
+Example:
+
+> ❌ **Something went wrong when publishing your comment**  
+
+These can easily be tracked down since this is a relatively small project with not that many functions. A strong priority however, should be to implement a logging system for developers. 
+
+- Standard workflows
+
+The system could also benefit from upgrading to a more 'common workflow' to avoid 'developer confusion'.
+
+### Testing
+
+Developers note:
+
+    There was a slight miscalculation in estimating the deadline for this project. 
+    I encountered unexpected challenges with Python testing as the deadline 
+    approached and would have needed at least an additional day to fully refine 
+    everything and to complete user story testing. Additionally, the project 
+    expanded slightly beyond my comfort zone given its scope and size, which added 
+    to the complexity of the final stages. 
+
+    I resolved the testing issue in the later stages of the project.
+    It was a combination of 2 problems.
+    
+    1. Having renamed a testing function, leaving out the test_ prefix, causing 
+    it to silently pass the automatic tests. 
+    
+    2. Having implemented a spam filter in that silent period, which caused a lot 
+    of confusion. 
+    
+    To solve these problems, I added the _test prefix and wrote a pass_spam_filter() 
+    function to reset the last_posted_at time field to something older than 24 
+    hours. This bypassed the back-end time limit filter when creating/editing multiple 
+    recipes during loops in the test environment.
+
+### Recipe URLs
+
+The recipe viewer is a child component of the homepage, a URL should be pointing to each recipe to allow social media sharing. 
+
+### SEO
+
+SEO has not been addressed in this MVP project and should be covered in future iterations. 
+
+### Javascript-generated HTML
+
+This can become a total mess. Not to mention how the 'real-world output' can become. 
+
+Example:
+
+```html
+    <body><h1>Welcome to My Page</h1><p>This is a very messy HTML page to demonstrate 
+    JavaScript-generated code
+
+
+</p>
+
+    </body>
+```
+
+For the next iterations, libraries like [React](https://react.dev/) could be used to combat this. This would allow developers to write code in almost plain HTML but still be able to apply the power of JavaScript. A library like this could also solve a whole range of other problems for this project. 
+
 ## Credits
 
 You can find details about some of the third parties that we've used in the technologies section. Explore the third party sources that hasn't been established elsewhere in this document below. 
@@ -727,24 +755,6 @@ You can find details about some of the third parties that we've used in the tech
 - [Luckiest Guy](https://fonts.google.com/specimen/Luckiest+Guy)
 - [Tilt Neon](https://fonts.google.com/specimen/Tilt+Neon)
 - [Lilita One](https://fonts.google.com/specimen/Lilita+One) 
-
-# References
-
-### Developers' note
-
-    I had never worked with Django, Bootstrap, Jest, Pytest, or PostGreSQL before starting this project. Although I was familiar with Python previously, I hadn't used it in this way. I started off by searching the web and found a Youtube tutorial (link below) that explained the basics of Django. When I started to gain a little bit of confidence, I started building the project using mostly documentation and some web searches here and there.
-
-- [Youtube tutorial](https://www.youtube.com/watch?v=Rp5vd34d-z4&t=6047s) by [Dave Gray](https://www.youtube.com/@DaveGrayTeachesCode/videos)
-
-- [This](https://stackoverflow.com/questions/70637161/integrityerror-not-null-constraint-failed-in-the-models-decimalfield) [Stack Overflow](https://stackoverflow.com/) thread led me to solving a problem with decimal fields and null values.
-
-- [Django docs](https://docs.djangoproject.com/en/5.1/)
-
-- [BootStrap docs](https://getbootstrap.com/docs/4.1/)
-
-- [PyTest](https://docs.pytest.org/en/stable/)
-
-- [JEST](https://jestjs.io/docs/getting-started)
 
 ## Environment variables
 
@@ -879,13 +889,36 @@ This is only used in production. Locally, static files are 'uploaded' into the m
 
 </details>
 
-## Deployment with Github Actions
+## References
+
+### Developers' note
+    I had never worked with Django, Bootstrap, Jest, Pytest, or 
+    PostGreSQL before starting this project. Although I was familiar 
+    with Python previously, I hadn't used it in this way. I started 
+    off by searching the web and found a Youtube tutorial (link below) 
+    that explained the basics of Django. When I started to gain a 
+    little bit of confidence, I started building the project using 
+    mostly documentation and some web searches here and there.
+
+- [Youtube tutorial](https://www.youtube.com/watch?v=Rp5vd34d-z4&t=6047s) by [Dave Gray](https://www.youtube.com/@DaveGrayTeachesCode/videos)
+
+- [This](https://stackoverflow.com/questions/70637161/integrityerror-not-null-constraint-failed-in-the-models-decimalfield) [Stack Overflow](https://stackoverflow.com/) thread led me to solving a problem with decimal fields and null values.
+
+- [Django docs](https://docs.djangoproject.com/en/5.1/)
+
+- [BootStrap docs](https://getbootstrap.com/docs/4.1/)
+
+- [PyTest](https://docs.pytest.org/en/stable/)
+
+- [JEST](https://jestjs.io/docs/getting-started)
+
+## Deployment with Github Actions 
 
 Heroku is a service that allows seamless integration with GitHub, and it has been used throughout this app's development. As already explained in the [testing chapter](#testing), the deployment process is in harmony with the automatic testing workflow. Again, GitHub Actions has been utilized to deploy this project, and the script for deploying with automatic testing is located [here](.github/workflows/deploy.yml).
 
 The automatic test-and-deploy script will only fire when the project is pushed with a tag. Which enables cloud version control without deploying on every push. The required steps have already been explained [here](#automatic-testing).
 
-## Cloning the repository 🧬
+## Cloning the repository 
 
 To explore, develop, or experiment with Bottle Post Recipes, you can clone this repository to create your own local copy. Cloning allows you to contribute, test out new features, or modify the project in your own space.
 
@@ -907,7 +940,7 @@ git clone <repository-url>
 cd bottle-post-recipes
 ```
 
-## Forking the repository 🍴
+## Forking the repository 
 
 Forking is your gateway to personalizing Bottle Post Recipes and proposing changes. By forking, you create your own version of the repository under your GitHub account.
 
