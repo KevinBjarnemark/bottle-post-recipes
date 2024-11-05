@@ -5,7 +5,7 @@
 Click [here](https://bottle-post-recipes-eb1abd9c13ee.herokuapp.com/) 
 to explore the live app! 🔥
 
-![Screenshot](static/images/readme/screenshots/wide.webp "Wide screenshot of the home page.")
+![Screenshot](static/images/readme/screenshots/wide_screenshot.webp "Wide screenshot of the home page.")
 
 ## Quick Tip!
 
